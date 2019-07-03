@@ -46,22 +46,22 @@ public class AStarVisualizer extends JFrame {
 
 
         this.buttonPlay = new JButton();
-        // this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+        // this.buttonPlay.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
         this.buttonPlay.setLocation(232, 70);
-        this.button1.setName("button1");
+        this.buttonPlay.setName("button1");
         this.buttonPlay.setSize(75, 23);
         this.buttonPlay.setText("Play");
-        // this.button1.UseVisualStyleBackColor = true;
+        // this.buttonPlay.UseVisualStyleBackColor = true;
         
 
         this.buttonStop = new JButton();
-        // this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+        // this.buttonStop.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
         this.buttonStop.setEnabled(false);
         this.buttonStop.setLocation(302, 71);
         this.buttonStop.setName("buttonStop");
         this.buttonStop.setSize(75, 23);
-        this.button2.setText("Stop");
-        // this.button2.UseVisualStyleBackColor = true;
+        this.buttonStop.setText("Stop");
+        // this.buttonStop.UseVisualStyleBackColor = true;
         
 
         this.buttonReset = new JButton();
@@ -190,14 +190,14 @@ public class AStarVisualizer extends JFrame {
         // | System.Windows.Forms.AnchorStyles.Right)));
         this.panelGraphManager.add(this.radioButtonDeletingEdges);
         this.panelGraphManager.add(this.radioButtonAddingEdges);
-        this.panelGraphManager.add(this.radiobuttonPrevious);
+        this.panelGraphManager.add(this.radioButtonDeletingVertices);
         this.panelGraphManager.add(this.radioButtonAddingVertices);
         this.panelGraphManager.setLocation(6, 6);
         this.panelGraphManager.setName("panelGraphManager");
         this.panelGraphManager.setSize(467, 111);
-        this.panelGraphManager.setText("Graph manager");
+        // this.panelGraphManager.setText("Graph manager");
 
-
+        
         this.panelHeuristic = new JPanel();
         // this.panelHeuristic.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
         // | System.Windows.Forms.AnchorStyles.Right)));
@@ -207,7 +207,7 @@ public class AStarVisualizer extends JFrame {
         this.panelHeuristic.setLocation(6, 6);
         this.panelHeuristic.setName("panelHeuristic");
         this.panelHeuristic.setSize(464, 88);
-        this.panelHeuristic.setText("Heuristic");
+        // this.panelHeuristic.setText("Heuristic");
 
 
         this.panelAnimationManager = new JPanel();
@@ -220,7 +220,7 @@ public class AStarVisualizer extends JFrame {
         this.panelAnimationManager.setLocation(6, 100);
         this.panelAnimationManager.setName("panelAnimationManager");
         this.panelAnimationManager.setSize(464, 99);
-        this.panelAnimationManager.setText("Animation manager");
+        // this.panelAnimationManager.setText("Animation manager");
 
         
         this.panelStepByStepManager = new JPanel();
@@ -232,19 +232,20 @@ public class AStarVisualizer extends JFrame {
         this.panelStepByStepManager.setLocation(6, 205);
         this.panelStepByStepManager.setName("panelStepByStepManager");
         this.panelStepByStepManager.setSize(467, 48);
-        this.panelStepByStepManager.setText("Step by step manager");
+        // this.panelStepByStepManager.setText("Step by step manager");
 
         
         this.panelLogs = new JPanel();
         // this.panelLogs.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
         // | System.Windows.Forms.AnchorStyles.Left) 
         // | System.Windows.Forms.AnchorStyles.Right)));
-        this.panelLogs.add(this.richtextFieldStepNumber);
+        this.panelLogs.add(this.textFieldStepNumber);
         this.panelLogs.setLocation(6, 259);
         this.panelLogs.setName("panelLogs");
         this.panelLogs.setSize(467, 200);
-        this.panelLogs.setText("Logs");
+        // this.panelLogs.setText("Logs");
 
+        
 
         /*
         this.tabbedPaneOperationMode = new JTabbedPane();
