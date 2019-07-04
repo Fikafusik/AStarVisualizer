@@ -1,4 +1,5 @@
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 
 import javax.swing.*;
@@ -44,8 +45,9 @@ public class AStarVisualizer extends JFrame {
     public AStarVisualizer() {
         this.setName("AStarVisualizer");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setBounds(200, 50, 1000, 700);;
-        
+        this.setSize(1159, 497);
+        this.setLocation(100, 50);
+
         this.setLayout(null);
 
 
@@ -55,7 +57,7 @@ public class AStarVisualizer extends JFrame {
         this.buttonPlay.setName("button1");
         this.buttonPlay.setSize(75, 23);
         this.buttonPlay.setText("Play");
-        
+
 
         this.buttonStop = new JButton();
         // this.buttonStop.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -99,6 +101,7 @@ public class AStarVisualizer extends JFrame {
         this.textFieldStepNumber.setName("textFieldStepNumber");
         this.textFieldStepNumber.setSize(293, 20);
         this.textFieldStepNumber.setHorizontalAlignment(JTextField.CENTER);
+        this.textFieldStepNumber.setText("42");
 
 
         this.radioButtonManhattanDistance = new JRadioButton();
@@ -199,62 +202,65 @@ public class AStarVisualizer extends JFrame {
         this.panelGraphManager.setName("panelGraphManager");
         this.panelGraphManager.setSize(467, 111);
         this.panelGraphManager.setBorder(BorderFactory.createLineBorder(Color.black));
+        this.panelGraphManager.setLayout(new BoxLayout(this.panelGraphManager, BoxLayout.Y_AXIS));
         // this.panelGraphManager.setText("Graph manager");
 
         
         this.panelHeuristic = new JPanel();
         // this.panelHeuristic.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
         // | System.Windows.Forms.AnchorStyles.Right)));
-        this.panelHeuristic.add(this.radioButtonEuclidianDistance);
-        this.panelHeuristic.add(this.radioButtonChebyshevDistance);
         this.panelHeuristic.add(this.radioButtonManhattanDistance);
+        this.panelHeuristic.add(this.radioButtonChebyshevDistance);
+        this.panelHeuristic.add(this.radioButtonEuclidianDistance);
         this.panelHeuristic.setLocation(6, 6);
         this.panelHeuristic.setName("panelHeuristic");
         this.panelHeuristic.setSize(464, 88);
         this.panelHeuristic.setBorder(BorderFactory.createLineBorder(Color.black));
+        this.panelHeuristic.setLayout(new BoxLayout(this.panelHeuristic, BoxLayout.Y_AXIS));
         // this.panelHeuristic.setText("Heuristic");
-        this.add(panelHeuristic);
+        this.add(this.panelHeuristic);
 
         this.panelAnimationManager = new JPanel();
         // this.panelAnimationManager.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
         // | System.Windows.Forms.AnchorStyles.Right)));
+        this.panelAnimationManager.add(this.sliderAnimationDelay);
         this.panelAnimationManager.add(this.buttonPlay);
         this.panelAnimationManager.add(this.buttonStop);
         this.panelAnimationManager.add(this.buttonReset);
-        // this.panelAnimationManager.add(this.sliderAnimationDelay);
         this.panelAnimationManager.setLocation(6, 100);
         this.panelAnimationManager.setName("panelAnimationManager");
         this.panelAnimationManager.setSize(464, 99);
         this.panelAnimationManager.setBorder(BorderFactory.createLineBorder(Color.black));
         // this.panelAnimationManager.setText("Animation manager");
-        this.add(panelAnimationManager);
+        this.add(this.panelAnimationManager);
 
         
         this.panelStepByStepManager = new JPanel();
         // this.panelStepByStepManager.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
         // | System.Windows.Forms.AnchorStyles.Right)));
-        this.panelStepByStepManager.add(this.buttonNext);
         this.panelStepByStepManager.add(this.buttonPrevious);
         this.panelStepByStepManager.add(this.textFieldStepNumber);
+        this.panelStepByStepManager.add(this.buttonNext);
         this.panelStepByStepManager.setLocation(6, 205);
         this.panelStepByStepManager.setName("panelStepByStepManager");
         this.panelStepByStepManager.setSize(467, 48);
         this.panelStepByStepManager.setBorder(BorderFactory.createLineBorder(Color.black));
         // this.panelStepByStepManager.setText("Step by step manager");
-        this.add(panelStepByStepManager);
+        this.add(this.panelStepByStepManager);
 
         
         this.panelLogs = new JPanel();
         // this.panelLogs.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
         // | System.Windows.Forms.AnchorStyles.Left) 
         // | System.Windows.Forms.AnchorStyles.Right)));
-        this.panelLogs.add(this.textFieldStepNumber);
+        this.panelLogs.add(this.editorPaneLogs);
         this.panelLogs.setLocation(6, 259);
         this.panelLogs.setName("panelLogs");
         this.panelLogs.setSize(467, 200);
         this.panelLogs.setBorder(BorderFactory.createLineBorder(Color.black));
+        this.panelLogs.setLayout(null);
         // this.panelLogs.setText("Logs");
-        this.add(panelLogs);
+        this.add(this.panelLogs);
         
         
         panelTab1 = new JPanel();
@@ -270,7 +276,7 @@ public class AStarVisualizer extends JFrame {
         this.panelTab2.add(this.panelStepByStepManager);
         this.panelTab2.add(this.panelAnimationManager);
         this.panelTab2.add(this.panelLogs);
-
+        this.panelTab2.setLayout(new BorderLayout());
         this.panelTab2.setLocation(4, 22);
         this.panelTab2.setName("panelTab2");
         // this.panelTab2.Padding = new System.Windows.Forms.Padding(3);
@@ -290,15 +296,23 @@ public class AStarVisualizer extends JFrame {
 
 
         /*
+        this.buttonNext.setLayout(null);
+        this.buttonPrevious.setLayout(null);
+        this.buttonPlay.setLayout(null);
+        this.buttonStop.setLayout(null);
+        this.buttonReset.setLayout(null);
+        */
+
+        
         this.splitPaneForeground = new JSplitPane();
         this.splitPaneForeground.setLocation(0, 0);
         this.splitPaneForeground.setName("splitPaneForeground");
-        // this.splitPaneForeground.Panel1.Controls.Add(this.pictureBox1);
-        // this.splitPaneForeground.add(this.tabbedPaneOperationMode);
+        this.splitPaneForeground.setTopComponent(new JPanel());
+        this.splitPaneForeground.setBottomComponent(this.tabbedPaneOperationMode);
         this.splitPaneForeground.setSize(1159, 497);
         this.splitPaneForeground.setDividerLocation(662);
         this.add(this.splitPaneForeground);
-        */
+        
 
         /*
         // 
@@ -318,7 +332,6 @@ public class AStarVisualizer extends JFrame {
         // 
         this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
         this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-        this.ClientSize = new System.Drawing.Size(1159, 497);
         this.Controls.Add(this.splitPaneForeground);
         this.Name = "Form1";
         this.Text = "Form1";
