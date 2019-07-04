@@ -1,4 +1,6 @@
 
+import java.awt.Color;
+
 import javax.swing.*;
 
 public class AStarVisualizer extends JFrame {
@@ -21,7 +23,7 @@ public class AStarVisualizer extends JFrame {
     private JRadioButton radioButtonAddingEdges;
     private JRadioButton radioButtonDeletingEdges;
 
-    // private JTabbedPane tabbedPaneOperationMode;
+    private JTabbedPane tabbedPaneOperationMode;
 
     private JEditorPane editorPaneLogs;
 
@@ -30,8 +32,10 @@ public class AStarVisualizer extends JFrame {
     private JPanel panelAnimationManager;
     private JPanel panelStepByStepManager;
     private JPanel panelLogs;
-    
-    // private JSplitPane splitPaneForeground;
+    private JPanel panelTab1;
+    private JPanel panelTab2;
+
+    private JSplitPane splitPaneForeground;
     private JSlider sliderAnimationDelay;
 
     // private System.Windows.Forms.PictureBox pictureBox1; // рисовать
@@ -51,7 +55,6 @@ public class AStarVisualizer extends JFrame {
         this.buttonPlay.setName("button1");
         this.buttonPlay.setSize(75, 23);
         this.buttonPlay.setText("Play");
-        // this.buttonPlay.UseVisualStyleBackColor = true;
         
 
         this.buttonStop = new JButton();
@@ -183,7 +186,7 @@ public class AStarVisualizer extends JFrame {
         this.editorPaneLogs.setName("editorPaneLogs");
         this.editorPaneLogs.setSize(455, 175);
         this.editorPaneLogs.setText("");
-
+        
 
         this.panelGraphManager = new JPanel();
         // this.panelGraphManager.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -195,6 +198,7 @@ public class AStarVisualizer extends JFrame {
         this.panelGraphManager.setLocation(6, 6);
         this.panelGraphManager.setName("panelGraphManager");
         this.panelGraphManager.setSize(467, 111);
+        this.panelGraphManager.setBorder(BorderFactory.createLineBorder(Color.black));
         // this.panelGraphManager.setText("Graph manager");
 
         
@@ -207,8 +211,9 @@ public class AStarVisualizer extends JFrame {
         this.panelHeuristic.setLocation(6, 6);
         this.panelHeuristic.setName("panelHeuristic");
         this.panelHeuristic.setSize(464, 88);
+        this.panelHeuristic.setBorder(BorderFactory.createLineBorder(Color.black));
         // this.panelHeuristic.setText("Heuristic");
-
+        this.add(panelHeuristic);
 
         this.panelAnimationManager = new JPanel();
         // this.panelAnimationManager.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -220,7 +225,9 @@ public class AStarVisualizer extends JFrame {
         this.panelAnimationManager.setLocation(6, 100);
         this.panelAnimationManager.setName("panelAnimationManager");
         this.panelAnimationManager.setSize(464, 99);
+        this.panelAnimationManager.setBorder(BorderFactory.createLineBorder(Color.black));
         // this.panelAnimationManager.setText("Animation manager");
+        this.add(panelAnimationManager);
 
         
         this.panelStepByStepManager = new JPanel();
@@ -232,7 +239,9 @@ public class AStarVisualizer extends JFrame {
         this.panelStepByStepManager.setLocation(6, 205);
         this.panelStepByStepManager.setName("panelStepByStepManager");
         this.panelStepByStepManager.setSize(467, 48);
+        this.panelStepByStepManager.setBorder(BorderFactory.createLineBorder(Color.black));
         // this.panelStepByStepManager.setText("Step by step manager");
+        this.add(panelStepByStepManager);
 
         
         this.panelLogs = new JPanel();
@@ -243,67 +252,55 @@ public class AStarVisualizer extends JFrame {
         this.panelLogs.setLocation(6, 259);
         this.panelLogs.setName("panelLogs");
         this.panelLogs.setSize(467, 200);
+        this.panelLogs.setBorder(BorderFactory.createLineBorder(Color.black));
         // this.panelLogs.setText("Logs");
-
+        this.add(panelLogs);
+        
+        
+        panelTab1 = new JPanel();
+        this.panelTab1.add(this.panelGraphManager);
+        this.panelTab1.setLocation(4, 22);
+        this.panelTab1.setName("panelTab1");
+        // this.panelTab1.Padding = new System.Windows.Forms.Padding(3);
+        this.panelTab1.setSize(479, 465);
         
 
-        /*
-        this.tabbedPaneOperationMode = new JTabbedPane();
+        panelTab2 = new JPanel();
+        this.panelTab2.add(this.panelHeuristic);
+        this.panelTab2.add(this.panelStepByStepManager);
+        this.panelTab2.add(this.panelAnimationManager);
+        this.panelTab2.add(this.panelLogs);
+
+        this.panelTab2.setLocation(4, 22);
+        this.panelTab2.setName("panelTab2");
+        // this.panelTab2.Padding = new System.Windows.Forms.Padding(3);
+        this.panelTab2.setSize(479, 465);
+
+
+        this.tabbedPaneOperationMode = new JTabbedPane(JTabbedPane.TOP);
         // this.tabbedPaneOperationMode.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
         // | System.Windows.Forms.AnchorStyles.Left) 
         // | System.Windows.Forms.AnchorStyles.Right)));
-        this.tabbedPaneOperationMode.Controls.Add(this.tabPage1);
-        this.tabbedPaneOperationMode.Controls.Add(this.tabPage2);
+        this.tabbedPaneOperationMode.addTab("tab1", this.panelTab1);
+        this.tabbedPaneOperationMode.addTab("tab2", this.panelTab2);
         this.tabbedPaneOperationMode.setLocation(3, 3);
         this.tabbedPaneOperationMode.setName("tabbedPaneOperationMode");
         this.tabbedPaneOperationMode.setSize(487, 491);
-        // 
-        // tabPage1
-        // 
-        this.tabPage1.Controls.Add(this.panelGraphManager);
-        this.tabPage1.Location = new System.Drawing.Point(4, 22);
-        this.tabPage1.Name = "tabPage1";
-        this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-        this.tabPage1.Size = new System.Drawing.Size(479, 465);
-        this.tabPage1.TabIndex = 0;
-        this.tabPage1.Text = "tabPage1";
-        this.tabPage1.UseVisualStyleBackColor = true;
-        // 
-        // tabPage2
-        // 
-        this.tabPage2.Controls.Add(this.panelLogs);
-        this.tabPage2.Controls.Add(this.panelStepByStepManager);
-        this.tabPage2.Controls.Add(this.panelAnimationManager);
-        this.tabPage2.Controls.Add(this.panelHeuristic);
-        this.tabPage2.Location = new System.Drawing.Point(4, 22);
-        this.tabPage2.Name = "tabPage2";
-        this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-        this.tabPage2.Size = new System.Drawing.Size(479, 465);
-        this.tabPage2.TabIndex = 1;
-        this.tabPage2.Text = "tabPage2";
-        this.tabPage2.UseVisualStyleBackColor = true;
+        this.add(this.tabbedPaneOperationMode);
 
 
+        /*
         this.splitPaneForeground = new JSplitPane();
-        // 
-        // splitContainer1
-        // 
-        this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-        this.splitContainer1.Location = new System.Drawing.Point(0, 0);
-        this.splitContainer1.Name = "splitContainer1";
-        // 
-        // splitContainer1.Panel1
-        // 
-        this.splitContainer1.Panel1.Controls.Add(this.pictureBox1);
-        // 
-        // splitContainer1.Panel2
-        // 
-        this.splitContainer1.Panel2.Controls.Add(this.tabbedPaneOperationMode);
-        this.splitContainer1.Size = new System.Drawing.Size(1159, 497);
-        this.splitContainer1.SplitterDistance = 662;
-        this.splitContainer1.TabIndex = 0;
-        
-        
+        this.splitPaneForeground.setLocation(0, 0);
+        this.splitPaneForeground.setName("splitPaneForeground");
+        // this.splitPaneForeground.Panel1.Controls.Add(this.pictureBox1);
+        // this.splitPaneForeground.add(this.tabbedPaneOperationMode);
+        this.splitPaneForeground.setSize(1159, 497);
+        this.splitPaneForeground.setDividerLocation(662);
+        this.add(this.splitPaneForeground);
+        */
+
+        /*
         // 
         // pictureBox1
         // 
@@ -322,17 +319,17 @@ public class AStarVisualizer extends JFrame {
         this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
         this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
         this.ClientSize = new System.Drawing.Size(1159, 497);
-        this.Controls.Add(this.splitContainer1);
+        this.Controls.Add(this.splitPaneForeground);
         this.Name = "Form1";
         this.Text = "Form1";
         this.Load += new System.EventHandler(this.Form1_Load);
-        this.splitContainer1.Panel1.ResumeLayout(false);
-        this.splitContainer1.Panel2.ResumeLayout(false);
-        ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
-        this.splitContainer1.ResumeLayout(false);
+        this.splitPaneForeground.Panel1.ResumeLayout(false);
+        this.splitPaneForeground.Panel2.ResumeLayout(false);
+        ((System.ComponentModel.ISupportInitialize)(this.splitPaneForeground)).EndInit();
+        this.splitPaneForeground.ResumeLayout(false);
         this.tabbedPaneOperationMode.ResumeLayout(false);
         this.tabPage1.ResumeLayout(false);
-        this.tabPage2.ResumeLayout(false);
+        this.panelTab2.ResumeLayout(false);
         this.panelHeuristic.ResumeLayout(false);
         this.panelHeuristic.PerformLayout();
         this.panelAnimationManager.ResumeLayout(false);
