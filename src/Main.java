@@ -4,8 +4,6 @@ import javax.swing.*;
 public class Main {
 
     public static void main(String[] args) {
-        // AStarVisualizer aStarVisualizer = new AStarVisualizer(1000, 600);
-        // aStarVisualizer.setVisible(true);
-        GUI.main(args);
+        GUI gui = new GUI(1000, 600);
     }
 }

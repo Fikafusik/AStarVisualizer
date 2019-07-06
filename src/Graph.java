@@ -16,7 +16,7 @@ public class Graph {
     private mxGraphComponent component;
 
     private JGraphXAdapter<String, DefaultEdge> jgxAdapter;
-    private ListenableGraph<String, DefaultEdge> g;
+    private ListenableGraph<String, DefaultEdge> g  ;
     private static int inc = 1;
 
     public Graph() {
@@ -64,7 +64,7 @@ public class Graph {
             }
         });
 
-//        MouseEvent event = new Mous;
+//        MouseEvent event = new Mouse;
 //      this.component.getConnectionHandler().mousePressed(event);
 
         this.component.addListener(mxEvent.ADD_CELLS, new mxEventSource.mxIEventListener() {
