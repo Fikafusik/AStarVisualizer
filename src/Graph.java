@@ -28,8 +28,8 @@ public class Graph {
         this.component.setEventsEnabled(true);
 //        this.component.setPageVisible(true); //Видимость страницы
 
-        Object c = jgxAdapter.insertVertex(parent, null, "v" + inc++, 20, 20, 20, 20, "shape=ellipse");
-        Object j = jgxAdapter.insertVertex(parent, null, "v" + inc++, 40, 40, 20, 20, "shape=ellipse");
+        Object c = jgxAdapter.insertVertex(parent, null, "v" + inc++, 20, 20, 30, 30, "shape=ellipse");
+        Object j = jgxAdapter.insertVertex(parent, null, "v" + inc++, 40, 40, 30, 30, "shape=ellipse");
         jgxAdapter.setAllowDanglingEdges(false);
 
         jgxAdapter.setCellsEditable(false);
@@ -41,12 +41,10 @@ public class Graph {
             @Override
             public void mouseClicked(MouseEvent mouseEvent) {
                 if(mouseEvent.getClickCount() == 2) {
-                    jgxAdapter.insertVertex(parent, null, "v" + inc++, mouseEvent.getX(), mouseEvent.getY(), 20, 20 , "shape=ellipse");
+                    jgxAdapter.insertVertex(parent, null, "v" + inc++, mouseEvent.getX()-15, mouseEvent.getY()-15, 30, 30 , "shape=ellipse");
                 }
                 if(mouseEvent.getClickCount() == 1) {
-
                     if(mouseEvent.getButton() == mouseEvent.BUTTON3) {
-
                         Object cell = component.getCellAt(mouseEvent.getX(), mouseEvent.getY());
                         if (cell != null) {
                             jgxAdapter.getModel().remove(cell);
