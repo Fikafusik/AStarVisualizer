@@ -1,4 +1,4 @@
 
 interface IHeuristic {
-    double getValue();
+    double getValue(Point from, Point to);
 }
