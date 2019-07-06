@@ -1,0 +1,4 @@
+
+interface IHeuristic {
+    double getValue();
+}
