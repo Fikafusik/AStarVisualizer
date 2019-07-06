@@ -1,5 +1,3 @@
-import com.mxgraph.swing.mxGraphComponent;
-
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 
@@ -40,7 +38,6 @@ public class AStarVisualizer extends JFrame {
 
     private JPanel panelUserOptions;
 
-    private mxGraphComponent component;
 
     private JSplitPane splitPaneForeground;
 
@@ -180,10 +177,8 @@ public class AStarVisualizer extends JFrame {
         this.splitPaneForeground.setName("splitPaneForeground");
         this.splitPaneForeground.setTopComponent(this.panelUserOptions);
 
-
         Graph graph = new Graph();
-        this.component = graph.getComponent();
-        this.splitPaneForeground.setBottomComponent(this.component);
+        this.splitPaneForeground.setBottomComponent(graph.getComponent());
         this.add(this.splitPaneForeground);
     }
 }
