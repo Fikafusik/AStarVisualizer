@@ -1,6 +1,6 @@
 import javax.swing.*;
 
-public class GUI extends JFrame {
+public class AStarInterface extends JFrame {
     private JRadioButton manhattanDistanceRadioButton;
     private JRadioButton chebyshevDistanceRadioButton;
     private JRadioButton euclidianDistanceRadioButton;
@@ -14,12 +14,12 @@ public class GUI extends JFrame {
     private JRadioButton animationRadioButton;
     private JSplitPane splitPaneForeground;
 
-    public GUI(int width, int height) {
+    public AStarInterface(int width, int height) {
         this.setContentPane(this.splitPaneForeground);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.pack();
         this.setSize(width, height);
-        this.splitPaneForeground.setBottomComponent(new Graph().getComponent());
+        this.splitPaneForeground.setBottomComponent(new AStarVisualizer().getComponent());
         this.setVisible(true);
     }
 }
