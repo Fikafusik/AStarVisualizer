@@ -7,6 +7,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="lib" level="project" />
     <orderEntry type="library" name="org.jgrapht.archetypes:maven-archetype-jgrapht:1.2.0" level="project" />
     <orderEntry type="library" name="org.jgrapht:jgrapht-core:1.3.1" level="project" />
     <orderEntry type="library" name="org.jgrapht:jgrapht-demo:1.3.1" level="project" />

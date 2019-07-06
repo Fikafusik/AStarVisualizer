@@ -24,14 +24,16 @@ public class Graph {
         this.component = new mxGraphComponent(jgxAdapter);
         Object parent = jgxAdapter.getDefaultParent();
 
-        this.component.setConnectable(true); //Ð¢Ñ‹ÐºÐ°Ð±ÐµÐ»ÑŒÐ½Ð¾ÑÑ‚ÑŒ
+        this.component.setConnectable(true); //Òûêàáåëüíîñòü
         this.component.setEventsEnabled(true);
-//        this.component.setPageVisible(true); //Ð’Ð¸Ð´Ð¸Ð¼Ð¾ÑÑ‚ÑŒ ÑÑ‚Ñ€Ð°Ð½Ð¸Ñ†Ñ‹
+//        this.component.setPageVisible(true); //Âèäèìîñòü ñòðàíèöû
 
         Object c = jgxAdapter.insertVertex(parent, null, "v" + inc++, 20, 20, 20, 20, "shape=ellipse");
+        Object j = jgxAdapter.insertVertex(parent, null, "v" + inc++, 40, 40, 20, 20, "shape=ellipse");
+        jgxAdapter.setAllowDanglingEdges(false);
 
-//        jgxAdapter.getCellToVertexMap();
-//        jgxAdapter.getVertexToCellMap();
+        jgxAdapter.setCellsEditable(false);
+
         this.component.getViewport().setOpaque(true);
         this.component.getViewport().setBackground(new Color(155, 208, 249));
 
@@ -44,9 +46,10 @@ public class Graph {
                 if(mouseEvent.getClickCount() == 1) {
 
                     if(mouseEvent.getButton() == mouseEvent.BUTTON3) {
+
                         Object cell = component.getCellAt(mouseEvent.getX(), mouseEvent.getY());
                         if (cell != null) {
-
+                            jgxAdapter.getModel().remove(cell);
                             System.out.println("cell=" + jgxAdapter.getLabel(cell));
                         }
                     }
@@ -54,13 +57,11 @@ public class Graph {
                 super.mouseClicked(mouseEvent);
             }
         });
+        System.out.println(component.getCells(component.getLayoutAreaSize().getRectangle()).length);
 
-/*        this.component.getGraphControl().addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent mouseEvent) {
-                super.mouseClicked(mouseEvent);
-            }
-        });
+/*        for(mxICell cell: jgxAdapter.getCellToVertexMap().keySet()) {
+            System.out.println("OUT : x - " + cell.getGeometry().getPoint().x + ", y - " + cell.getGeometry().getPoint().y);
+        }
 */        this.component.addMouseWheelListener(mouseWheelEvent -> {
             if(mouseWheelEvent.getWheelRotation() < 0) {
                 component.zoomIn();
@@ -71,7 +72,6 @@ public class Graph {
         this.component.getConnectionHandler().addListener(mxEvent.CONNECT, (sender, evt) -> System.out.println("edge=" + evt.getProperties().toString()));
 
 //        this.component.addListener(mxEvent.ADD_CELLS, (o, mxEventObject) -> System.out.println("cell - " + mxEventObject.getName() + " with properties: " + mxEventObject.getProperties()));
-
     }
 
     public mxGraphComponent getComponent() {
