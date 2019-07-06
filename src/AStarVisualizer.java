@@ -11,7 +11,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class AStarVisualizer {
-    private mxGraphComponent component;
+    private mxGraphComponent graphComponent;
 
     private JGraphXAdapter<String, DefaultEdge> jgxAdapter;
     private ListenableGraph<String, DefaultEdge> g;
@@ -21,31 +21,33 @@ public class AStarVisualizer {
         g = new DefaultListenableGraph<>(new DefaultDirectedGraph<>(DefaultEdge.class));
         jgxAdapter = new JGraphXAdapter<>(g);
 
-        this.component = new mxGraphComponent(jgxAdapter);
+        this.graphComponent = new mxGraphComponent(jgxAdapter);
         Object parent = jgxAdapter.getDefaultParent();
 
-        this.component.setConnectable(true); //�������������
-        this.component.setEventsEnabled(true);
-//        this.component.setPageVisible(true); //��������� ��������
+        this.graphComponent.setConnectable(true); //�������������
+        this.graphComponent.setEventsEnabled(true);
+        // this.graphComponent.setPageVisible(true); //��������� ��������
 
+        // TODO: смотреть нижний TODO
         Object c = jgxAdapter.insertVertex(parent, null, "v" + inc++, 20, 20, 30, 30, "shape=ellipse");
         Object j = jgxAdapter.insertVertex(parent, null, "v" + inc++, 40, 40, 30, 30, "shape=ellipse");
         jgxAdapter.setAllowDanglingEdges(false);
 
         jgxAdapter.setCellsEditable(false);
 
-        this.component.getViewport().setOpaque(true);
-        this.component.getViewport().setBackground(new Color(155, 208, 249));
+        this.graphComponent.getViewport().setOpaque(true);
+        this.graphComponent.getViewport().setBackground(new Color(155, 208, 249));
 
-        this.component.getGraphControl().addMouseListener(new MouseAdapter() {
+        this.graphComponent.getGraphControl().addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent mouseEvent) {
-                if(mouseEvent.getClickCount() == 2) {
+                if (mouseEvent.getClickCount() == 2) {
+                    // TODO: нужно вынести магические константы (как вариант: радиус вершины передавать в конструктор
                     jgxAdapter.insertVertex(parent, null, "v" + inc++, mouseEvent.getX()-15, mouseEvent.getY()-15, 30, 30 , "shape=ellipse");
                 }
-                if(mouseEvent.getClickCount() == 1) {
-                    if(mouseEvent.getButton() == mouseEvent.BUTTON3) {
-                        Object cell = component.getCellAt(mouseEvent.getX(), mouseEvent.getY());
+                if (mouseEvent.getClickCount() == 1) {
+                    if (mouseEvent.getButton() == mouseEvent.BUTTON3) {
+                        Object cell = graphComponent.getCellAt(mouseEvent.getX(), mouseEvent.getY());
                         if (cell != null) {
                             jgxAdapter.getModel().remove(cell);
                             System.out.println("cell=" + jgxAdapter.getLabel(cell));
@@ -55,25 +57,30 @@ public class AStarVisualizer {
                 super.mouseClicked(mouseEvent);
             }
         });
-        System.out.println(component.getCells(component.getLayoutAreaSize().getRectangle()).length);
 
-/*        for(mxICell cell: jgxAdapter.getCellToVertexMap().keySet()) {
+        System.out.println(graphComponent.getCells(graphComponent.getLayoutAreaSize().getRectangle()).length);
+
+        /*
+        for(mxICell cell: jgxAdapter.getCellToVertexMap().keySet()) {
             System.out.println("OUT : x - " + cell.getGeometry().getPoint().x + ", y - " + cell.getGeometry().getPoint().y);
         }
-*/        this.component.addMouseWheelListener(mouseWheelEvent -> {
-            if(mouseWheelEvent.getWheelRotation() < 0) {
-                component.zoomIn();
-            }
-            else
-                component.zoomOut();
-        });
-        this.component.getConnectionHandler().addListener(mxEvent.CONNECT, (sender, evt) -> System.out.println("edge=" + evt.getProperties().toString()));
+        */
 
-//        this.component.addListener(mxEvent.ADD_CELLS, (o, mxEventObject) -> System.out.println("cell - " + mxEventObject.getName() + " with properties: " + mxEventObject.getProperties()));
+        this.graphComponent.addMouseWheelListener(mouseWheelEvent -> {
+            if (mouseWheelEvent.getWheelRotation() < 0) {
+                graphComponent.zoomIn();
+            } else {
+                graphComponent.zoomOut();
+            }
+        });
+
+        this.graphComponent.getConnectionHandler().addListener(mxEvent.CONNECT, (sender, evt) -> System.out.println("edge=" + evt.getProperties().toString()));
+
+        // this.graphComponent.addListener(mxEvent.ADD_CELLS, (o, mxEventObject) -> System.out.println("cell - " + mxEventObject.getName() + " with properties: " + mxEventObject.getProperties()));
     }
 
-    public mxGraphComponent getComponent() {
-        return component;
+    public mxGraphComponent getGraphComponent() {
+        return graphComponent;
     }
 
 }
