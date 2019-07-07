@@ -32,12 +32,13 @@ public class AStarVisualizer {
 
         Object c = jgxAdapter.insertVertex(parent, null, "v" + inc++, 20, 20, widthDefault, widthDefault, styleDefault);
         Object j = jgxAdapter.insertVertex(parent, null, "v" + inc++, 60, 60, widthDefault, widthDefault, styleDefault);
-        jgxAdapter.setAllowDanglingEdges(false);
 
+        jgxAdapter.setAllowDanglingEdges(false);
         jgxAdapter.setCellsEditable(false);
 
         this.graphComponent.getViewport().setOpaque(true);
         this.graphComponent.getViewport().setBackground(Color.PINK);
+
 
         this.graphComponent.getGraphControl().addMouseListener(new MouseAdapter() {
             @Override
