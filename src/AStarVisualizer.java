@@ -37,7 +37,7 @@ public class AStarVisualizer {
         jgxAdapter.setCellsEditable(false);
 
         this.graphComponent.getViewport().setOpaque(true);
-        this.graphComponent.getViewport().setBackground(new Color(155, 208, 249));
+        this.graphComponent.getViewport().setBackground(Color.PINK);
 
         this.graphComponent.getGraphControl().addMouseListener(new MouseAdapter() {
             @Override

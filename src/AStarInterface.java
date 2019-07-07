@@ -15,11 +15,13 @@ public class AStarInterface extends JFrame {
     private JSplitPane splitPaneForeground;
 
     public AStarInterface(int width, int height) {
-        this.setContentPane(this.splitPaneForeground);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.pack();
+        this.setTitle("AStarVisualizer");
         this.setSize(width, height);
+
+        // how splitPaneForeground can be constructed in this moment?
         this.splitPaneForeground.setBottomComponent(new AStarVisualizer().getGraphComponent());
-        this.setVisible(true);
+
+        this.setContentPane(this.splitPaneForeground);
     }
 }
