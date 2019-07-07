@@ -1,2 +1,3 @@
 interface IDoable {
+    void execute();
 }
