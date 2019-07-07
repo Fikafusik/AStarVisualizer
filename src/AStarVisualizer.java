@@ -66,14 +66,14 @@ public class AStarVisualizer {
         }
         */
 
-        this.graphComponent.addMouseWheelListener(mouseWheelEvent -> {
+/*        this.graphComponent.addMouseWheelListener(mouseWheelEvent -> {
             if (mouseWheelEvent.getWheelRotation() < 0) {
                 graphComponent.zoomIn();
             } else {
                 graphComponent.zoomOut();
             }
         });
-
+*/
         this.graphComponent.getConnectionHandler().addListener(mxEvent.CONNECT, (sender, evt) -> System.out.println("edge=" + evt.getProperties().toString()));
 
         // this.graphComponent.addListener(mxEvent.ADD_CELLS, (o, mxEventObject) -> System.out.println("cell - " + mxEventObject.getName() + " with properties: " + mxEventObject.getProperties()));
