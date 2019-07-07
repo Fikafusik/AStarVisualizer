@@ -5,13 +5,24 @@ import java.util.HashMap;
 import java.util.PriorityQueue;
 import java.util.Stack;
 
-class Pair {
+class Pair implements Comparable<Pair> {
     public Double first;
     public Object second;
 
     Pair(Double first, Object second) {
         this.first = first;
         this.second = second;
+    }
+
+    @Override
+    public int compareTo(Pair pair) {
+        if (this.first > pair.first) {
+            return 1;
+        } else if (this.first < pair.first) {
+            return -1;
+        } else {
+            return 0;
+        }
     }
 }
 
