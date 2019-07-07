@@ -1,2 +1,3 @@
 interface IUndoable {
+    void undo();
 }
