@@ -5,6 +5,15 @@ import java.util.HashMap;
 import java.util.PriorityQueue;
 import java.util.Stack;
 
+class Pair<T1, T2> {
+    public T1 first;
+    public T2 second;
+
+    Pair(T1 first, T2 second) {
+        this.first = first;
+        this.second = second;
+    }
+}
 
 public class AStarAlgorithm {
     // граф)
@@ -26,6 +35,8 @@ public class AStarAlgorithm {
     // текущая эвристика для поиска
     private IHeuristic heuristic;
 
+    private PriorityQueue<Pair<Double, Object>> priorityQueue;
+
     private static IHeuristic defaultHeuristic = new ManhattanHeuristic();
 
     public AStarAlgorithm(mxGraph graph) {
@@ -40,7 +51,7 @@ public class AStarAlgorithm {
         this.heuristic = defaultHeuristic;
     }
 
-    private void start() {
+    public String algorithm() {
         for (Object v : this.graph.getChildVertices(this.graph.getDefaultParent())) {
             this.distances.put(v, Double.POSITIVE_INFINITY);
             // this.heuristics.put(v, this.heuristic.getValue(v, this.sink));
@@ -51,36 +62,31 @@ public class AStarAlgorithm {
         this.distances.put(this.source, 0.0);
         this.total.put(this.source, this.heuristics.get(this.source));
 
-        /*
-        std::priority_queue<std::pair<double, size_t>, std::vector<std::pair<double, size_t>>, std::greater<std::pair<double, size_t>>> pq;
-        pq.push(std::make_pair(total[from], N - from));
 
-        size_t new_from;
-
-        while (!pq.empty()) {
-            new_from = N - pq.top().second;
-            if (new_from == to) {
-                return (recovery_path(from, to, parent));
+        priorityQueue.add(new Pair(this.total.get(this.sink), this.sink));
+        Object nextVertex;
+        while (!priorityQueue.isEmpty()) {
+            nextVertex = priorityQueue.peek().second;
+            if (nextVertex.equals(this.sink)) {
+                return restorePath(this.sink);
             }
-
-            pq.pop();
-            visited[new_from] = true;
-
-            for (size_t i = 0; i < m_graph[new_from].size(); ++i) {
-                size_t v = m_graph[new_from][i].second;
-                double tentantive = distances[new_from] + m_graph[new_from][i].first;
-                if (!visited[v] || tentantive < distances[v]) {
-                    parent[v] = new_from;
-                    distances[v] = tentantive;
-                    total[v] = distances[v] + heuristics[v];
-                    pq.push(std::make_pair (total[v], N - v));
+            priorityQueue.poll();
+            visited.put(nextVertex, true);
+            for (Object e : graph.getChildEdges(nextVertex)) {
+                Object vertex = ((mxCell)e).getTarget();
+                double tentantive = distances.get(nextVertex) + (double)((mxCell)e).getValue();
+                if (!visited.get(((mxCell)e).getTarget()) || tentantive < distances.get(((mxCell)e).getTarget())) {
+                    parent.put(vertex, nextVertex);
+                    distances.put(vertex, tentantive);
+                    total.put(vertex, distances.get(vertex) + heuristics.get(vertex));
+                    priorityQueue.add(new Pair(this.total.get(vertex), vertex));
                 }
             }
         }
-        */
+        return (null);
     }
 
-    public String restorePath(Object vertex) {
+    private String restorePath(Object vertex) {
         Stack<Object> pathStack = new Stack<>();
         do {
             pathStack.push(vertex);
