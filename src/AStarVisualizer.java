@@ -19,6 +19,9 @@ public class AStarVisualizer {
     private static int widthDefault = 40;
     private static String styleDefault = "shape=ellipse";
 
+    public Object c;
+    public Object j;
+
     public AStarVisualizer() {
         g = new DefaultListenableGraph<>(new DefaultDirectedGraph<>(DefaultEdge.class));
         jgxAdapter = new JGraphXAdapter<>(g);
@@ -30,8 +33,8 @@ public class AStarVisualizer {
         this.graphComponent.setEventsEnabled(true);
         // this.graphComponent.setPageVisible(true);
 
-        Object c = jgxAdapter.insertVertex(parent, null, "v" + inc++, 20, 20, widthDefault, widthDefault, styleDefault);
-        Object j = jgxAdapter.insertVertex(parent, null, "v" + inc++, 60, 60, widthDefault, widthDefault, styleDefault);
+        c = jgxAdapter.insertVertex(parent, null, "v" + inc++, 20, 20, widthDefault, widthDefault, styleDefault);
+        j = jgxAdapter.insertVertex(parent, null, "v" + inc++, 60, 60, widthDefault, widthDefault, styleDefault);
 
         jgxAdapter.setAllowDanglingEdges(false);
         jgxAdapter.setCellsEditable(false);

@@ -19,9 +19,16 @@ public class AStarInterface extends JFrame {
         this.setTitle("AStarVisualizer");
         this.setSize(width, height);
 
+        AStarVisualizer aStarVisualizer = new AStarVisualizer();
         // how splitPaneForeground can be constructed in this moment?
-        this.splitPaneForeground.setBottomComponent(new AStarVisualizer().getGraphComponent());
+        this.splitPaneForeground.setBottomComponent(aStarVisualizer.getGraphComponent());
 
         this.setContentPane(this.splitPaneForeground);
+        /*
+        AStarAlgorithm aStarAlgorithm = new AStarAlgorithm(aStarVisualizer.getGraphComponent().getGraph());
+        aStarAlgorithm.setSource(aStarVisualizer.c);
+        aStarAlgorithm.setSink(aStarVisualizer.j);
+        aStarAlgorithm.algorithm();
+        */
     }
 }

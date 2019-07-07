@@ -5,11 +5,11 @@ import java.util.HashMap;
 import java.util.PriorityQueue;
 import java.util.Stack;
 
-class Pair<T1, T2> {
-    public T1 first;
-    public T2 second;
+class Pair {
+    public Double first;
+    public Object second;
 
-    Pair(T1 first, T2 second) {
+    Pair(Double first, Object second) {
         this.first = first;
         this.second = second;
     }
@@ -35,7 +35,7 @@ public class AStarAlgorithm {
     // текущая эвристика для поиска
     private IHeuristic heuristic;
 
-    private PriorityQueue<Pair<Double, Object>> priorityQueue;
+    private PriorityQueue<Pair> priorityQueue;
 
     private static IHeuristic defaultHeuristic = new ManhattanHeuristic();
 
@@ -47,8 +47,9 @@ public class AStarAlgorithm {
         this.heuristics = new HashMap<>();
         this.total = new HashMap<>();
         this.parent = new HashMap<>();
-
+        this.visited = new HashMap<>();
         this.heuristic = defaultHeuristic;
+        this.priorityQueue = new PriorityQueue<>();
     }
 
     public String algorithm() {
@@ -63,7 +64,7 @@ public class AStarAlgorithm {
         this.total.put(this.source, this.heuristics.get(this.source));
 
 
-        priorityQueue.add(new Pair(this.total.get(this.sink), this.sink));
+        priorityQueue.add(new Pair(this.total.get(this.source), this.source));
         Object nextVertex;
         while (!priorityQueue.isEmpty()) {
             nextVertex = priorityQueue.peek().second;
