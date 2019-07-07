@@ -1,5 +1,6 @@
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.util.mxEvent;
+import org.jgraph.graph.Edge;
 import org.jgrapht.ListenableGraph;
 import org.jgrapht.ext.JGraphXAdapter;
 import org.jgrapht.graph.DefaultDirectedGraph;
@@ -31,10 +32,11 @@ public class AStarVisualizer {
 
         this.graphComponent.setConnectable(true);
         this.graphComponent.setEventsEnabled(true);
+
         // this.graphComponent.setPageVisible(true);
 
-        c = jgxAdapter.insertVertex(parent, null, "v" + inc++, 20, 20, widthDefault, widthDefault, styleDefault);
-        j = jgxAdapter.insertVertex(parent, null, "v" + inc++, 60, 60, widthDefault, widthDefault, styleDefault);
+        Object c = jgxAdapter.insertVertex(parent, null, "v" + inc++, 20, 20, widthDefault, widthDefault, styleDefault);
+        Object j = jgxAdapter.insertVertex(parent, null, "v" + inc++, 60, 60, widthDefault, widthDefault, styleDefault);
 
         jgxAdapter.setAllowDanglingEdges(false);
         jgxAdapter.setCellsEditable(false);
@@ -53,7 +55,13 @@ public class AStarVisualizer {
                     if (mouseEvent.getButton() == mouseEvent.BUTTON3) {
                         Object cell = graphComponent.getCellAt(mouseEvent.getX(), mouseEvent.getY());
                         if (cell != null) {
-                            jgxAdapter.getModel().remove(cell);
+                            if(jgxAdapter.getModel().getEdgeCount(cell) != 0){
+                                Object[] edges = graphComponent.getGraph().getEdges(cell);
+                                for(int i = 0; i < edges.length; ++i){
+                                    jgxAdapter.getModel().remove(edges[i]);
+                                }
+                                jgxAdapter.getModel().remove(cell);
+                            }
                             System.out.println("cell=" + jgxAdapter.getLabel(cell));
                         }
                     }
