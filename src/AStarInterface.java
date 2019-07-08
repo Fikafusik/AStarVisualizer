@@ -1,4 +1,6 @@
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class AStarInterface extends JFrame {
     private JRadioButton manhattanDistanceRadioButton;
@@ -13,15 +15,32 @@ public class AStarInterface extends JFrame {
     private JRadioButton editingRadioButton;
     private JRadioButton animationRadioButton;
     private JSplitPane splitPaneForeground;
+    private JRadioButton editingAddVertexGraph;
+    private JRadioButton editingStartFinishVertex;
 
     public AStarInterface(int width, int height) {
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setTitle("AStarVisualizer");
-        this.setSize(width, height);
-
-        // how splitPaneForeground can be constructed in this moment?
-        this.splitPaneForeground.setBottomComponent(new AStarVisualizer().getGraphComponent());
-
         this.setContentPane(this.splitPaneForeground);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.pack();
+        this.setSize(width, height);
+        AStarVisualizer aStarVisualizer = new AStarVisualizer();
+        this.splitPaneForeground.setBottomComponent(aStarVisualizer.getGraphComponent());
+        aStarVisualizer.setListenerEditVertex();
+        this.setVisible(true);
+        ActionListener listener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent){
+                if(actionEvent.getActionCommand() == "Start and Finish") {
+                    aStarVisualizer.removeListenerEditVertex();
+                    aStarVisualizer.setListenerAddStartFinish();
+                }
+                else {
+                    aStarVisualizer.removeListenerAddStartFinish();
+                    aStarVisualizer.setListenerEditVertex();
+                }
+            }
+        };
+        editingAddVertexGraph.addActionListener(listener);
+        editingStartFinishVertex.addActionListener(listener);
     }
 }
