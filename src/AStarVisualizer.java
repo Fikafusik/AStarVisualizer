@@ -109,6 +109,10 @@ public class AStarVisualizer {
                         if (cell != null) {
                             for(Object child : graphComponent.getGraph().getEdges(cell))
                                 jgxAdapter.getModel().remove(child);
+                            if(cell == start)
+                                start = null;
+                            if(cell == finish)
+                                finish = null;
                             jgxAdapter.getModel().remove(cell);
                             System.out.println("cell delete =" + jgxAdapter.getLabel(cell));
                         }
