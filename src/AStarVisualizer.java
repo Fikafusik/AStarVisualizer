@@ -69,20 +69,27 @@ public class AStarVisualizer {
         return graphComponent;
     }
 
+    private void paintStartComponent() {
+        if(jgxAdapter.getModel().getGeometry(start).getWidth() != 0)
+            jgxAdapter.getModel().setStyle(start, "fillColor=lightgreen;shape=ellipse");
+    }
+    private void paintFinishComponent() {
+        if(jgxAdapter.getModel().getGeometry(finish).getWidth() != 0)
+            jgxAdapter.getModel().setStyle(finish, "fillColor=yellow;shape=ellipse");
+    }
+
     public void paintComponent(Object component){
         if(jgxAdapter.getModel().getGeometry(component).getWidth() != 0)
             jgxAdapter.getModel().setStyle(component, "fillColor=red;shape=ellipse");
         else
             jgxAdapter.getModel().setStyle(component,"strokeColor=orange");
     }
-    private void paintStartComponent() {
-        if(jgxAdapter.getModel().getGeometry(start).getWidth() != 0)
-            jgxAdapter.getModel().setStyle(start, "fillColor=lightgreen;shape=ellipse");
-    }
 
-    private void paintFinishComponent() {
-        if(jgxAdapter.getModel().getGeometry(finish).getWidth() != 0)
-            jgxAdapter.getModel().setStyle(finish, "fillColor=yellow;shape=ellipse");
+    public void paintDefaultComponent(Object component){
+        if(jgxAdapter.getModel().getGeometry(component).getWidth() != 0)
+            jgxAdapter.getModel().setStyle(component, styleDefault);
+        else
+            jgxAdapter.getModel().setStyle(component,"");
     }
 
     public void setListenerEditVertex() {
