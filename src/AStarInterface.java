@@ -14,6 +14,8 @@ public class AStarInterface extends JFrame {
     private JRadioButton editingRadioButton;
     private JRadioButton animationRadioButton;
     private JSplitPane splitPaneForeground;
+    private JRadioButton editingGraph;
+    private JRadioButton editingStartFinishVertex;
 
     public AStarInterface(int width, int height) {
         this.setContentPane(this.splitPaneForeground);
