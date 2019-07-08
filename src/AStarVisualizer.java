@@ -156,7 +156,7 @@ public class AStarVisualizer {
         this.graphComponent.getGraphControl().addMouseListener(listenerAddStartFinishVertex);
     }
 
-    public void removeAddStartFinish() {
+    public void removeListenerAddStartFinish() {
         this.jgxAdapter.setCellsMovable(true);
         this.graphComponent.getGraphControl().removeMouseListener(listenerAddStartFinishVertex);
     }

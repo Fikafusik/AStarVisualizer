@@ -1,5 +1,6 @@
 import javax.swing.*;
-import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class AStarInterface extends JFrame {
     private JRadioButton manhattanDistanceRadioButton;
@@ -14,7 +15,7 @@ public class AStarInterface extends JFrame {
     private JRadioButton editingRadioButton;
     private JRadioButton animationRadioButton;
     private JSplitPane splitPaneForeground;
-    private JRadioButton editingGraph;
+    private JRadioButton editingAddVertexGraph;
     private JRadioButton editingStartFinishVertex;
 
     public AStarInterface(int width, int height) {
@@ -26,5 +27,20 @@ public class AStarInterface extends JFrame {
         this.splitPaneForeground.setBottomComponent(aStarVisualizer.getGraphComponent());
         aStarVisualizer.setListenerEditVertex();
         this.setVisible(true);
+        ActionListener listener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent){
+                if(actionEvent.getActionCommand() == "Start and Finish") {
+                    aStarVisualizer.removeListenerEditVertex();
+                    aStarVisualizer.setListenerAddStartFinish();
+                }
+                else {
+                    aStarVisualizer.removeListenerAddStartFinish();
+                    aStarVisualizer.setListenerEditVertex();
+                }
+            }
+        };
+        editingAddVertexGraph.addActionListener(listener);
+        editingStartFinishVertex.addActionListener(listener);
     }
 }
