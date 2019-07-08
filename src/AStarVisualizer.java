@@ -73,6 +73,7 @@ public class AStarVisualizer {
         if(jgxAdapter.getModel().getGeometry(start).getWidth() != 0)
             jgxAdapter.getModel().setStyle(start, "fillColor=lightgreen;shape=ellipse");
     }
+
     private void paintFinishComponent() {
         if(jgxAdapter.getModel().getGeometry(finish).getWidth() != 0)
             jgxAdapter.getModel().setStyle(finish, "fillColor=yellow;shape=ellipse");
