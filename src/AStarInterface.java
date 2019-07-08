@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.*;
 
 public class AStarInterface extends JFrame {
     private JRadioButton manhattanDistanceRadioButton;
@@ -19,7 +20,9 @@ public class AStarInterface extends JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.pack();
         this.setSize(width, height);
-        this.splitPaneForeground.setBottomComponent(new AStarVisualizer().getGraphComponent());
+        AStarVisualizer aStarVisualizer = new AStarVisualizer();
+        this.splitPaneForeground.setBottomComponent(aStarVisualizer.getGraphComponent());
+        aStarVisualizer.setListenerEditVertex();
         this.setVisible(true);
     }
 }
