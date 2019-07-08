@@ -136,7 +136,7 @@ public class AStarVisualizer {
                 Object cell = graphComponent.getCellAt(mouseEvent.getX(), mouseEvent.getY());
                 if(cell != null ) {
                     if (jgxAdapter.getModel().getGeometry(cell).getWidth() != 0) {
-                        if (mouseEvent.getButton() == mouseEvent.BUTTON3) { //Обработать случай старт = финиш
+                        if (mouseEvent.getButton() == mouseEvent.BUTTON1) { //Обработать случай старт = финиш
                             if (cell == finish)
                                 finish = null;
                             if (start != null)
@@ -144,7 +144,7 @@ public class AStarVisualizer {
                             start = cell;
                             paintStartComponent();
                         }
-                        if (mouseEvent.getButton() == mouseEvent.BUTTON1) {
+                        if (mouseEvent.getButton() == mouseEvent.BUTTON3) {
                             if(cell == start)
                                 start = null;
                             if (finish != null)
