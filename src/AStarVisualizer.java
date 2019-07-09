@@ -41,22 +41,6 @@ public class AStarVisualizer {
         jgxAdapter.setCellsEditable(false);
         graphComponent.getViewport().setOpaque(true);
 
-/*        start = jgxAdapter.insertVertex(parent, null, "v" + inc++, 60, 200, widthDefault, widthDefault, styleDefault);
-        finish = jgxAdapter.insertVertex(parent, null, "v" + inc++, 540, 200, widthDefault, widthDefault, styleDefault);
-        Object v3 = jgxAdapter.insertVertex(parent, null, "v" + inc++, 380, 50, widthDefault, widthDefault, styleDefault);
-        Object v4 = jgxAdapter.insertVertex(parent, null, "v" + inc++, 400, 350, widthDefault, widthDefault, styleDefault);
-        Object v5 = jgxAdapter.insertVertex(parent, null, "v" + inc++, 200, 50, widthDefault, widthDefault, styleDefault);
-        Object v6 = jgxAdapter.insertVertex(parent, null, "v" + inc++, 280, 350, widthDefault, widthDefault, styleDefault);
-        jgxAdapter.insertEdge(parent, null, null, start, v5);
-        jgxAdapter.insertEdge(parent, null, null, start, v6);
-        jgxAdapter.insertEdge(parent, null, null, v5, v3);
-        jgxAdapter.insertEdge(parent, null, null, v3, start);
-        jgxAdapter.insertEdge(parent, null, null, v3, v4);
-        jgxAdapter.insertEdge(parent, null, null, v4, finish);
-        paintStartComponent();
-        paintFinishComponent();
-*/
-
         this.graphComponent.getViewport().setBackground(new Color(155, 208, 249));
 
 //        setListenerAddStartFinish();
