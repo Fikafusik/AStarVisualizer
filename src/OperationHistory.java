@@ -1,5 +1,11 @@
+import java.util.Stack;
+
 public class OperationHistory implements IObserver, IUndoable {
     private java.util.Stack<UndoableOperation> history;
+
+    OperationHistory() {
+        history = new Stack<>();
+    }
 
     private void push(UndoableOperation operation){
         history.push(operation);
