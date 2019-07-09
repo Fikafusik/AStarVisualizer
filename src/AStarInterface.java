@@ -50,7 +50,6 @@ public class AStarInterface extends JFrame {
         editingAddVertexGraph.addActionListener(listener);
         editingStartFinishVertex.addActionListener(listener);
 
-        AStarInterface component = this;
         openButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -74,7 +73,7 @@ public class AStarInterface extends JFrame {
                 };
                 fileChooser.setFileFilter(fileFilter);
                 fileChooser.setCurrentDirectory(new File("C:\\Users\\Nastya\\IdeaProjects\\AStarVisualizer\\MyGraphs"));
-                int oprion = fileChooser.showOpenDialog(component);
+                int oprion = fileChooser.showOpenDialog(AStarInterface.this);
                 if (oprion == JFileChooser.APPROVE_OPTION) {
                     File file = fileChooser.getSelectedFile();
                     System.out.println("Folder Selected: " + file.getName());
