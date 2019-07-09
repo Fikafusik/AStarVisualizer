@@ -241,7 +241,7 @@
     </children>
   </grid>
   <buttonGroups>
-    <group name="buttonGroupDistances">
+    <group name="buttonGroupDistances" bound="true">
       <member id="cce43"/>
       <member id="cce43"/>
       <member id="a33fb"/>

@@ -20,14 +20,17 @@ public class AStarInterface extends JFrame {
     private JRadioButton editingAddVertexGraph;
     private JRadioButton editingStartFinishVertex;
     private JButton cleanButton;
+    private ButtonGroup buttonGroupDistances;
     private JMenu menu;
     private JMenuBar menuBar;
     private JMenuItem menuItemLoad;
     private JMenuItem menuItemSave;
     private JMenuItem menuItemReference;
-
+    private HeuristicFactory heuristicFactory;
     private AStarAlgorithm aStarAlgorithm;
-    public AStarInterface(int width, int height, AStarVisualizer aStarVisualizer) {
+
+    public AStarInterface(int width, int height, AStarVisualizer aStarVisualizer, AStarAlgorithm aStarAlgorithm) {
+        this.aStarAlgorithm = aStarAlgorithm;
         this.setContentPane(this.splitPaneForeground);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.pack();
@@ -35,7 +38,7 @@ public class AStarInterface extends JFrame {
 
         this.splitPaneForeground.setBottomComponent(aStarVisualizer.getGraphComponent());
         aStarVisualizer.setListenerEditVertex();
-        this.setVisible(true);
+
 
         ActionListener listener = new ActionListener() {
             @Override
@@ -115,6 +118,7 @@ public class AStarInterface extends JFrame {
                 }
             }
         });
+
         this.menu = new JMenu("Graph");
         this.menu.add(this.menuItemLoad);
         this.menu.add(this.menuItemSave);
@@ -123,10 +127,32 @@ public class AStarInterface extends JFrame {
         this.menuBar.add(this.menu);
 
         this.setJMenuBar(this.menuBar);
-    }
 
-    public void setAlgorithm(AStarAlgorithm aStarAlgorithm) {
-        this.aStarAlgorithm = aStarAlgorithm;
+        heuristicFactory = new HeuristicFactory();
+        AStarInterface component = this;
+        this.aStarAlgorithm.setHeuristic(heuristicFactory.getHeuristic("Manhattan"));
+        ActionListener listener1 = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                if (buttonGroupDistances.getSelection() == manhattanDistanceRadioButton) {
+                    component.aStarAlgorithm.setHeuristic(heuristicFactory.getHeuristic("Manhattan"));
+                    System.out.println("MAN");
+                }
+                if(buttonGroupDistances.getSelection() == chebyshevDistanceRadioButton) {
+                    component.aStarAlgorithm.setHeuristic(heuristicFactory.getHeuristic("Chebyshev"));
+                    System.out.println("CHE");
+                }
+                if(buttonGroupDistances.getSelection() == euclidianDistanceRadioButton) {
+//                    component.aStarAlgorithm.setHeuristic(heuristicFactory.getHeuristic("Euclidean"));
+                    System.out.println("EUC");
+                }
+            }
+        };
+        manhattanDistanceRadioButton.addActionListener(listener1);
+        chebyshevDistanceRadioButton.addActionListener(listener1);
+        euclidianDistanceRadioButton.addActionListener(listener1);
+
+
     }
 }
 
