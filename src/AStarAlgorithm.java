@@ -3,7 +3,7 @@ import com.mxgraph.view.mxGraph;
 import java.util.HashMap;
 import java.util.Set;
 
-public class AStarAlgorithm {
+public class AStarAlgorithm implements IObservable{
     // граф)
     private mxGraph graph;
     // начало
@@ -23,6 +23,8 @@ public class AStarAlgorithm {
     // текущая эвристика для поиска
     private IHeuristic heuristic;
 
+    private IObserver observer;
+
     private static IHeuristic defaultHeuristic = new ManhattanHeuristic();
 
     public AStarAlgorithm(mxGraph graph) {
@@ -36,32 +38,110 @@ public class AStarAlgorithm {
         this.heuristic = defaultHeuristic;
     }
 
-    private void updateHeuristicValue(Object vertex) {
-        // this.heuristics[vertex] = Double.valueOf(this.heuristic.getValue(vertex, this.sink));
-        // this.total[vertex] = this.distances[vertex] + this.heuristics[vertex];
-    }
-
-    private void updateAllHeuristics() {
-
-    }
-
     void setSource(Object vertex) {
-        this.source = vertex;
+        notifyObserver(new SetSource(vertex));
     }
 
     void setSink(Object vertex) {
-        this.sink = vertex;
+        notifyObserver(new SetSink(vertex));
+    }
+
+    void setHeuristic(IHeuristic newHeuristic) {
+        notifyObserver(new SetHeuristic(newHeuristic));
     }
 
     public void stepNext() {
-
+        notifyObserver(new NextStep());
     }
 
-    public void stepPrevious() {
+    public class SetSource extends UndoableOperation {
 
+        private Object oldSource;
+        private Object newSource;
+
+        SetSource(Object vertex) {
+            this.oldSource = source;
+            this.newSource = vertex;
+        }
+
+        @Override
+        public void execute(){
+            source = this.newSource;
+        }
+
+        @Override
+        public void undo(){
+            source = this.oldSource;
+        }
     }
 
-    public void reset() {
+    public class SetSink extends UndoableOperation {
 
+        private Object oldSink;
+        private Object newSink;
+
+        SetSink(Object vertex) {
+            this.oldSink = sink;
+            this.newSink = vertex;
+        }
+
+        @Override
+        public void execute() {
+            source = this.newSink;
+        }
+
+        @Override
+        public void undo() {
+            source = this.oldSink;
+        }
     }
+
+    public class SetHeuristic extends UndoableOperation {
+
+        private IHeuristic oldHeuristic;
+        private IHeuristic newHeuristic;
+
+        SetHeuristic(IHeuristic newHeuristic) {
+            this.oldHeuristic = heuristic;
+            this.newHeuristic = newHeuristic;
+        }
+
+        @Override
+        public void execute() {
+            heuristic = this.newHeuristic;
+        }
+
+        @Override
+        public void undo() {
+            heuristic = this.oldHeuristic;
+        }
+    }
+    public class NextStep extends UndoableOperation{
+
+        @Override
+        public void execute() {
+
+        }
+
+        @Override
+        public void undo() {
+
+        }
+    }
+
+    @Override
+    public void addObserver(IObserver observer){
+        this.observer = observer;
+    }
+
+    @Override
+    public void removeObserver(IObserver observer){
+        this.observer = null;
+    }
+
+    @Override
+    public void notifyObserver(UndoableOperation operation){
+        this.observer.handleEvent(operation);
+    }
+
 }
