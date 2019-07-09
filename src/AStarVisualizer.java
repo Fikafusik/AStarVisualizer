@@ -1,13 +1,17 @@
+import com.mxgraph.io.mxCodec;
 import com.mxgraph.swing.mxGraphComponent;
+import com.mxgraph.util.mxUtils;
 import org.jgrapht.ListenableGraph;
 import org.jgrapht.ext.JGraphXAdapter;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DefaultListenableGraph;
+import org.w3c.dom.Document;
 
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 
 public class AStarVisualizer {
     private mxGraphComponent graphComponent;
@@ -37,7 +41,7 @@ public class AStarVisualizer {
         jgxAdapter.setCellsEditable(false);
         graphComponent.getViewport().setOpaque(true);
 
-        start = jgxAdapter.insertVertex(parent, null, "v" + inc++, 60, 200, widthDefault, widthDefault, styleDefault);
+/*        start = jgxAdapter.insertVertex(parent, null, "v" + inc++, 60, 200, widthDefault, widthDefault, styleDefault);
         finish = jgxAdapter.insertVertex(parent, null, "v" + inc++, 540, 200, widthDefault, widthDefault, styleDefault);
         Object v3 = jgxAdapter.insertVertex(parent, null, "v" + inc++, 380, 50, widthDefault, widthDefault, styleDefault);
         Object v4 = jgxAdapter.insertVertex(parent, null, "v" + inc++, 400, 350, widthDefault, widthDefault, styleDefault);
@@ -51,7 +55,7 @@ public class AStarVisualizer {
         jgxAdapter.insertEdge(parent, null, null, v4, finish);
         paintStartComponent();
         paintFinishComponent();
-
+*/
 
         this.graphComponent.getViewport().setBackground(new Color(155, 208, 249));
 
@@ -65,6 +69,23 @@ public class AStarVisualizer {
 //        this.graphComponent.addListener(mxEvent.ADD_CELLS, (o, mxEventObject) -> System.out.println("cell - " + mxEventObject.getName() + " with properties: " + mxEventObject.getProperties()));
     }
 
+    public void openGraph(String path) {
+
+    }
+
+    public void saveGraph(String path) {
+        try {
+            System.out.println("call xml getting code");
+            mxCodec codec = new mxCodec();
+            String xml = mxUtils.getXml(codec.encode(jgxAdapter.getModel()));
+            java.io.FileWriter fw = new java.io.FileWriter(path + ".xml");
+            fw.write(xml);
+            fw.close();
+        }
+        catch(Exception ex) {
+            System.out.println("ERROR : "+ex.getMessage());
+        }
+    }
     public mxGraphComponent getGraphComponent() {
         return graphComponent;
     }

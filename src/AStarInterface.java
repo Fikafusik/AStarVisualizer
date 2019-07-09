@@ -34,6 +34,7 @@ public class AStarInterface extends JFrame {
         this.splitPaneForeground.setBottomComponent(aStarVisualizer.getGraphComponent());
         aStarVisualizer.setListenerEditVertex();
         this.setVisible(true);
+
         ActionListener listener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent){
@@ -62,19 +63,20 @@ public class AStarInterface extends JFrame {
                             return true;
                         }
                         else {
-                            return file.getName().toLowerCase().endsWith(".graphml");
+                            return file.getName().toLowerCase().endsWith(".xml");
                         }
                     }
 
                     @Override
                     public String getDescription() {
-                        return "GraphML Documents (*.graphml)";
+                        return "XML Documents (*.xml)";
                     }
                 };
                 fileChooser.setFileFilter(fileFilter);
                 fileChooser.setCurrentDirectory(new File("C:\\Users\\Nastya\\IdeaProjects\\AStarVisualizer\\MyGraphs"));
                 int oprion = fileChooser.showOpenDialog(AStarInterface.this);
                 if (oprion == JFileChooser.APPROVE_OPTION) {
+                    fileChooser.getSelectedFile().getAbsolutePath();
                     File file = fileChooser.getSelectedFile();
                     System.out.println("Folder Selected: " + file.getName());
                 }
@@ -83,5 +85,24 @@ public class AStarInterface extends JFrame {
                 }
             }
         });
+
+        saveButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                JFileChooser fileChooser = new JFileChooser();
+//                fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                fileChooser.setCurrentDirectory(new File("C:\\Users\\Nastya\\IdeaProjects\\AStarVisualizer\\MyGraphs"));
+                int oprion = fileChooser.showSaveDialog(AStarInterface.this);
+                if (oprion == JFileChooser.APPROVE_OPTION) {
+                    aStarVisualizer.saveGraph(fileChooser.getSelectedFile().getAbsolutePath());
+                    File file = fileChooser.getSelectedFile();
+                    System.out.println("File Selected: " + file.getAbsolutePath());
+                }
+                else {
+                    System.out.println("Open command canceled");
+                }
+            }
+        });
     }
 }
+
