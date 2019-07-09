@@ -112,11 +112,11 @@ public class AStarVisualizer {
             jgxAdapter.getModel().setStyle(finish, "fillColor=yellow;shape=ellipse");
     }
 
-    public void paintComponent(Object component){
+    public void paintComponent(Object component, String color){
         if(jgxAdapter.getModel().getGeometry(component).getWidth() != 0)
-            jgxAdapter.getModel().setStyle(component, "fillColor=red;shape=ellipse");
+            jgxAdapter.getModel().setStyle(component, "fillColor="+ color +";shape=ellipse");
         else
-            jgxAdapter.getModel().setStyle(component,"strokeColor=orange");
+            jgxAdapter.getModel().setStyle(component,"strokeColor=" + color);
     }
 
     public void paintDefaultComponent(Object component){

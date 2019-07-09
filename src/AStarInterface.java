@@ -22,6 +22,7 @@ public class AStarInterface extends JFrame {
     private JButton openButton;
     private JButton saveButton;
     private JButton cleanButton;
+    private AStarAlgorithm aStarAlgorithm;
 
     public AStarInterface(int width, int height) {
         this.setContentPane(this.splitPaneForeground);
@@ -106,6 +107,19 @@ public class AStarInterface extends JFrame {
                 aStarVisualizer.clearGraph();
             }
         });
+
+
+//        aStarAlgorithm.setHeuristic();
+        ActionListener listener1 = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+//                actionEvent.getActionCommand()
+//                    aStarAlgorithm.setHeuristic();
+            }
+        };
+        manhattanDistanceRadioButton.addActionListener(listener1);
+        chebyshevDistanceRadioButton.addActionListener(listener1);
+        euclidianDistanceRadioButton.addActionListener(listener1);
     }
 }
 
