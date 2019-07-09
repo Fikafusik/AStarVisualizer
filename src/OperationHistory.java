@@ -19,4 +19,17 @@ public class OperationHistory implements IObserver, IUndoable {
         operation.execute();
     }
 
+    public void stepBack(){
+        if(history.peek() instanceof AStarAlgorithm.NextStep)
+            undo();
+        while(!(history.peek() instanceof AStarAlgorithm.NextStep)){
+            undo();
+        }
+    }
+
+    public void reset(){
+        while(!history.empty()){
+            undo();
+        }
+    }
 }
