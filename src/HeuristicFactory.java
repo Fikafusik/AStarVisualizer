@@ -21,7 +21,7 @@ public class HeuristicFactory {
                 factory.put(heuristicName, new ChebyshevHeuristic());
                 break;
             case "Euclidean":
-                // factory.put(heuristicName, new EuclideanHeuristic());
+                factory.put(heuristicName, new EuclideanHeuristic());
                 break;
         }
 
