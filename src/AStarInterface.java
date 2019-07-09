@@ -27,6 +27,7 @@ public class AStarInterface extends JFrame {
     private JMenuItem menuItemReference;
 
     private AStarAlgorithm aStarAlgorithm;
+
     public AStarInterface(int width, int height, AStarVisualizer aStarVisualizer) {
         this.setContentPane(this.splitPaneForeground);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
