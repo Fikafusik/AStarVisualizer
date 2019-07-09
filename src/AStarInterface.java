@@ -19,9 +19,12 @@ public class AStarInterface extends JFrame {
     private JSplitPane splitPaneForeground;
     private JRadioButton editingAddVertexGraph;
     private JRadioButton editingStartFinishVertex;
-    private JButton openButton;
-    private JButton saveButton;
     private JButton cleanButton;
+    private JMenu menu;
+    private JMenuBar menuBar;
+    private JMenuItem menuItemLoad;
+    private JMenuItem menuItemSave;
+    private JMenuItem menuItemReference;
 
     public AStarInterface(int width, int height) {
         this.setContentPane(this.splitPaneForeground);
@@ -49,7 +52,16 @@ public class AStarInterface extends JFrame {
         editingAddVertexGraph.addActionListener(listener);
         editingStartFinishVertex.addActionListener(listener);
 
-        openButton.addActionListener(new ActionListener() {
+        cleanButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                aStarVisualizer.clearGraph();
+            }
+        });
+
+        this.menuItemLoad = new JMenuItem();
+        this.menuItemLoad.setText("Load");
+        this.menuItemLoad.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 JFileChooser fileChooser = new JFileChooser();
@@ -71,7 +83,7 @@ public class AStarInterface extends JFrame {
                     }
                 };
                 fileChooser.setFileFilter(fileFilter);
-                fileChooser.setCurrentDirectory(new File("C:\\Users\\Nastya\\IdeaProjects\\AStarVisualizer\\MyGraphs"));
+                fileChooser.setCurrentDirectory(new File(".\\MyGraphs"));
                 int oprion = fileChooser.showOpenDialog(AStarInterface.this);
                 if (oprion == JFileChooser.APPROVE_OPTION) {
                     aStarVisualizer.openGraph(fileChooser.getSelectedFile().getAbsolutePath());
@@ -84,11 +96,13 @@ public class AStarInterface extends JFrame {
             }
         });
 
-        saveButton.addActionListener(new ActionListener() {
+        this.menuItemSave = new JMenuItem();
+        this.menuItemSave.setText("Save as...");
+        this.menuItemSave.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 JFileChooser fileChooser = new JFileChooser();
-                fileChooser.setCurrentDirectory(new File("C:\\Users\\Nastya\\IdeaProjects\\AStarVisualizer\\MyGraphs"));
+                fileChooser.setCurrentDirectory(new File(".\\MyGraphs"));
                 int oprion = fileChooser.showSaveDialog(AStarInterface.this);
                 if (oprion == JFileChooser.APPROVE_OPTION) {
                     aStarVisualizer.saveGraph(fileChooser.getSelectedFile().getAbsolutePath());
@@ -100,12 +114,14 @@ public class AStarInterface extends JFrame {
                 }
             }
         });
-        cleanButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                aStarVisualizer.clearGraph();
-            }
-        });
+        this.menu = new JMenu("Graph");
+        this.menu.add(this.menuItemLoad);
+        this.menu.add(this.menuItemSave);
+
+        this.menuBar = new JMenuBar();
+        this.menuBar.add(this.menu);
+
+        this.setJMenuBar(this.menuBar);
     }
 }
 
