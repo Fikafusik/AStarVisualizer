@@ -1,10 +1,7 @@
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.io.File;
 
 public class AStarInterface extends JFrame {
@@ -24,6 +21,7 @@ public class AStarInterface extends JFrame {
     private JRadioButton editingStartFinishVertex;
     private JButton openButton;
     private JButton saveButton;
+    private JButton cleanButton;
 
     public AStarInterface(int width, int height) {
         this.setContentPane(this.splitPaneForeground);
@@ -90,7 +88,6 @@ public class AStarInterface extends JFrame {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 JFileChooser fileChooser = new JFileChooser();
-//                fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
                 fileChooser.setCurrentDirectory(new File("C:\\Users\\Nastya\\IdeaProjects\\AStarVisualizer\\MyGraphs"));
                 int oprion = fileChooser.showSaveDialog(AStarInterface.this);
                 if (oprion == JFileChooser.APPROVE_OPTION) {
@@ -101,6 +98,12 @@ public class AStarInterface extends JFrame {
                 else {
                     System.out.println("Open command canceled");
                 }
+            }
+        });
+        cleanButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                aStarVisualizer.clearGraph();
             }
         });
     }

@@ -13,6 +13,8 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import static java.lang.Math.max;
+
 public class AStarVisualizer {
     private mxGraphComponent graphComponent;
 
@@ -43,11 +45,6 @@ public class AStarVisualizer {
 
         this.graphComponent.getViewport().setBackground(new Color(155, 208, 249));
 
-//        setListenerAddStartFinish();
-//        setListenerEditVertex();
-
-//        this.graphComponent.getGraphControl().addMouseListener(listenerEditVertex);
-
 //        this.graphComponent.getConnectionHandler().addListener(mxEvent.CONNECT, (sender, evt) -> System.out.println("edge=" + evt.getProperties().toString()));
 
 //        this.graphComponent.addListener(mxEvent.ADD_CELLS, (o, mxEventObject) -> System.out.println("cell - " + mxEventObject.getName() + " with properties: " + mxEventObject.getProperties()));
@@ -70,7 +67,9 @@ public class AStarVisualizer {
             jgxAdapter.getModel().endUpdate();
             start = null;
             finish = null;
+            inc = 1;
             for(Object vertex : graphComponent.getGraph().getChildVertices(jgxAdapter.getDefaultParent())) {
+                inc = max(Integer.parseInt(jgxAdapter.getLabel(vertex).substring(1)), inc);
                 if (jgxAdapter.getModel().getStyle(vertex).equals("fillColor=lightgreen;shape=ellipse")) {
                     start = vertex;
                 }
@@ -78,6 +77,7 @@ public class AStarVisualizer {
                     finish = vertex;
                 }
             }
+            inc++;
         }
         catch (Exception ex)
         {
@@ -196,5 +196,14 @@ public class AStarVisualizer {
     public void removeListenerAddStartFinish() {
         this.jgxAdapter.setCellsMovable(true);
         this.graphComponent.getGraphControl().removeMouseListener(listenerAddStartFinishVertex);
+    }
+    public void clearGraph() {
+        jgxAdapter.getModel().beginUpdate();
+        System.out.println(inc);
+        jgxAdapter.removeCells(graphComponent.getGraph().getChildVertices(jgxAdapter.getDefaultParent()));
+        graphComponent.getGraphControl().removeAll();
+        jgxAdapter.getModel().endUpdate();
+        start = null;
+        finish = null;
     }
 }
