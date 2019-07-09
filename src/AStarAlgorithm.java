@@ -4,28 +4,20 @@ import java.util.HashMap;
 import java.util.Set;
 
 public class AStarAlgorithm implements IObservable{
-    // граф)
     private mxGraph graph;
-    // начало
+
     private Object source;
-    // конец
     private Object sink;
-    // глобальная дистанция
+
     private HashMap<Object, Double> distances;
-    // эвристика для каждой вершины
     private HashMap<Object, Double> heuristics;
-    // эвристика + дистанция
     private HashMap<Object, Double> total;
-    // предок вершины, из которого оптимально перешли
+
     private HashMap<Object, Object> parent;
-    // посещена ли вершина
     private HashMap<Object, Boolean> visited;
-    // текущая эвристика для поиска
+
     private IHeuristic heuristic;
-
     private IObserver observer;
-
-    private static IHeuristic defaultHeuristic = new ManhattanHeuristic();
 
     public AStarAlgorithm(mxGraph graph) {
         this.graph = graph;
@@ -35,7 +27,9 @@ public class AStarAlgorithm implements IObservable{
         this.heuristics = new HashMap<>();
         this.total = new HashMap<>();
         this.parent = new HashMap<>();
-        this.heuristic = defaultHeuristic;
+        this.visited = new HashMap<>();
+        this.heuristic = new ManhattanHeuristic();
+        this.observer = null;
     }
 
     void setSource(Object vertex) {
@@ -116,6 +110,7 @@ public class AStarAlgorithm implements IObservable{
             heuristic = this.oldHeuristic;
         }
     }
+
     public class NextStep extends UndoableOperation{
 
         @Override

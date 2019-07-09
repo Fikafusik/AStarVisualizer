@@ -10,6 +10,8 @@ import org.jgrapht.graph.DefaultListenableGraph;
 import org.w3c.dom.Document;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -30,6 +32,7 @@ public class AStarVisualizer {
     MouseAdapter listenerAddStartFinishVertex;
 
     public AStarVisualizer() {
+
         g = new DefaultListenableGraph<>(new DefaultDirectedGraph<>(DefaultEdge.class));
         jgxAdapter = new JGraphXAdapter<>(g);
 

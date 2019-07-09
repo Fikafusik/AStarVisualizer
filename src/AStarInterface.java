@@ -26,12 +26,13 @@ public class AStarInterface extends JFrame {
     private JMenuItem menuItemSave;
     private JMenuItem menuItemReference;
 
-    public AStarInterface(int width, int height) {
+    private AStarAlgorithm aStarAlgorithm;
+    public AStarInterface(int width, int height, AStarVisualizer aStarVisualizer) {
         this.setContentPane(this.splitPaneForeground);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.pack();
         this.setSize(width, height);
-        AStarVisualizer aStarVisualizer = new AStarVisualizer();
+
         this.splitPaneForeground.setBottomComponent(aStarVisualizer.getGraphComponent());
         aStarVisualizer.setListenerEditVertex();
         this.setVisible(true);
@@ -122,6 +123,10 @@ public class AStarInterface extends JFrame {
         this.menuBar.add(this.menu);
 
         this.setJMenuBar(this.menuBar);
+    }
+
+    public void setAlgorithm(AStarAlgorithm aStarAlgorithm) {
+        this.aStarAlgorithm = aStarAlgorithm;
     }
 }
 
