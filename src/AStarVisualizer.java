@@ -1,6 +1,7 @@
 import com.mxgraph.io.mxCodec;
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.util.mxUtils;
+import com.mxgraph.util.mxXmlUtils;
 import org.jgrapht.ListenableGraph;
 import org.jgrapht.ext.JGraphXAdapter;
 import org.jgrapht.graph.DefaultDirectedGraph;
@@ -69,8 +70,25 @@ public class AStarVisualizer {
 //        this.graphComponent.addListener(mxEvent.ADD_CELLS, (o, mxEventObject) -> System.out.println("cell - " + mxEventObject.getName() + " with properties: " + mxEventObject.getProperties()));
     }
 
-    public void openGraph(String path) {
+    public void openGraph(String filePath) {
+        try
+        {
 
+            Document document = mxXmlUtils.parseXml(mxUtils.readFile(filePath));
+            mxCodec codec = new mxCodec(document);
+            codec.decode(document.getDocumentElement(), jgxAdapter.getModel());
+
+            this.graphComponent.setConnectable(true);
+            this.graphComponent.setEventsEnabled(true);
+            this.graphComponent.getViewport().setOpaque(true);
+            jgxAdapter.setAllowDanglingEdges(false);
+            jgxAdapter.setCellsEditable(false);
+            graphComponent.getViewport().setOpaque(true);
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
     }
 
     public void saveGraph(String path) {

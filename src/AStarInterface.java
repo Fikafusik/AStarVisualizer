@@ -55,7 +55,7 @@ public class AStarInterface extends JFrame {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 JFileChooser fileChooser = new JFileChooser();
-                fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
                 FileFilter fileFilter = new FileFilter() {
                     @Override
                     public boolean accept(File file) {
@@ -76,7 +76,7 @@ public class AStarInterface extends JFrame {
                 fileChooser.setCurrentDirectory(new File("C:\\Users\\Nastya\\IdeaProjects\\AStarVisualizer\\MyGraphs"));
                 int oprion = fileChooser.showOpenDialog(AStarInterface.this);
                 if (oprion == JFileChooser.APPROVE_OPTION) {
-                    fileChooser.getSelectedFile().getAbsolutePath();
+                    aStarVisualizer.openGraph(fileChooser.getSelectedFile().getAbsolutePath());
                     File file = fileChooser.getSelectedFile();
                     System.out.println("Folder Selected: " + file.getName());
                 }
