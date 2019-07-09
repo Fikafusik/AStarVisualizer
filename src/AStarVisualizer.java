@@ -12,7 +12,6 @@ import org.w3c.dom.Document;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.File;
 
 public class AStarVisualizer {
     private mxGraphComponent graphComponent;
@@ -73,7 +72,7 @@ public class AStarVisualizer {
     public void openGraph(String filePath) {
         try
         {
-
+            jgxAdapter.getModel().beginUpdate();
             Document document = mxXmlUtils.parseXml(mxUtils.readFile(filePath));
             mxCodec codec = new mxCodec(document);
             codec.decode(document.getDocumentElement(), jgxAdapter.getModel());
@@ -84,6 +83,17 @@ public class AStarVisualizer {
             jgxAdapter.setAllowDanglingEdges(false);
             jgxAdapter.setCellsEditable(false);
             graphComponent.getViewport().setOpaque(true);
+            jgxAdapter.getModel().endUpdate();
+            start = null;
+            finish = null;
+            for(Object vertex : graphComponent.getGraph().getChildVertices(jgxAdapter.getDefaultParent())) {
+                if (jgxAdapter.getModel().getStyle(vertex).equals("fillColor=lightgreen;shape=ellipse")) {
+                    start = vertex;
+                }
+                if (jgxAdapter.getModel().getStyle(vertex).equals("fillColor=yellow;shape=ellipse")) {
+                    finish = vertex;
+                }
+            }
         }
         catch (Exception ex)
         {
@@ -139,9 +149,9 @@ public class AStarVisualizer {
                 Object cell = graphComponent.getCellAt(mouseEvent.getX(), mouseEvent.getY());
                 if (mouseEvent.getClickCount() == 2) {
                     if(mouseEvent.getButton() == mouseEvent.BUTTON1)
-                        if(cell == null)
-                            jgxAdapter.insertVertex(parent, null, "v" + inc++, mouseEvent.getX() - widthDefault/2, mouseEvent.getY() - widthDefault/2, widthDefault, widthDefault , styleDefault);
-
+                        if (cell == null) {
+                            jgxAdapter.insertVertex(jgxAdapter.getDefaultParent(), null, "v" + inc++, mouseEvent.getX() - widthDefault / 2, mouseEvent.getY() - widthDefault / 2, widthDefault, widthDefault, styleDefault);
+                        }
                 }
                 if (mouseEvent.getClickCount() == 1) {
                     if (mouseEvent.getButton() == mouseEvent.BUTTON3) {
