@@ -1,7 +1,7 @@
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import javax.swing.text.JTextComponent;
+import java.awt.event.*;
 import java.io.File;
 
 public class AStarInterface extends JFrame {
@@ -25,7 +25,9 @@ public class AStarInterface extends JFrame {
     private JMenuBar menuBar;
     private JMenuItem menuItemLoad;
     private JMenuItem menuItemSave;
+    private JMenu menuHelp;
     private JMenuItem menuItemReference;
+
     private HeuristicFactory heuristicFactory;
     private AStarAlgorithm aStarAlgorithm;
 
@@ -119,18 +121,34 @@ public class AStarInterface extends JFrame {
             }
         });
 
+        this.menuBar = new JMenuBar();
+
         this.menu = new JMenu("Graph");
         this.menu.add(this.menuItemLoad);
         this.menu.add(this.menuItemSave);
-
-        this.menuBar = new JMenuBar();
         this.menuBar.add(this.menu);
 
+        this.menuHelp = new JMenu("Help");
+        this.menuItemReference = new JMenuItem();
+        this.menuItemReference.setText("Reference");
+        this.menuHelp.add(this.menuItemReference);
+
+        this.menuBar.add(this.menuHelp);
         this.setJMenuBar(this.menuBar);
+
+        AStarInterface component = this;
+
+
+
+        this.menuItemReference.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                JOptionPane.showMessageDialog(component, "THIS IS HELP");
+            }
+        });
 
         heuristicFactory = new HeuristicFactory();
 
-        AStarInterface component = this;
         this.aStarAlgorithm.setHeuristic(heuristicFactory.getHeuristic("Manhattan"));
 
         ActionListener listener1 = new ActionListener() {

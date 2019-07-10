@@ -1,4 +1,5 @@
 import com.mxgraph.io.mxCodec;
+import com.mxgraph.model.mxCell;
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.util.mxUtils;
 import com.mxgraph.util.mxXmlUtils;
@@ -7,6 +8,7 @@ import org.jgrapht.ext.JGraphXAdapter;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DefaultListenableGraph;
+import org.jgrapht.graph.specifics.DirectedEdgeContainer;
 import org.w3c.dom.Document;
 
 import java.awt.*;
@@ -76,6 +78,7 @@ public class AStarVisualizer {
                 if (jgxAdapter.getModel().getStyle(vertex).equals("fillColor=lightgreen;shape=ellipse")) {
                     start = vertex;
                 }
+                jgxAdapter.getModel().getGeometry(vertex).getCenterX();
                 if (jgxAdapter.getModel().getStyle(vertex).equals("fillColor=pink;shape=ellipse")) {
                     finish = vertex;
                 }
