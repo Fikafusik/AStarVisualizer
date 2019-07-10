@@ -1,5 +1,6 @@
 import com.mxgraph.io.mxCodec;
 import com.mxgraph.swing.mxGraphComponent;
+import com.mxgraph.util.mxEvent;
 import com.mxgraph.util.mxUtils;
 import com.mxgraph.util.mxXmlUtils;
 import org.jgrapht.ListenableGraph;
