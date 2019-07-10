@@ -1,4 +1,6 @@
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.text.JTextComponent;
 import java.awt.event.*;
@@ -30,6 +32,7 @@ public class AStarInterface extends JFrame {
 
     private HeuristicFactory heuristicFactory;
     private AStarAlgorithm aStarAlgorithm;
+    int valueSlider;
 
     public AStarInterface(int width, int height, AStarVisualizer aStarVisualizer, AStarAlgorithm aStarAlgorithm) {
         this.aStarAlgorithm = aStarAlgorithm;
@@ -173,6 +176,24 @@ public class AStarInterface extends JFrame {
         chebyshevDistanceRadioButton.addActionListener(listener1);
         euclidianDistanceRadioButton.addActionListener(listener1);
 
+//        slider1 = new JSlider(100, 1000, 500);
+        valueSlider = 500;
+        slider1.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent changeEvent) {
+                slider1 = (JSlider)changeEvent.getSource();
+                valueSlider = slider1.getValue();
+                System.out.println(valueSlider);
+            }
+        });
+        startButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+//                while(aStarAlgorithm.stepNext();)//Чисто условность
+//                        wait();
+
+            }
+        });
     }
 }
 
