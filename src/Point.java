@@ -1,3 +1,5 @@
+import com.mxgraph.model.mxGeometry;
+
 import java.io.Serializable;
 
 public class Point implements Serializable {
@@ -7,6 +9,11 @@ public class Point implements Serializable {
     public Point(double x, double y) {
         this.x = x;
         this.y = y;
+    }
+
+    public Point(mxGeometry geometry) {
+        this.x = geometry.getCenterX();
+        this.y = geometry.getCenterY();
     }
 
     void setX(double x) {

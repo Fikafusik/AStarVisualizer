@@ -27,8 +27,8 @@ public class AStarVisualizer {
         this.aStarAlgorithm = aStarAlgorithm;
     }
 
-    private JGraphXAdapter<Vertex, DefaultEdge> jgxAdapter;
-    private ListenableGraph<Vertex, DefaultEdge> g;
+    private JGraphXAdapter<String, DefaultEdge> jgxAdapter;
+    private ListenableGraph<String, DefaultEdge> g;
     private static int inc = 1;
     private static int widthDefault = 40;
     private static String styleDefault = "shape=ellipse";
@@ -40,7 +40,7 @@ public class AStarVisualizer {
 
     public AStarVisualizer() {
 
-        g = new DefaultListenableGraph<>(new DefaultDirectedGraph<>(Edge.class));
+        g = new DefaultListenableGraph<>(new DefaultDirectedGraph<>(DefaultEdge.class));
         jgxAdapter = new JGraphXAdapter<>(g);
 
         this.graphComponent = new mxGraphComponent(jgxAdapter);
@@ -111,7 +111,7 @@ public class AStarVisualizer {
     public mxGraphComponent getGraphComponent() {
         return graphComponent;
     }
-    public ListenableGraph<Vertex, DefaultEdge> getGraph(){return g;}
+    public ListenableGraph<String, DefaultEdge> getGraph(){return g;}
 
     private void paintStartComponent() {
         if(jgxAdapter.getModel().getGeometry(start).getWidth() != 0)

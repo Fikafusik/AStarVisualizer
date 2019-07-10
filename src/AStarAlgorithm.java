@@ -1,18 +1,20 @@
 
+import com.mxgraph.model.mxCell;
+import com.mxgraph.model.mxICell;
 import com.mxgraph.view.mxGraph;
-import org.jgrapht.Graph;
-import org.jgrapht.graph.DefaultWeightedEdge;
+import javafx.beans.binding.DoubleBinding;
 
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.PriorityQueue;
-import java.util.Set;
+import java.util.TreeSet;
 
 public class AStarAlgorithm implements IObservable{
-    private Graph graph;
+    private mxGraph graph;
 
     private Object source;
     private Object sink;
+
+    private Object importantVertex;
 
     private HashMap<Object, Double> distances;
     private HashMap<Object, Double> heuristics;
@@ -21,39 +23,37 @@ public class AStarAlgorithm implements IObservable{
     private HashMap<Object, Object> parent;
     private HashMap<Object, Boolean> visited;
 
-    private PriorityQueue<PriorityVertex> queue;
+    private PriorityQueue<MyPair> priorityQueue;
 
     private IHeuristic heuristic;
     private IObserver observer;
 
     private AStarVisualizer aStarVisualizer;
 
-    public class PriorityVertex {
-        private Vertex vertex;
-        private int priority;
+    public class MyPair implements Comparable<MyPair> {
 
-        public PriorityVertex(Vertex vertex, int priority){
-            this.vertex = vertex;
-            this.priority = priority;
+        private Object vertex;
+        private double total;
+
+        MyPair(Object vertex, double total) {
+            this.total = total;
         }
 
-        public int getPriority(){
-            return priority;
+        public Object getVertex() {
+            return (this.vertex);
         }
 
-        public Vertex getVertex(){
-            return vertex;
+        public double getTotal() {
+            return (this.total);
+        }
+
+        @Override
+        public int compareTo(MyPair myPair) {
+            return (int) (this.getTotal() - myPair.getTotal());
         }
     }
 
-    public class AStarComparator implements Comparator<PriorityVertex> {
-        public int compare(PriorityVertex x, PriorityVertex y){
-            return x.getPriority() - y.getPriority();
-        }
-    }
-
-    public AStarAlgorithm(Graph graph) {
-        this.queue = new PriorityQueue<PriorityVertex>(new AStarComparator());
+    public AStarAlgorithm(mxGraph graph) {
         this.graph = graph;
         this.source = null;
         this.sink = null;
@@ -63,6 +63,8 @@ public class AStarAlgorithm implements IObservable{
         this.parent = new HashMap<>();
         this.visited = new HashMap<>();
         this.heuristic = new ManhattanHeuristic();
+        this.priorityQueue = new PriorityQueue<>();
+
         this.observer = null;
     }
 
@@ -84,6 +86,14 @@ public class AStarAlgorithm implements IObservable{
 
     public void stepNext() {
         notifyObserver(new NextStep());
+    }
+
+    public void stepBack() {
+        ((OperationHistory)this.observer).stepBack();
+    }
+
+    public void reset() {
+        ((OperationHistory)this.observer).reset();
     }
 
     public class SetSource extends UndoableOperation {
@@ -149,39 +159,99 @@ public class AStarAlgorithm implements IObservable{
         }
     }
 
-    public class NextStep extends UndoableOperation{
-        private PriorityVertex oldCurrent;
+    private void init() {
+        importantVertex = null;
+    }
+
+    public class NextStep extends UndoableOperation {
+
+        Object oldVertex;
+        double oldDistance;
+        String oldColor;
+
+        NextStep() {
+        }
+
         @Override
         public void execute() {
-
-            if(queue.isEmpty()){
-                queue.add(new PriorityVertex((Vertex)source, 0));
+            if (source == null) {
+                System.out.println("сорс хуйня");
             }
-            oldCurrent = queue.peek();
-            Vertex current = queue.remove().getVertex();
-            if(current == null) current = (Vertex)source;
-            for(Object e : graph.edgesOf(current)){
-                aStarVisualizer.paintComponent(e, "black");
-                Edge edge = (Edge)e;
-                Vertex vertex = (Vertex)(graph.getEdgeTarget(e));
-                aStarVisualizer.paintComponent(vertex, "red");
-                if(vertex == sink){
-                    System.out.println("Done");
-                    return;
-                }
-                double w = edge.getWeight();
-                double h = heuristic.getValue(current.getPoint(), vertex.getPoint());
-                double distance = w + distances.get(current);
-                distances.put(vertex, distance);
-                queue.add(new PriorityVertex(vertex,(int)(distance + h)));
 
+            if (sink == null) {
+                System.out.println("синк хуйня");
+            }
+
+            System.out.println("Source: " + ((mxCell)source).getValue());
+            System.out.println("Source: " + ((mxCell)sink).getValue());
+
+            // если алгоритм только запустили
+            if (importantVertex == null) {
+                importantVertex = source;
+                priorityQueue.add(new MyPair(importantVertex, heuristic.getValue(new Point(((mxCell)importantVertex).getGeometry()), new Point(((mxCell)sink).getGeometry()))));
+                aStarVisualizer.paintComponent(importantVertex, "black");
+                return;
+            }
+
+            // если путь уже найден
+            if (importantVertex == sink) {
+                System.out.println("path found...");
+                return;
+            }
+
+            // если пути не существует
+            if (priorityQueue.isEmpty()) {
+                System.out.println("path not found...");
+                return;
+            }
+
+            // ранее посещённую вершину красим в серый
+            aStarVisualizer.paintComponent(importantVertex, "gray");
+
+            // сохраняем прошлую вершину
+            oldVertex = importantVertex;
+
+            // извлекаем из очереди новую вершину
+            Object importantVertex = priorityQueue.poll().getVertex();
+            System.out.println(((mxCell)importantVertex).getValue());
+
+            // извлечённую вершину красим в чёрный цвет
+            aStarVisualizer.paintComponent(importantVertex, "black");
+            visited.put(importantVertex, true);
+
+            // обходим инцидентные рёбра
+            for (Object edge : graph.getOutgoingEdges(importantVertex) /*incidentEdges.get(importantVertex)*/) {
+                mxCell edgeCell = (mxCell)edge;
+                double tentative = distances.get(importantVertex) + Double.valueOf((String)edgeCell.getValue());
+                Object targetVertex = edgeCell.getTarget();
+                if (!visited.get(targetVertex) || tentative < distances.get(targetVertex)) {
+                    double targetX = ((mxCell)targetVertex).getGeometry().getCenterX();
+                    double targetY = ((mxCell)targetVertex).getGeometry().getCenterY();
+                    Point targetPoint = new Point(targetX, targetY);
+
+                    double sinkX = ((mxCell)sink).getGeometry().getCenterX();
+                    double sinkY = ((mxCell)sink).getGeometry().getCenterY();
+                    Point sinkPoint = new Point(sinkX, sinkY);
+
+                    priorityQueue.add(new MyPair(targetVertex, tentative + heuristic.getValue(targetPoint, sinkPoint)));
+                }
             }
 
         }
 
         @Override
         public void undo() {
-            queue.add(oldCurrent);
+            // покрасить oldVertex в чёрный цвет
+            // priorityQueue.add(new MyPair(distances.get(oldVertex) + heuristic.getValue(oldVertex, sink), oldVertex))
+            // покрасить currentVertex в белый, если ранее не посещалась, иначе в белый
+            // надо сбросить всё, что добавили в прошлый раз
+            // for (edge : oldVertex.getChildEdges)
+            // double tentative = distances.get(oldVertex) + edge.getValue();
+            // Object targetVertex = edge.getTarget();
+            // if (!visited(targetVertex) || tentative < distances.get(targetVertex) {
+
+            //      priorityQueue.add(new MyPair(tentative + heuristic.getValue(targetVertex, sink), targetVertex));
+            // }
         }
     }
 

@@ -63,13 +63,6 @@ public class AStarInterface extends JFrame {
             }
         });
 
-        nextButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                aStarAlgorithm.stepNext();
-            }
-        });
-
         this.menuItemLoad = new JMenuItem();
         this.menuItemLoad.setText("Load");
         this.menuItemLoad.addActionListener(new ActionListener() {
@@ -162,6 +155,19 @@ public class AStarInterface extends JFrame {
         chebyshevDistanceRadioButton.addActionListener(listener1);
         euclidianDistanceRadioButton.addActionListener(listener1);
 
+        this.nextButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                aStarAlgorithm.stepNext();
+            }
+        });
+
+        this.previousButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                aStarAlgorithm.stepNext();
+            }
+        });
     }
 }
 
