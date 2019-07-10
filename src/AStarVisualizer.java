@@ -76,7 +76,7 @@ public class AStarVisualizer {
                 if (jgxAdapter.getModel().getStyle(vertex).equals("fillColor=lightgreen;shape=ellipse")) {
                     start = vertex;
                 }
-                if (jgxAdapter.getModel().getStyle(vertex).equals("fillColor=lightyellow;shape=ellipse")) {
+                if (jgxAdapter.getModel().getStyle(vertex).equals("fillColor=pink;shape=ellipse")) {
                     finish = vertex;
                 }
             }
@@ -114,7 +114,7 @@ public class AStarVisualizer {
 
     private void paintFinishComponent() {
         if(jgxAdapter.getModel().getGeometry(finish).getWidth() != 0)
-            jgxAdapter.getModel().setStyle(finish, "fillColor=lightyellow;shape=ellipse");
+            jgxAdapter.getModel().setStyle(finish, "fillColor=pink;shape=ellipse");
     }
 
     public void paintComponent(Object component, String color){
