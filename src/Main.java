@@ -8,6 +8,7 @@ public class Main {
         aStarAlgorithm.addObserver(history);
         aStarVisualizer.setAlgorithm(aStarAlgorithm);
         AStarInterface aStarInterface = new AStarInterface(1000, 600, aStarVisualizer, aStarAlgorithm);
+        aStarInterface.addObserver(history);
         aStarInterface.setVisible(true);
     }
 }

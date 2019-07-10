@@ -116,16 +116,22 @@ public class AStarVisualizer implements IObservable{
     }
 
     private void paintStartComponent() {
+        if(source == null)
+            return;
         if(jgxAdapter.getModel().getGeometry(source).getWidth() != 0)
             jgxAdapter.getModel().setStyle(source, "fillColor=lightgreen;shape=ellipse");
     }
 
     private void paintFinishComponent() {
+        if(sink == null)
+            return;
         if(jgxAdapter.getModel().getGeometry(sink).getWidth() != 0)
             jgxAdapter.getModel().setStyle(sink, "fillColor=pink;shape=ellipse");
     }
 
     public void paintComponent(Object component, String color){
+        if(component == null)
+            return;
         if(jgxAdapter.getModel().getGeometry(component).getWidth() != 0)
             jgxAdapter.getModel().setStyle(component, "fillColor="+ color +";shape=ellipse");
         else
@@ -133,6 +139,8 @@ public class AStarVisualizer implements IObservable{
     }
 
     public void paintDefaultComponent(Object component){
+        if(component == null)
+            return;
         if(jgxAdapter.getModel().getGeometry(component).getWidth() != 0)
             jgxAdapter.getModel().setStyle(component, styleDefault);
         else
@@ -194,8 +202,9 @@ public class AStarVisualizer implements IObservable{
                             if (source != null)
                                 jgxAdapter.getModel().setStyle(source, styleDefault);
                             source = cell;
-                            aStarAlgorithm.setSink(sink);
-                            paintStartComponent();
+                            aStarAlgorithm.setSource(source);
+                            notifyObserver(new SetSourceV(source));
+//                            paintStartComponent();
                         }
                         if (mouseEvent.getButton() == mouseEvent.BUTTON3) {
                             if(cell == source) {
@@ -206,7 +215,8 @@ public class AStarVisualizer implements IObservable{
                                 jgxAdapter.getModel().setStyle(sink, styleDefault);
                             sink = cell;
                             aStarAlgorithm.setSink(sink);
-                            paintFinishComponent();
+                            notifyObserver(new SetSinkV(sink));
+//                            paintFinishComponent();
                         }
                     }
                 }
@@ -249,12 +259,16 @@ public class AStarVisualizer implements IObservable{
 
         @Override
         public void execute() {
+            paintDefaultComponent(oldSink);
             source = this.newSink;
+            paintFinishComponent();
         }
 
         @Override
         public void undo() {
+            paintDefaultComponent(newSink);
             source = this.oldSink;
+            paintFinishComponent();
         }
     }
 
@@ -271,12 +285,16 @@ public class AStarVisualizer implements IObservable{
 
         @Override
         public void execute(){
+            paintDefaultComponent(oldSource);
             source = this.newSource;
+            paintStartComponent();
         }
 
         @Override
         public void undo(){
+            paintDefaultComponent(newSource);
             source = this.oldSource;
+            paintStartComponent();
         }
     }
 

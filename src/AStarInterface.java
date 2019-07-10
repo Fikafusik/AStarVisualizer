@@ -6,7 +6,7 @@ import javax.swing.text.JTextComponent;
 import java.awt.event.*;
 import java.io.File;
 
-public class AStarInterface extends JFrame {
+public class AStarInterface extends JFrame implements IObservable{
     private JRadioButton manhattanDistanceRadioButton;
     private JRadioButton chebyshevDistanceRadioButton;
     private JRadioButton euclidianDistanceRadioButton;
@@ -30,12 +30,16 @@ public class AStarInterface extends JFrame {
     private JMenu menuHelp;
     private JMenuItem menuItemReference;
 
+    private IObserver observer;
+
     private HeuristicFactory heuristicFactory;
     private AStarAlgorithm aStarAlgorithm;
+    private AStarVisualizer aStarVisualizer;
     int valueSlider;
 
     public AStarInterface(int width, int height, AStarVisualizer aStarVisualizer, AStarAlgorithm aStarAlgorithm) {
         this.aStarAlgorithm = aStarAlgorithm;
+        this.aStarVisualizer = aStarVisualizer;
         this.setContentPane(this.splitPaneForeground);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.pack();
@@ -48,16 +52,10 @@ public class AStarInterface extends JFrame {
         ActionListener listener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent){
-                if(actionEvent.getActionCommand() == "Start and Finish") {
-                    aStarVisualizer.removeListenerEditVertex();
-                    aStarVisualizer.setListenerAddStartFinish();
-                }
-                else {
-                    aStarVisualizer.removeListenerAddStartFinish();
-                    aStarVisualizer.setListenerEditVertex();
-                }
+                notifyObserver(new EditVertexMode(actionEvent));
             }
         };
+
         editingAddVertexGraph.addActionListener(listener);
         editingStartFinishVertex.addActionListener(listener);
 
@@ -195,6 +193,70 @@ public class AStarInterface extends JFrame {
 
             }
         });
+
+
+        previousButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                ((OperationHistory)observer).undo();
+            }
+        });
+    }
+
+
+    @Override
+    public void addObserver(IObserver observer){
+        this.observer = observer;
+    }
+
+    @Override
+    public void removeObserver(IObserver observer){
+        this.observer = null;
+    }
+
+    @Override
+    public void notifyObserver(UndoableOperation operation){
+        this.observer.handleEvent(operation);
+    }
+
+    public class EditVertexMode extends UndoableOperation{
+        private ActionEvent actionEvent;
+
+        public EditVertexMode(ActionEvent actionEvent){
+            this.actionEvent = actionEvent;
+        }
+
+        @Override
+        public void execute() {
+            if(actionEvent == null)
+                return;
+            if (actionEvent.getActionCommand() == "Start and Finish") {
+                aStarVisualizer.removeListenerEditVertex();
+                aStarVisualizer.setListenerAddStartFinish();
+            } else {
+                aStarVisualizer.removeListenerAddStartFinish();
+                aStarVisualizer.setListenerEditVertex();
+
+            }
+        }
+        @Override
+        public void undo() {
+            if(actionEvent == null)
+                return;
+            if (actionEvent.getActionCommand() != "Start and Finish") {
+                aStarVisualizer.removeListenerEditVertex();
+                aStarVisualizer.setListenerAddStartFinish();
+                editingStartFinishVertex.setSelected(false);
+                editingAddVertexGraph.setSelected(true);
+            } else {
+                aStarVisualizer.removeListenerAddStartFinish();
+                aStarVisualizer.setListenerEditVertex();
+                editingStartFinishVertex.setSelected(true);
+                editingAddVertexGraph.setSelected(false);
+
+            }
+
+        }
     }
 }
 
