@@ -1,10 +1,15 @@
 
 import com.mxgraph.view.mxGraph;
+import org.jgrapht.Graph;
+import org.jgrapht.graph.DefaultWeightedEdge;
+
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.PriorityQueue;
 import java.util.Set;
 
 public class AStarAlgorithm implements IObservable{
-    private mxGraph graph;
+    private Graph graph;
 
     private Object source;
     private Object sink;
@@ -16,10 +21,39 @@ public class AStarAlgorithm implements IObservable{
     private HashMap<Object, Object> parent;
     private HashMap<Object, Boolean> visited;
 
+    private PriorityQueue<PriorityVertex> queue;
+
     private IHeuristic heuristic;
     private IObserver observer;
 
-    public AStarAlgorithm(mxGraph graph) {
+    private AStarVisualizer aStarVisualizer;
+
+    public class PriorityVertex {
+        private Vertex vertex;
+        private int priority;
+
+        public PriorityVertex(Vertex vertex, int priority){
+            this.vertex = vertex;
+            this.priority = priority;
+        }
+
+        public int getPriority(){
+            return priority;
+        }
+
+        public Vertex getVertex(){
+            return vertex;
+        }
+    }
+
+    public class AStarComparator implements Comparator<PriorityVertex> {
+        public int compare(PriorityVertex x, PriorityVertex y){
+            return x.getPriority() - y.getPriority();
+        }
+    }
+
+    public AStarAlgorithm(Graph graph) {
+        this.queue = new PriorityQueue<PriorityVertex>(new AStarComparator());
         this.graph = graph;
         this.source = null;
         this.sink = null;
@@ -30,6 +64,10 @@ public class AStarAlgorithm implements IObservable{
         this.visited = new HashMap<>();
         this.heuristic = new ManhattanHeuristic();
         this.observer = null;
+    }
+
+    public void setVisualizer(AStarVisualizer visualizer){
+        aStarVisualizer = visualizer;
     }
 
     void setSource(Object vertex) {
@@ -112,15 +150,38 @@ public class AStarAlgorithm implements IObservable{
     }
 
     public class NextStep extends UndoableOperation{
-
+        private PriorityVertex oldCurrent;
         @Override
         public void execute() {
+
+            if(queue.isEmpty()){
+                queue.add(new PriorityVertex((Vertex)source, 0));
+            }
+            oldCurrent = queue.peek();
+            Vertex current = queue.remove().getVertex();
+            if(current == null) current = (Vertex)source;
+            for(Object e : graph.edgesOf(current)){
+                aStarVisualizer.paintComponent(e, "black");
+                Edge edge = (Edge)e;
+                Vertex vertex = (Vertex)(graph.getEdgeTarget(e));
+                aStarVisualizer.paintComponent(vertex, "red");
+                if(vertex == sink){
+                    System.out.println("Done");
+                    return;
+                }
+                double w = edge.getWeight();
+                double h = heuristic.getValue(current.getPoint(), vertex.getPoint());
+                double distance = w + distances.get(current);
+                distances.put(vertex, distance);
+                queue.add(new PriorityVertex(vertex,(int)(distance + h)));
+
+            }
 
         }
 
         @Override
         public void undo() {
-
+            queue.add(oldCurrent);
         }
     }
 

@@ -7,6 +7,7 @@ import org.jgrapht.ext.JGraphXAdapter;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DefaultListenableGraph;
+import org.jgrapht.graph.DefaultWeightedEdge;
 import org.w3c.dom.Document;
 
 import java.awt.*;
@@ -20,8 +21,14 @@ import static java.lang.Math.max;
 public class AStarVisualizer {
     private mxGraphComponent graphComponent;
 
-    private JGraphXAdapter<String, DefaultEdge> jgxAdapter;
-    private ListenableGraph<String, DefaultEdge> g;
+    private AStarAlgorithm aStarAlgorithm;
+
+    public void setAlgorithm(AStarAlgorithm aStarAlgorithm){
+        this.aStarAlgorithm = aStarAlgorithm;
+    }
+
+    private JGraphXAdapter<Vertex, DefaultEdge> jgxAdapter;
+    private ListenableGraph<Vertex, DefaultEdge> g;
     private static int inc = 1;
     private static int widthDefault = 40;
     private static String styleDefault = "shape=ellipse";
@@ -33,7 +40,7 @@ public class AStarVisualizer {
 
     public AStarVisualizer() {
 
-        g = new DefaultListenableGraph<>(new DefaultDirectedGraph<>(DefaultEdge.class));
+        g = new DefaultListenableGraph<>(new DefaultDirectedGraph<>(Edge.class));
         jgxAdapter = new JGraphXAdapter<>(g);
 
         this.graphComponent = new mxGraphComponent(jgxAdapter);
@@ -104,6 +111,7 @@ public class AStarVisualizer {
     public mxGraphComponent getGraphComponent() {
         return graphComponent;
     }
+    public ListenableGraph<Vertex, DefaultEdge> getGraph(){return g;}
 
     private void paintStartComponent() {
         if(jgxAdapter.getModel().getGeometry(start).getWidth() != 0)
@@ -137,7 +145,7 @@ public class AStarVisualizer {
                 if (mouseEvent.getClickCount() == 2) {
                     if(mouseEvent.getButton() == mouseEvent.BUTTON1)
                         if (cell == null) {
-                            jgxAdapter.insertVertex(jgxAdapter.getDefaultParent(), null, "v" + inc++, mouseEvent.getX() - widthDefault / 2, mouseEvent.getY() - widthDefault / 2, widthDefault, widthDefault, styleDefault);
+                            jgxAdapter.insertVertex(jgxAdapter.getDefaultParent(), null, new Vertex(new Point(mouseEvent.getX(), mouseEvent.getY()),"v" + inc++), mouseEvent.getX() - widthDefault / 2, mouseEvent.getY() - widthDefault / 2, widthDefault, widthDefault, styleDefault);
                         }
                 }
                 if (mouseEvent.getClickCount() == 1) {
@@ -178,6 +186,8 @@ public class AStarVisualizer {
                             if (start != null)
                                 jgxAdapter.getModel().setStyle(start, styleDefault);
                             start = cell;
+
+                            //aStarAlgorithm.setSource(start);
                             paintStartComponent();
                         }
                         if (mouseEvent.getButton() == mouseEvent.BUTTON3) {
@@ -186,6 +196,7 @@ public class AStarVisualizer {
                             if (finish != null)
                                 jgxAdapter.getModel().setStyle(finish, styleDefault);
                             finish = cell;
+                            //aStarAlgorithm.setSink(finish);
                             paintFinishComponent();
                         }
                     }

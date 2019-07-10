@@ -1,5 +1,6 @@
+import java.io.Serializable;
 
-public class Point {
+public class Point implements Serializable {
     double x;
     double y;
 
