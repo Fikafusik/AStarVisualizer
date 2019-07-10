@@ -5,11 +5,10 @@ public class Main {
         OperationHistory history = new OperationHistory();
         AStarVisualizer aStarVisualizer = new AStarVisualizer();
         AStarAlgorithm aStarAlgorithm = new AStarAlgorithm(aStarVisualizer.getGraphComponent().getGraph());
-        aStarVisualizer.setAlgorithm(aStarAlgorithm);
         aStarAlgorithm.addObserver(history);
-        aStarAlgorithm.setVisualizer(aStarVisualizer);
-
+        aStarVisualizer.setAlgorithm(aStarAlgorithm);
         AStarInterface aStarInterface = new AStarInterface(1000, 600, aStarVisualizer, aStarAlgorithm);
+        aStarInterface.addObserver(history);
         aStarInterface.setVisible(true);
     }
 }
