@@ -155,7 +155,7 @@ public class AStarVisualizer implements IObservable{
                 if (mouseEvent.getClickCount() == 2) {
                     if(mouseEvent.getButton() == mouseEvent.BUTTON1)
                         if (cell == null) {
-                            jgxAdapter.insertVertex(jgxAdapter.getDefaultParent(), null, "v" + inc++, mouseEvent.getX() - widthDefault / 2, mouseEvent.getY() - widthDefault / 2, widthDefault, widthDefault, styleDefault);
+                            jgxAdapter.insertVertex(jgxAdapter.getDefaultParent(), null, inc++, mouseEvent.getX() - widthDefault / 2, mouseEvent.getY() - widthDefault / 2, widthDefault, widthDefault, styleDefault);
                         }
                 }
                 if (mouseEvent.getClickCount() == 1) {
