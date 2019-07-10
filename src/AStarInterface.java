@@ -201,6 +201,13 @@ public class AStarInterface extends JFrame implements IObservable{
                 ((OperationHistory)observer).undo();
             }
         });
+
+        nextButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                aStarAlgorithm.stepNext();
+            }
+        });
     }
 
 
