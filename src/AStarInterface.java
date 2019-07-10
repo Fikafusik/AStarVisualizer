@@ -63,6 +63,13 @@ public class AStarInterface extends JFrame {
             }
         });
 
+        nextButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                aStarAlgorithm.stepNext();
+            }
+        });
+
         this.menuItemLoad = new JMenuItem();
         this.menuItemLoad.setText("Load");
         this.menuItemLoad.addActionListener(new ActionListener() {

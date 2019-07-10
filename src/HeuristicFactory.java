@@ -23,6 +23,8 @@ public class HeuristicFactory {
             case "Euclidean":
                 factory.put(heuristicName, new EuclideanHeuristic());
                 break;
+            default:
+                // TODO: throw exception
         }
 
         return factory.get(heuristicName);
