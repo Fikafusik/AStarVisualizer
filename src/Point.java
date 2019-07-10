@@ -1,11 +1,17 @@
+import com.mxgraph.model.mxGeometry;
 
 public class Point {
     double x;
     double y;
 
     public Point(double x, double y) {
-        this.x = x;
-        this.y = y;
+        setX(x);
+        setY(y);
+    }
+
+    public Point(mxGeometry geometry) {
+        setX(geometry.getCenterX());
+        setY(geometry.getCenterY());
     }
 
     void setX(double x) {

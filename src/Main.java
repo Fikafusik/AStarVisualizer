@@ -7,6 +7,7 @@ public class Main {
         aStarVisualizer.addObserver(history);
         AStarAlgorithm aStarAlgorithm = new AStarAlgorithm(aStarVisualizer.getGraphComponent().getGraph());
         aStarAlgorithm.addObserver(history);
+        aStarAlgorithm.setVisualizer(aStarVisualizer);
         aStarVisualizer.setAlgorithm(aStarAlgorithm);
         AStarInterface aStarInterface = new AStarInterface(1000, 600, aStarVisualizer, aStarAlgorithm);
         aStarInterface.addObserver(history);
