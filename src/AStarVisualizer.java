@@ -201,9 +201,10 @@ public class AStarVisualizer implements IObservable{
                             }
                             if (source != null)
                                 jgxAdapter.getModel().setStyle(source, styleDefault);
-                            source = cell;
+
+                            notifyObserver(new SetSourceV(cell));
+                            //source = cell;
                             aStarAlgorithm.setSource(source);
-                            notifyObserver(new SetSourceV(source));
 //                            paintStartComponent();
                         }
                         if (mouseEvent.getButton() == mouseEvent.BUTTON3) {
@@ -213,9 +214,10 @@ public class AStarVisualizer implements IObservable{
                             }
                             if (sink != null)
                                 jgxAdapter.getModel().setStyle(sink, styleDefault);
-                            sink = cell;
+                            notifyObserver(new SetSinkV(cell));
+                            //sink = cell;
                             aStarAlgorithm.setSink(sink);
-                            notifyObserver(new SetSinkV(sink));
+
 //                            paintFinishComponent();
                         }
                     }
@@ -260,14 +262,14 @@ public class AStarVisualizer implements IObservable{
         @Override
         public void execute() {
             paintDefaultComponent(oldSink);
-            source = this.newSink;
+            sink = this.newSink;
             paintFinishComponent();
         }
 
         @Override
         public void undo() {
             paintDefaultComponent(newSink);
-            source = this.oldSink;
+            sink = this.oldSink;
             paintFinishComponent();
         }
     }
@@ -310,6 +312,7 @@ public class AStarVisualizer implements IObservable{
 
     @Override
     public void notifyObserver(UndoableOperation operation){
+        if(operation == null) System.out.println("NULLL OPERATION");
         this.observer.handleEvent(operation);
     }
 }

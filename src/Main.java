@@ -4,6 +4,7 @@ public class Main {
     public static void main(String[] args) {
         OperationHistory history = new OperationHistory();
         AStarVisualizer aStarVisualizer = new AStarVisualizer();
+        aStarVisualizer.addObserver(history);
         AStarAlgorithm aStarAlgorithm = new AStarAlgorithm(aStarVisualizer.getGraphComponent().getGraph());
         aStarAlgorithm.addObserver(history);
         aStarVisualizer.setAlgorithm(aStarAlgorithm);
