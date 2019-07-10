@@ -191,7 +191,7 @@ public class AStarAlgorithm implements IObservable{
 
             // извлекаем из очереди новую вершину
             System.out.println(priorityQueue.size());
-            Object importantVertex = priorityQueue.poll().getVertex();
+            importantVertex = priorityQueue.poll().getVertex();
 
             System.out.println(((mxCell)importantVertex).getValue());
 
@@ -204,7 +204,8 @@ public class AStarAlgorithm implements IObservable{
                 mxCell edgeCell = (mxCell)edge;
                 double tentative = distances.get(importantVertex) + Double.valueOf((String)edgeCell.getValue());
                 Object targetVertex = edgeCell.getTarget();
-                if (!visited.get(targetVertex) || tentative < distances.get(targetVertex)) {
+
+                if (!distances.containsKey(targetVertex) || tentative < distances.get(targetVertex)) {
 
                     distances.put(targetVertex, tentative);
 
