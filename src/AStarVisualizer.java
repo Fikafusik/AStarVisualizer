@@ -76,7 +76,7 @@ public class AStarVisualizer {
                 if (jgxAdapter.getModel().getStyle(vertex).equals("fillColor=lightgreen;shape=ellipse")) {
                     start = vertex;
                 }
-                if (jgxAdapter.getModel().getStyle(vertex).equals("fillColor=yellow;shape=ellipse")) {
+                if (jgxAdapter.getModel().getStyle(vertex).equals("fillColor=lightyellow;shape=ellipse")) {
                     finish = vertex;
                 }
             }
@@ -93,7 +93,9 @@ public class AStarVisualizer {
             System.out.println("call xml getting code");
             mxCodec codec = new mxCodec();
             String xml = mxUtils.getXml(codec.encode(jgxAdapter.getModel()));
-            java.io.FileWriter fw = new java.io.FileWriter(path + ".xml");
+            if(!path.endsWith(".xml"))
+                path += ".xml";
+            java.io.FileWriter fw = new java.io.FileWriter(path);
             fw.write(xml);
             fw.close();
         }
@@ -112,7 +114,7 @@ public class AStarVisualizer {
 
     private void paintFinishComponent() {
         if(jgxAdapter.getModel().getGeometry(finish).getWidth() != 0)
-            jgxAdapter.getModel().setStyle(finish, "fillColor=yellow;shape=ellipse");
+            jgxAdapter.getModel().setStyle(finish, "fillColor=lightyellow;shape=ellipse");
     }
 
     public void paintComponent(Object component, String color){
