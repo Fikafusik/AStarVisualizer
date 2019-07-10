@@ -46,7 +46,7 @@ public class AStarVisualizer implements IObservable{
         this.graphComponent.setEventsEnabled(true);
         this.graphComponent.getViewport().setOpaque(true);
         jgxAdapter.setAllowDanglingEdges(false);
-        jgxAdapter.setCellsEditable(false);
+//        jgxAdapter.setCellsEditable(false);
         graphComponent.getViewport().setOpaque(true);
 
         this.graphComponent.getViewport().setBackground(new Color(155, 208, 249));
@@ -68,7 +68,7 @@ public class AStarVisualizer implements IObservable{
             this.graphComponent.setEventsEnabled(true);
             this.graphComponent.getViewport().setOpaque(true);
             jgxAdapter.setAllowDanglingEdges(false);
-            jgxAdapter.setCellsEditable(false);
+//            jgxAdapter.setCellsEditable(false);
             graphComponent.getViewport().setOpaque(true);
             jgxAdapter.getModel().endUpdate();
             source = null;

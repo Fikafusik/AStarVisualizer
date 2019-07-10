@@ -253,13 +253,17 @@ public class AStarInterface extends JFrame implements IObservable{
             if (actionEvent.getActionCommand() != "Start and Finish") {
                 aStarVisualizer.removeListenerEditVertex();
                 aStarVisualizer.setListenerAddStartFinish();
-                editingStartFinishVertex.setSelected(false);
-                editingAddVertexGraph.setSelected(true);
+                editingStartFinishVertex.setSelected(true);
+                editingAddVertexGraph.setSelected(false);
+                editingStartFinishVertex.updateUI();
+                editingAddVertexGraph.updateUI();
             } else {
                 aStarVisualizer.removeListenerAddStartFinish();
                 aStarVisualizer.setListenerEditVertex();
-                editingStartFinishVertex.setSelected(true);
-                editingAddVertexGraph.setSelected(false);
+                editingStartFinishVertex.setSelected(false);
+                editingAddVertexGraph.setSelected(true);
+                editingStartFinishVertex.updateUI();
+                editingAddVertexGraph.updateUI();
 
             }
 
