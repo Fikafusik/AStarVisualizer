@@ -1,4 +1,5 @@
 import com.mxgraph.io.mxCodec;
+import com.mxgraph.model.mxCell;
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.util.mxUtils;
 import com.mxgraph.util.mxXmlUtils;
@@ -7,6 +8,7 @@ import org.jgrapht.ext.JGraphXAdapter;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DefaultListenableGraph;
+import org.jgrapht.graph.specifics.DirectedEdgeContainer;
 import org.w3c.dom.Document;
 
 import java.awt.*;
@@ -76,7 +78,8 @@ public class AStarVisualizer {
                 if (jgxAdapter.getModel().getStyle(vertex).equals("fillColor=lightgreen;shape=ellipse")) {
                     start = vertex;
                 }
-                if (jgxAdapter.getModel().getStyle(vertex).equals("fillColor=yellow;shape=ellipse")) {
+                jgxAdapter.getModel().getGeometry(vertex).getCenterX();
+                if (jgxAdapter.getModel().getStyle(vertex).equals("fillColor=pink;shape=ellipse")) {
                     finish = vertex;
                 }
             }
@@ -93,7 +96,9 @@ public class AStarVisualizer {
             System.out.println("call xml getting code");
             mxCodec codec = new mxCodec();
             String xml = mxUtils.getXml(codec.encode(jgxAdapter.getModel()));
-            java.io.FileWriter fw = new java.io.FileWriter(path + ".xml");
+            if(!path.endsWith(".xml"))
+                path += ".xml";
+            java.io.FileWriter fw = new java.io.FileWriter(path);
             fw.write(xml);
             fw.close();
         }
@@ -112,7 +117,7 @@ public class AStarVisualizer {
 
     private void paintFinishComponent() {
         if(jgxAdapter.getModel().getGeometry(finish).getWidth() != 0)
-            jgxAdapter.getModel().setStyle(finish, "fillColor=yellow;shape=ellipse");
+            jgxAdapter.getModel().setStyle(finish, "fillColor=pink;shape=ellipse");
     }
 
     public void paintComponent(Object component, String color){
