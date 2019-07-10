@@ -6,7 +6,7 @@ import javax.swing.text.JTextComponent;
 import java.awt.event.*;
 import java.io.File;
 
-public class AStarInterface extends JFrame {
+public class AStarInterface extends JFrame implements IObservable{
     private JRadioButton manhattanDistanceRadioButton;
     private JRadioButton chebyshevDistanceRadioButton;
     private JRadioButton euclidianDistanceRadioButton;
@@ -30,12 +30,16 @@ public class AStarInterface extends JFrame {
     private JMenu menuHelp;
     private JMenuItem menuItemReference;
 
+    private IObserver observer;
+
     private HeuristicFactory heuristicFactory;
     private AStarAlgorithm aStarAlgorithm;
+    private AStarVisualizer aStarVisualizer;
     int valueSlider;
 
     public AStarInterface(int width, int height, AStarVisualizer aStarVisualizer, AStarAlgorithm aStarAlgorithm) {
         this.aStarAlgorithm = aStarAlgorithm;
+        this.aStarVisualizer = aStarVisualizer;
         this.setContentPane(this.splitPaneForeground);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.pack();
@@ -48,16 +52,10 @@ public class AStarInterface extends JFrame {
         ActionListener listener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent){
-                if(actionEvent.getActionCommand() == "Start and Finish") {
-                    aStarVisualizer.removeListenerEditVertex();
-                    aStarVisualizer.setListenerAddStartFinish();
-                }
-                else {
-                    aStarVisualizer.removeListenerAddStartFinish();
-                    aStarVisualizer.setListenerEditVertex();
-                }
+                notifyObserver(new EditVertexMode(actionEvent));
             }
         };
+
         editingAddVertexGraph.addActionListener(listener);
         editingStartFinishVertex.addActionListener(listener);
 
@@ -146,7 +144,12 @@ public class AStarInterface extends JFrame {
         this.menuItemReference.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                JOptionPane.showMessageDialog(component, "THIS IS HELP");
+                JOptionPane.showMessageDialog(component, "If you are in mode of edit vertex:\n" +
+                        "   2x click left button - add vertex\n" +
+                        "   Click right button - delete vertex\n" +
+                        "If you are in mode of edit start-finish:\n" +
+                        "   Click left button - add source\n" +
+                        "   Click right button - add sink\n");
             }
         });
 
@@ -160,15 +163,12 @@ public class AStarInterface extends JFrame {
 
                 if (buttonGroupDistances.getSelection() == manhattanDistanceRadioButton.getModel()) {
                     component.aStarAlgorithm.setHeuristic(heuristicFactory.getHeuristic("Manhattan"));
-                    System.out.println("MAN");
                 }
                 if(buttonGroupDistances.getSelection() == chebyshevDistanceRadioButton.getModel()) {
                     component.aStarAlgorithm.setHeuristic(heuristicFactory.getHeuristic("Chebyshev"));
-                    System.out.println("CHE");
                 }
                 if(buttonGroupDistances.getSelection() == euclidianDistanceRadioButton.getModel()) {
                     component.aStarAlgorithm.setHeuristic(heuristicFactory.getHeuristic("Euclidean"));
-                    System.out.println("EUC");
                 }
             }
         };
@@ -176,8 +176,7 @@ public class AStarInterface extends JFrame {
         chebyshevDistanceRadioButton.addActionListener(listener1);
         euclidianDistanceRadioButton.addActionListener(listener1);
 
-//        slider1 = new JSlider(100, 1000, 500);
-        valueSlider = 500;
+        valueSlider = slider1.getValue();
         slider1.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent changeEvent) {
@@ -194,6 +193,70 @@ public class AStarInterface extends JFrame {
 
             }
         });
+
+
+        previousButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                ((OperationHistory)observer).undo();
+            }
+        });
+    }
+
+
+    @Override
+    public void addObserver(IObserver observer){
+        this.observer = observer;
+    }
+
+    @Override
+    public void removeObserver(IObserver observer){
+        this.observer = null;
+    }
+
+    @Override
+    public void notifyObserver(UndoableOperation operation){
+        this.observer.handleEvent(operation);
+    }
+
+    public class EditVertexMode extends UndoableOperation{
+        private ActionEvent actionEvent;
+
+        public EditVertexMode(ActionEvent actionEvent){
+            this.actionEvent = actionEvent;
+        }
+
+        @Override
+        public void execute() {
+            if(actionEvent == null)
+                return;
+            if (actionEvent.getActionCommand() == "Start and Finish") {
+                aStarVisualizer.removeListenerEditVertex();
+                aStarVisualizer.setListenerAddStartFinish();
+            } else {
+                aStarVisualizer.removeListenerAddStartFinish();
+                aStarVisualizer.setListenerEditVertex();
+
+            }
+        }
+        @Override
+        public void undo() {
+            if(actionEvent == null)
+                return;
+            if (actionEvent.getActionCommand() != "Start and Finish") {
+                aStarVisualizer.removeListenerEditVertex();
+                aStarVisualizer.setListenerAddStartFinish();
+                editingStartFinishVertex.setSelected(false);
+                editingAddVertexGraph.setSelected(true);
+            } else {
+                aStarVisualizer.removeListenerAddStartFinish();
+                aStarVisualizer.setListenerEditVertex();
+                editingStartFinishVertex.setSelected(true);
+                editingAddVertexGraph.setSelected(false);
+
+            }
+
+        }
     }
 }
 

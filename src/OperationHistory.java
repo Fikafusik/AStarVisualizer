@@ -16,6 +16,8 @@ public class OperationHistory implements IObserver, IUndoable {
     }
 
     public void undo(){
+        if(history.empty())
+            return;
         history.peek().undo();
         pop();
     }

@@ -81,12 +81,12 @@ public class AStarAlgorithm implements IObservable{
 
         @Override
         public void execute() {
-            source = this.newSink;
+            sink = this.newSink;
         }
 
         @Override
         public void undo() {
-            source = this.oldSink;
+            sink = this.oldSink;
         }
     }
 

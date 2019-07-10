@@ -1,5 +1,4 @@
 import com.mxgraph.io.mxCodec;
-import com.mxgraph.model.mxCell;
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.util.mxUtils;
 import com.mxgraph.util.mxXmlUtils;
@@ -8,30 +7,32 @@ import org.jgrapht.ext.JGraphXAdapter;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DefaultListenableGraph;
-import org.jgrapht.graph.specifics.DirectedEdgeContainer;
 import org.w3c.dom.Document;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import static java.lang.Math.max;
 
-public class AStarVisualizer {
+public class AStarVisualizer implements IObservable{
     private mxGraphComponent graphComponent;
-
+    private IObserver observer;
     private JGraphXAdapter<String, DefaultEdge> jgxAdapter;
     private ListenableGraph<String, DefaultEdge> g;
     private static int inc = 1;
     private static int widthDefault = 40;
     private static String styleDefault = "shape=ellipse";
-    Object parent;
-    Object start;
-    Object finish;
-    MouseAdapter listenerEditVertex;
-    MouseAdapter listenerAddStartFinishVertex;
+    private Object parent;
+    private Object source;
+    private Object sink;
+    private MouseAdapter listenerEditVertex;
+    private MouseAdapter listenerAddStartFinishVertex;
+    private AStarAlgorithm aStarAlgorithm;
+
+    public void setAlgorithm(AStarAlgorithm aStarAlgorithm){
+        this.aStarAlgorithm = aStarAlgorithm;
+    }
 
     public AStarVisualizer() {
 
@@ -70,17 +71,21 @@ public class AStarVisualizer {
             jgxAdapter.setCellsEditable(false);
             graphComponent.getViewport().setOpaque(true);
             jgxAdapter.getModel().endUpdate();
-            start = null;
-            finish = null;
+            source = null;
+            aStarAlgorithm.setSource(source);
+            sink = null;
+            aStarAlgorithm.setSink(sink);
             inc = 1;
             for(Object vertex : graphComponent.getGraph().getChildVertices(jgxAdapter.getDefaultParent())) {
                 inc = max(Integer.parseInt(jgxAdapter.getLabel(vertex).substring(1)), inc);
                 if (jgxAdapter.getModel().getStyle(vertex).equals("fillColor=lightgreen;shape=ellipse")) {
-                    start = vertex;
+                    source = vertex;
+                    aStarAlgorithm.setSource(source);
                 }
                 jgxAdapter.getModel().getGeometry(vertex).getCenterX();
                 if (jgxAdapter.getModel().getStyle(vertex).equals("fillColor=pink;shape=ellipse")) {
-                    finish = vertex;
+                    sink = vertex;
+                    aStarAlgorithm.setSink(sink);
                 }
             }
             inc++;
@@ -111,16 +116,22 @@ public class AStarVisualizer {
     }
 
     private void paintStartComponent() {
-        if(jgxAdapter.getModel().getGeometry(start).getWidth() != 0)
-            jgxAdapter.getModel().setStyle(start, "fillColor=lightgreen;shape=ellipse");
+        if(source == null)
+            return;
+        if(jgxAdapter.getModel().getGeometry(source).getWidth() != 0)
+            jgxAdapter.getModel().setStyle(source, "fillColor=lightgreen;shape=ellipse");
     }
 
     private void paintFinishComponent() {
-        if(jgxAdapter.getModel().getGeometry(finish).getWidth() != 0)
-            jgxAdapter.getModel().setStyle(finish, "fillColor=pink;shape=ellipse");
+        if(sink == null)
+            return;
+        if(jgxAdapter.getModel().getGeometry(sink).getWidth() != 0)
+            jgxAdapter.getModel().setStyle(sink, "fillColor=pink;shape=ellipse");
     }
 
     public void paintComponent(Object component, String color){
+        if(component == null)
+            return;
         if(jgxAdapter.getModel().getGeometry(component).getWidth() != 0)
             jgxAdapter.getModel().setStyle(component, "fillColor="+ color +";shape=ellipse");
         else
@@ -128,6 +139,8 @@ public class AStarVisualizer {
     }
 
     public void paintDefaultComponent(Object component){
+        if(component == null)
+            return;
         if(jgxAdapter.getModel().getGeometry(component).getWidth() != 0)
             jgxAdapter.getModel().setStyle(component, styleDefault);
         else
@@ -150,10 +163,14 @@ public class AStarVisualizer {
                         if (cell != null) {
                             for(Object child : graphComponent.getGraph().getEdges(cell))
                                 jgxAdapter.getModel().remove(child);
-                            if(cell == start)
-                                start = null;
-                            if(cell == finish)
-                                finish = null;
+                            if(cell == source) {
+                                source = null;
+                                aStarAlgorithm.setSource(source);
+                            }
+                            if(cell == sink) {
+                                sink = null;
+                                aStarAlgorithm.setSink(sink);
+                            }
                             jgxAdapter.getModel().remove(cell);
                             System.out.println("cell delete =" + jgxAdapter.getLabel(cell));
                         }
@@ -178,20 +195,30 @@ public class AStarVisualizer {
                 if(cell != null ) {
                     if (jgxAdapter.getModel().getGeometry(cell).getWidth() != 0) {
                         if (mouseEvent.getButton() == mouseEvent.BUTTON1) {
-                            if (cell == finish)
-                                finish = null;
-                            if (start != null)
-                                jgxAdapter.getModel().setStyle(start, styleDefault);
-                            start = cell;
-                            paintStartComponent();
+                            if (cell == sink) {
+                                sink = null;
+                                aStarAlgorithm.setSink(sink);
+                            }
+                            if (source != null)
+                                jgxAdapter.getModel().setStyle(source, styleDefault);
+
+                            notifyObserver(new SetSourceV(cell));
+                            //source = cell;
+                            aStarAlgorithm.setSource(source);
+//                            paintStartComponent();
                         }
                         if (mouseEvent.getButton() == mouseEvent.BUTTON3) {
-                            if(cell == start)
-                                start = null;
-                            if (finish != null)
-                                jgxAdapter.getModel().setStyle(finish, styleDefault);
-                            finish = cell;
-                            paintFinishComponent();
+                            if(cell == source) {
+                                source = null;
+                                aStarAlgorithm.setSource(source);
+                            }
+                            if (sink != null)
+                                jgxAdapter.getModel().setStyle(sink, styleDefault);
+                            notifyObserver(new SetSinkV(cell));
+                            //sink = cell;
+                            aStarAlgorithm.setSink(sink);
+
+//                            paintFinishComponent();
                         }
                     }
                 }
@@ -211,7 +238,82 @@ public class AStarVisualizer {
         jgxAdapter.removeCells(graphComponent.getGraph().getChildVertices(jgxAdapter.getDefaultParent()));
         graphComponent.getGraphControl().removeAll();
         jgxAdapter.getModel().endUpdate();
-        start = null;
-        finish = null;
+        source = null;
+        aStarAlgorithm.setSource(source);
+        sink = null;
+        aStarAlgorithm.setSink(sink);
+    }
+
+
+    void setSink(Object vertex) {
+        notifyObserver(new SetSinkV(vertex));
+    }
+
+    public class SetSinkV extends UndoableOperation {
+
+        private Object oldSink;
+        private Object newSink;
+
+        SetSinkV(Object vertex) {
+            this.oldSink = sink;
+            this.newSink = vertex;
+        }
+
+        @Override
+        public void execute() {
+            paintDefaultComponent(oldSink);
+            sink = this.newSink;
+            paintFinishComponent();
+        }
+
+        @Override
+        public void undo() {
+            paintDefaultComponent(newSink);
+            sink = this.oldSink;
+            paintFinishComponent();
+        }
+    }
+
+
+    public class SetSourceV extends UndoableOperation {
+
+        private Object oldSource;
+        private Object newSource;
+
+        SetSourceV(Object vertex) {
+            this.oldSource = source;
+            this.newSource = vertex;
+        }
+
+        @Override
+        public void execute(){
+            paintDefaultComponent(oldSource);
+            source = this.newSource;
+            paintStartComponent();
+        }
+
+        @Override
+        public void undo(){
+            paintDefaultComponent(newSource);
+            source = this.oldSource;
+            paintStartComponent();
+        }
+    }
+
+    @Override
+    public void addObserver(IObserver observer){
+        this.observer = observer;
+    }
+
+    @Override
+    public void removeObserver(IObserver observer){
+        this.observer = null;
+    }
+
+    @Override
+    public void notifyObserver(UndoableOperation operation){
+        if(operation == null) System.out.println("NULLL OPERATION");
+        this.observer.handleEvent(operation);
     }
 }
+
