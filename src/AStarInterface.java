@@ -146,7 +146,12 @@ public class AStarInterface extends JFrame {
         this.menuItemReference.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                JOptionPane.showMessageDialog(component, "THIS IS HELP");
+                JOptionPane.showMessageDialog(component, "If you are in mode of edit vertex:\n" +
+                        "   2x click left button - add vertex\n" +
+                        "   Click right button - delete vertex\n" +
+                        "If you are in mode of edit start-finish:\n" +
+                        "   Click left button - add source\n" +
+                        "   Click right button - add sink\n");
             }
         });
 
@@ -160,15 +165,12 @@ public class AStarInterface extends JFrame {
 
                 if (buttonGroupDistances.getSelection() == manhattanDistanceRadioButton.getModel()) {
                     component.aStarAlgorithm.setHeuristic(heuristicFactory.getHeuristic("Manhattan"));
-                    System.out.println("MAN");
                 }
                 if(buttonGroupDistances.getSelection() == chebyshevDistanceRadioButton.getModel()) {
                     component.aStarAlgorithm.setHeuristic(heuristicFactory.getHeuristic("Chebyshev"));
-                    System.out.println("CHE");
                 }
                 if(buttonGroupDistances.getSelection() == euclidianDistanceRadioButton.getModel()) {
                     component.aStarAlgorithm.setHeuristic(heuristicFactory.getHeuristic("Euclidean"));
-                    System.out.println("EUC");
                 }
             }
         };
@@ -176,8 +178,7 @@ public class AStarInterface extends JFrame {
         chebyshevDistanceRadioButton.addActionListener(listener1);
         euclidianDistanceRadioButton.addActionListener(listener1);
 
-//        slider1 = new JSlider(100, 1000, 500);
-        valueSlider = 500;
+        valueSlider = slider1.getValue();
         slider1.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent changeEvent) {
