@@ -2,7 +2,6 @@
 import com.mxgraph.model.mxCell;
 import com.mxgraph.view.mxGraph;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.PriorityQueue;
 import java.util.Stack;
@@ -160,7 +159,7 @@ public class AStarAlgorithm implements IObservable{
         }
     }
 
-    public class NextStep extends UndoableOperation{
+    public class NextStep extends UndoableOperation {
 
         boolean oldAlreadyFound;
         boolean oldAlreadyNotFound;
@@ -189,14 +188,16 @@ public class AStarAlgorithm implements IObservable{
         }
 
         @Override
-        public void execute() {
+        public void execute(){
 
             if (source == null) {
-                throw new NullPointerException("Add source vertex");
+                throw new AStarException("Add source vertex");
+                //throw new NullPointerException("Add source vertex");
             }
 
             if (sink == null) {
-                throw new NullPointerException("Add finish vertex");
+                throw new AStarException("Add finish vertex");
+                //throw new NullPointerException("Add finish vertex");
             }
 
             // если алгоритм только запустили
@@ -212,7 +213,7 @@ public class AStarAlgorithm implements IObservable{
             if (importantVertex == sink) {
                 if (alreadyFound) {
                     // throw exception
-                    return;
+                    throw new AStarException("Path was already found");
                 }
                 alreadyFound = true;
 
@@ -221,9 +222,9 @@ public class AStarAlgorithm implements IObservable{
 
                 Object vertex = sink;
                 while (vertex != null) {
-                    aStarVisualizer.paintFuture(vertex);
+                    aStarVisualizer.paintPath(vertex);
                     if (parent.containsKey(vertex)) {
-                        aStarVisualizer.paintFuture(graph.getEdgesBetween(parent.get(vertex), vertex)[0]);
+                        aStarVisualizer.paintPath(graph.getEdgesBetween(parent.get(vertex), vertex)[0]);
                     }
                     vertex = parent.get(vertex);
                 }
@@ -235,7 +236,7 @@ public class AStarAlgorithm implements IObservable{
             if (priorityQueue.isEmpty()) {
                 if (alreadyNotFound) {
                     // throw exception
-                    return;
+                    throw new AStarException("No path exist");
                 }
                 alreadyNotFound = true;
 
@@ -251,7 +252,7 @@ public class AStarAlgorithm implements IObservable{
             importantTotal = priorityQueue.poll().getTotal();
 
             if (importantVertex == null) {
-                throw new NullPointerException("impotent vertex - null");
+                throw new NullPointerException("important vertex - null");
             }
 
             aStarVisualizer.paintNow(importantVertex);

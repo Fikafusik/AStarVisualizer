@@ -1,16 +1,14 @@
 import com.mxgraph.io.mxCodec;
 import com.mxgraph.model.mxCell;
-import com.mxgraph.swing.handler.mxConnectionHandler;
 import com.mxgraph.swing.mxGraphComponent;
-import com.mxgraph.util.*;
-import com.sun.jdi.DoubleValue;
-
+import com.mxgraph.util.mxEvent;
+import com.mxgraph.util.mxUtils;
+import com.mxgraph.util.mxXmlUtils;
 import org.jgrapht.ListenableGraph;
 import org.jgrapht.ext.JGraphXAdapter;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DefaultListenableGraph;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.w3c.dom.Document;
 
 import java.awt.*;
@@ -72,8 +70,6 @@ public class AStarVisualizer implements IObservable{
 
         jgxAdapter.getModel().setValue(cell, Integer.toString((int)Math.hypot(x1-x2,y1-y2)));
     }
-//        this.graphComponent.addListener(mxEvent.ADD_CELLS, (o, mxEventObject) -> System.out.println("cell - " + mxEventObject.getName() + " with properties: " + mxEventObject.getProperties()));
-
 
     public void openGraph(String filePath) throws IOException {
         try
@@ -331,6 +327,7 @@ public class AStarVisualizer implements IObservable{
         public void undo() {
             paintDefaultComponent(newSink);
             sink = this.oldSink;
+            if(sink != null)
             jgxAdapter.getModel().setStyle(sink, styleSink);
         }
     }
@@ -357,6 +354,7 @@ public class AStarVisualizer implements IObservable{
         public void undo(){
             paintDefaultComponent(newSource);
             source = this.oldSource;
+            if(source != null)
             jgxAdapter.getModel().setStyle(source, styleSource);
         }
     }

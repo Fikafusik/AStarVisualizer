@@ -23,20 +23,17 @@ public class OperationHistory implements IObserver, IUndoable {
     }
 
     public void handleEvent(UndoableOperation operation){
-        System.out.println("Pushing operation " + operation.toString());
-        push(operation);
+        //System.out.println("Pushing operation " + operation.toString());
         operation.execute();
+        push(operation);
     }
 
     public void stepBack() {
         while ((!history.empty()) && !(history.peek() instanceof AStarAlgorithm.NextStep) )
             undo();
         undo();
-        /*
-        while(!(history.peek() instanceof AStarAlgorithm.NextStep)){
+        while ((!history.empty()) && !(history.peek() instanceof AStarAlgorithm.NextStep) )
             undo();
-        }
-     */
     }
 
     public void reset(){
