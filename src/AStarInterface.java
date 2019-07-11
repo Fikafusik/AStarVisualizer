@@ -2,7 +2,6 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileFilter;
-import javax.swing.text.JTextComponent;
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
@@ -11,7 +10,7 @@ public class AStarInterface extends JFrame implements IObservable{
     private JRadioButton manhattanDistanceRadioButton;
     private JRadioButton chebyshevDistanceRadioButton;
     private JRadioButton euclidianDistanceRadioButton;
-    private JSlider slider1;
+    private JSlider sliderAnimationDelay;
     private JButton resetButton;
     private JButton stopButton;
     private JButton startButton;
@@ -31,13 +30,13 @@ public class AStarInterface extends JFrame implements IObservable{
     private JMenuItem menuItemSave;
     private JMenu menuHelp;
     private JMenuItem menuItemReference;
+    private Timer timerAnimation;
 
     private IObserver observer;
 
     private HeuristicFactory heuristicFactory;
     private AStarAlgorithm aStarAlgorithm;
     private AStarVisualizer aStarVisualizer;
-    int valueSlider;
 
     public AStarInterface(int width, int height, AStarVisualizer aStarVisualizer, AStarAlgorithm aStarAlgorithm) {
         this.aStarAlgorithm = aStarAlgorithm;
@@ -91,26 +90,12 @@ public class AStarInterface extends JFrame implements IObservable{
         chebyshevDistanceRadioButton.addActionListener(listener1);
         euclidianDistanceRadioButton.addActionListener(listener1);
 
-        valueSlider = slider1.getValue();
-        slider1.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent changeEvent) {
-                slider1 = (JSlider)changeEvent.getSource();
-                valueSlider = slider1.getValue();
-                System.out.println(valueSlider);
-            }
-        });
+        this.timerAnimation = new Timer(sliderAnimationDelay.getValue(), new NextButtonActionListener());
+        sliderAnimationDelay.addChangeListener(e -> timerAnimation.setDelay(sliderAnimationDelay.getValue()));
+        startButton.addActionListener(actionEvent -> timerAnimation.start());
+        stopButton.addActionListener(e -> timerAnimation.stop());
 
-        startButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-//                while(aStarAlgorithm.stepNext();)//Чисто условность
-//                        wait();
-
-            }
-        });
-
-        previousButton.addActionListener(actionEvent -> ((OperationHistory)observer).stepBack());
+        previousButton.addActionListener(e->((OperationHistory)observer).stepBack());
 
         nextButton.addActionListener(new NextButtonActionListener());
     }
