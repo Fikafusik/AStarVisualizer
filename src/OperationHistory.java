@@ -8,11 +8,13 @@ public class OperationHistory implements IObserver, IUndoable {
     }
 
     private void push(UndoableOperation operation){
+        System.out.println("Pushing operation " + operation.toString());
         history.push(operation);
     }
 
-    private void pop(){
-        history.pop();
+    private UndoableOperation pop(){
+        System.out.println("Popping operation " + history.peek().toString());
+        return history.pop();
     }
 
     public void undo(){
@@ -23,20 +25,16 @@ public class OperationHistory implements IObserver, IUndoable {
     }
 
     public void handleEvent(UndoableOperation operation){
-        System.out.println("Pushing operation " + operation.toString());
-        push(operation);
         operation.execute();
+        push(operation);
     }
 
     public void stepBack() {
         while ((!history.empty()) && !(history.peek() instanceof AStarAlgorithm.NextStep) )
             undo();
         undo();
-        /*
-        while(!(history.peek() instanceof AStarAlgorithm.NextStep)){
+        while ((!history.empty()) && !(history.peek() instanceof AStarAlgorithm.NextStep) )
             undo();
-        }
-     */
     }
 
     public void reset(){

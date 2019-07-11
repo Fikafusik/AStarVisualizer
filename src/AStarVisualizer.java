@@ -1,22 +1,19 @@
 import com.mxgraph.io.mxCodec;
 import com.mxgraph.model.mxCell;
-import com.mxgraph.swing.handler.mxConnectionHandler;
 import com.mxgraph.swing.mxGraphComponent;
-import com.mxgraph.util.*;
-import com.sun.jdi.DoubleValue;
-
+import com.mxgraph.util.mxEvent;
+import com.mxgraph.util.mxUtils;
+import com.mxgraph.util.mxXmlUtils;
 import org.jgrapht.ListenableGraph;
 import org.jgrapht.ext.JGraphXAdapter;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DefaultListenableGraph;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.w3c.dom.Document;
 
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.IOException;
 
 import static java.lang.Math.max;
 
@@ -36,15 +33,19 @@ public class AStarVisualizer implements IObservable{
     private MouseAdapter listenerEditVertex;
     private MouseAdapter listenerAddStartFinishVertex;
     private AStarAlgorithm aStarAlgorithm;
+    private boolean editableStartFinish;
 
     public void setAlgorithm(AStarAlgorithm aStarAlgorithm){
         this.aStarAlgorithm = aStarAlgorithm;
     }
 
     public AStarVisualizer() {
-
+        editableStartFinish = true;
         g = new DefaultListenableGraph<>(new DefaultDirectedGraph<>(DefaultEdge.class));
         jgxAdapter = new JGraphXAdapter<>(g);
+
+        source = null;
+        sink = null;
 
         jgxAdapter.setCellsResizable(false);
         this.graphComponent = new mxGraphComponent(jgxAdapter);
@@ -72,12 +73,9 @@ public class AStarVisualizer implements IObservable{
 
         jgxAdapter.getModel().setValue(cell, Integer.toString((int)Math.hypot(x1-x2,y1-y2)));
     }
-//        this.graphComponent.addListener(mxEvent.ADD_CELLS, (o, mxEventObject) -> System.out.println("cell - " + mxEventObject.getName() + " with properties: " + mxEventObject.getProperties()));
 
+    public void openGraph(String filePath) throws Exception {
 
-    public void openGraph(String filePath) throws IOException {
-        try
-        {
             jgxAdapter.getModel().beginUpdate();
             Document document = mxXmlUtils.parseXml(mxUtils.readFile(filePath));
             mxCodec codec = new mxCodec(document);
@@ -100,25 +98,20 @@ public class AStarVisualizer implements IObservable{
             for(Object vertex : graphComponent.getGraph().getChildVertices(jgxAdapter.getDefaultParent())) {
                 inc = max(Integer.parseInt(jgxAdapter.getLabel(vertex)), inc);
                 if (jgxAdapter.getModel().getStyle(vertex).equals(styleSource)) {
+                    paintDefaultComponent(vertex);
                     source = vertex;
                     aStarAlgorithm.setSource(source);
-                    paintDefaultComponent(source);
                     paintStartComponent();
                 }
                 jgxAdapter.getModel().getGeometry(vertex).getCenterX();
                 if (jgxAdapter.getModel().getStyle(vertex).equals(styleSink)) {
+                    paintDefaultComponent(vertex);
                     sink = vertex;
                     aStarAlgorithm.setSink(sink);
-                    paintDefaultComponent(sink);
                     paintFinishComponent();
                 }
             }
             inc++;
-        }
-        catch (IOException ex)
-        {
-            ex.printStackTrace();
-        }
     }
 
     public void saveGraph(String path) {
@@ -252,6 +245,10 @@ public class AStarVisualizer implements IObservable{
 
     public void setListenerAddStartFinish() {
         this.jgxAdapter.setCellsMovable(false);
+        if(!editableStartFinish){
+            //Exception?
+            return;
+        }
         listenerAddStartFinishVertex = new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent mouseEvent) {
@@ -265,9 +262,8 @@ public class AStarVisualizer implements IObservable{
                             }
                             if (source != null)
                                 jgxAdapter.getModel().setStyle(source, styleDefault);
-
+                            source = null;
                             notifyObserver(new SetSourceV(cell));
-                            //source = cell;
                             aStarAlgorithm.setSource(source);
 //                            paintStartComponent();
                         }
@@ -278,8 +274,8 @@ public class AStarVisualizer implements IObservable{
                             }
                             if (sink != null)
                                 jgxAdapter.getModel().setStyle(sink, styleDefault);
+                            sink = null;
                             notifyObserver(new SetSinkV(cell));
-                            //sink = cell;
                             aStarAlgorithm.setSink(sink);
 
 //                            paintFinishComponent();
@@ -305,9 +301,30 @@ public class AStarVisualizer implements IObservable{
         jgxAdapter.getModel().endUpdate();
     }
 
-
-    void setSink(Object vertex) {
+    public void setSink(Object vertex) {
         notifyObserver(new SetSinkV(vertex));
+    }
+
+    public void setStartFinishUneditable(){
+        if(editableStartFinish && source != null && sink != null)
+            notifyObserver(new SetStartFinishUneditable());
+    }
+
+    public boolean isStartFinishEditable(){
+        return editableStartFinish;
+    }
+
+    private class SetStartFinishUneditable extends UndoableOperation{
+
+        @Override
+        public void execute() {
+            editableStartFinish = false;
+        }
+
+        @Override
+        public void undo() {
+            editableStartFinish = true;
+        }
     }
 
     public class SetSinkV extends UndoableOperation {
@@ -331,10 +348,10 @@ public class AStarVisualizer implements IObservable{
         public void undo() {
             paintDefaultComponent(newSink);
             sink = this.oldSink;
+            if(sink != null)
             jgxAdapter.getModel().setStyle(sink, styleSink);
         }
     }
-
 
     public class SetSourceV extends UndoableOperation {
 
@@ -357,6 +374,7 @@ public class AStarVisualizer implements IObservable{
         public void undo(){
             paintDefaultComponent(newSource);
             source = this.oldSource;
+            if(source != null)
             jgxAdapter.getModel().setStyle(source, styleSource);
         }
     }

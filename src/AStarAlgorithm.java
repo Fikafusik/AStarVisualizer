@@ -1,8 +1,7 @@
-
 import com.mxgraph.model.mxCell;
+import com.mxgraph.model.mxICell;
 import com.mxgraph.view.mxGraph;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.PriorityQueue;
 import java.util.Stack;
@@ -39,6 +38,14 @@ public class AStarAlgorithm implements IObservable{
         this.priorityQueue = new PriorityQueue<>();
         this.importantVertex = null;
         this.observer = null;
+    }
+
+    public boolean isFinished(){
+        return (alreadyFound || alreadyNotFound);
+    }
+
+    public boolean isValid() {
+        return (source != null) && (sink != null);
     }
 
     public void update(mxGraph graph) {
@@ -160,7 +167,7 @@ public class AStarAlgorithm implements IObservable{
         }
     }
 
-    public class NextStep extends UndoableOperation{
+    public class NextStep extends UndoableOperation {
 
         boolean oldAlreadyFound;
         boolean oldAlreadyNotFound;
@@ -189,14 +196,16 @@ public class AStarAlgorithm implements IObservable{
         }
 
         @Override
-        public void execute() {
+        public void execute(){
 
             if (source == null) {
-                throw new NullPointerException("Add source vertex");
+                throw new AStarException("Add source vertex");
+                //throw new NullPointerException("Add source vertex");
             }
 
             if (sink == null) {
-                throw new NullPointerException("Add finish vertex");
+                throw new AStarException("Add finish vertex");
+                //throw new NullPointerException("Add finish vertex");
             }
 
             // если алгоритм только запустили
@@ -212,7 +221,7 @@ public class AStarAlgorithm implements IObservable{
             if (importantVertex == sink) {
                 if (alreadyFound) {
                     // throw exception
-                    return;
+                    throw new AStarException("Path was already found");
                 }
                 alreadyFound = true;
 
@@ -235,7 +244,7 @@ public class AStarAlgorithm implements IObservable{
             if (priorityQueue.isEmpty()) {
                 if (alreadyNotFound) {
                     // throw exception
-                    return;
+                    throw new AStarException("No path exist");
                 }
                 alreadyNotFound = true;
 
@@ -251,7 +260,7 @@ public class AStarAlgorithm implements IObservable{
             importantTotal = priorityQueue.poll().getTotal();
 
             if (importantVertex == null) {
-                throw new NullPointerException("impotent vertex - null");
+                throw new NullPointerException("important vertex - null");
             }
 
             aStarVisualizer.paintNow(importantVertex);
@@ -259,8 +268,13 @@ public class AStarAlgorithm implements IObservable{
             // обходим инцидентные рёбра
             for (Object edge : graph.getOutgoingEdges(importantVertex)) {
                 mxCell edgeCell = (mxCell)edge;
-
-                double tentative = distances.get(importantVertex) + Double.valueOf((String)edgeCell.getValue());
+                double tentative;
+                try {
+                    tentative = distances.get(importantVertex) + Double.valueOf((String) edgeCell.getValue());
+                }
+                catch(Exception e){
+                    throw new AStarError("Invalid name for edge between vertices " + ((mxICell)importantVertex).getValue() + " and " + edgeCell.getTarget().getValue());
+                }
                 Object targetVertex = edgeCell.getTarget();
 
                 if (!distances.containsKey(targetVertex) || tentative < distances.get(targetVertex)) {
