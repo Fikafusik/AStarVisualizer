@@ -27,9 +27,9 @@ public class AStarVisualizer implements IObservable{
     private ListenableGraph<String, DefaultEdge> g;
     private static int inc = 1;
     private static int widthDefault = 40;
-    private static String styleDefault = "shape=ellipse";
-    private static String styleSource = "fillColor=lightgreen;shape=ellipse";
-    private static String styleSink = "fillColor=pink;shape=ellipse";
+    private static final String styleDefault = "shape=ellipse";
+    private static final String styleSource = "fillColor=lightgreen;shape=ellipse";
+    private static final String styleSink = "fillColor=pink;shape=ellipse";
     private Object parent;
     private Object source;
     private Object sink;
@@ -140,14 +140,14 @@ public class AStarVisualizer implements IObservable{
         if(source == null)
             return;
         if(jgxAdapter.getModel().getGeometry(source).getWidth() != 0)
-            notifyObserver(new PaintComponent(source, styleSource));
+            notifyObserver(new PaintComponent(source, "lightgreen"));
     }
 
     private void paintFinishComponent() {
         if(sink == null)
             return;
         if(jgxAdapter.getModel().getGeometry(sink).getWidth() != 0)
-            notifyObserver(new PaintComponent(sink, styleSink));
+            notifyObserver(new PaintComponent(sink, "pink"));
     }
 
     public void paintComponent(Object component, String color){
@@ -170,7 +170,7 @@ public class AStarVisualizer implements IObservable{
             if(component == null)
                 return;
             if(jgxAdapter.getModel().getGeometry(component).getWidth() != 0)
-                jgxAdapter.getModel().setStyle(component, "fillColor="+ newColor +";shape=ellipse");
+                jgxAdapter.getModel().setStyle(component, "fillColor=" + newColor + ";shape=ellipse");
             else
                 jgxAdapter.getModel().setStyle(component,"strokeColor=" + newColor);
         }
