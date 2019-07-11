@@ -102,11 +102,15 @@ public class AStarVisualizer implements IObservable{
                 if (jgxAdapter.getModel().getStyle(vertex).equals(styleSource)) {
                     source = vertex;
                     aStarAlgorithm.setSource(source);
+                    paintDefaultComponent(source);
+                    paintStartComponent();
                 }
                 jgxAdapter.getModel().getGeometry(vertex).getCenterX();
                 if (jgxAdapter.getModel().getStyle(vertex).equals(styleSink)) {
                     sink = vertex;
                     aStarAlgorithm.setSink(sink);
+                    paintDefaultComponent(sink);
+                    paintFinishComponent();
                 }
             }
             inc++;
