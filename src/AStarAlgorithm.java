@@ -5,9 +5,13 @@ import com.mxgraph.view.mxGraph;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.PriorityQueue;
+import java.util.Stack;
 
 public class AStarAlgorithm implements IObservable{
     private mxGraph graph;
+
+    private boolean alreadyFound;
+    private boolean alreadyNotFound;
 
     private Object source;
     private Object sink;
@@ -158,21 +162,29 @@ public class AStarAlgorithm implements IObservable{
 
     public class NextStep extends UndoableOperation{
 
+        boolean oldAlreadyFound;
+        boolean oldAlreadyNotFound;
+
         Object oldVertex;
         Double oldTotal;
         HashMap<Object, Double> oldDistances;
         HashMap<Object, Object> oldParent;
-        ArrayList<MyPair> addedPairs;
         PriorityQueue<MyPair> oldQueue;
 
-        public NextStep(){
+        public NextStep() {
+            oldAlreadyFound = alreadyFound;
+            oldAlreadyNotFound = alreadyNotFound;
+
             oldVertex = importantVertex;
             oldTotal = importantTotal;
+
             oldDistances = new HashMap<>();
             oldDistances.putAll(distances);
+
             oldParent = new HashMap<>();
-            addedPairs = new ArrayList<>();
-            oldQueue = new PriorityQueue<MyPair>();
+            oldParent.putAll(parent);
+
+            oldQueue = new PriorityQueue<>();
             oldQueue.addAll(priorityQueue);
         }
 
@@ -198,12 +210,35 @@ public class AStarAlgorithm implements IObservable{
 
             // если путь уже найден
             if (importantVertex == sink) {
+                if (alreadyFound) {
+                    // throw exception
+                    return;
+                }
+                alreadyFound = true;
+
                 System.out.println("path found...");
+                System.out.println(pathRecovery());
+
+                Object vertex = sink;
+                while (vertex != null) {
+                    aStarVisualizer.paintFuture(vertex);
+                    if (parent.containsKey(vertex)) {
+                        aStarVisualizer.paintFuture(graph.getEdgesBetween(parent.get(vertex), vertex)[0]);
+                    }
+                    vertex = parent.get(vertex);
+                }
+
                 return;
             }
 
             // если пути не существует
             if (priorityQueue.isEmpty()) {
+                if (alreadyNotFound) {
+                    // throw exception
+                    return;
+                }
+                alreadyNotFound = true;
+
                 System.out.println("path not found...");
                 return;
             }
@@ -244,9 +279,7 @@ public class AStarAlgorithm implements IObservable{
                     Point targetPoint = new Point(((mxCell)targetVertex).getGeometry());
                     Point sinkPoint = new Point(((mxCell)sink).getGeometry());
 
-                    MyPair newPair = new MyPair(targetVertex, tentative + heuristic.getValue(targetPoint, sinkPoint));
-                    addedPairs.add(newPair);
-                    priorityQueue.add(newPair);
+                    priorityQueue.add(new MyPair(targetVertex, tentative + heuristic.getValue(targetPoint, sinkPoint)));
                 }
             }
 
@@ -254,10 +287,14 @@ public class AStarAlgorithm implements IObservable{
 
         @Override
         public void undo() {
+            alreadyFound = oldAlreadyFound;
+            alreadyNotFound = oldAlreadyNotFound;
             importantVertex = oldVertex;
             importantTotal = oldTotal;
             priorityQueue = oldQueue;
             distances = oldDistances;
+            parent = oldParent;
+
 /*
             priorityQueue.add(new MyPair(oldVertex, oldTotal));
 
@@ -284,6 +321,22 @@ public class AStarAlgorithm implements IObservable{
                 priorityQueue.remove(pair);
             }*/
         }
+    }
+
+    private String pathRecovery() {
+        Stack<Object> pathStack = new Stack<>();
+        Object vertex = sink;
+        while (vertex != null) {
+            pathStack.push(vertex);
+            vertex = parent.get(vertex);
+        }
+        StringBuilder pathBuilder = new StringBuilder();
+        while (!pathStack.isEmpty()) {
+            pathBuilder.append(((mxCell) pathStack.pop()).getValue().toString());
+            if (!pathStack.isEmpty())
+                pathBuilder.append(" -> ");
+        }
+        return (pathBuilder.toString());
     }
 
     @Override
