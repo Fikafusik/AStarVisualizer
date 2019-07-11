@@ -23,7 +23,6 @@ public class AStarAlgorithm implements IObservable{
     private IObserver observer;
 
     private AStarVisualizer aStarVisualizer;
-    private int countNext = 0;
 
     public AStarAlgorithm(mxGraph graph) {
         this.graph = graph;
@@ -39,11 +38,9 @@ public class AStarAlgorithm implements IObservable{
     }
 
     public void update(mxGraph graph) {
-//        for(int i = 0 ; i < countNext; i++)
-//            stepPrev();
         this.graph = graph;
-//        this.source = null;
-//        this.sink = null;
+//      this.source = null;
+//      this.sink = null;
         this.distances = new HashMap<>();
         this.parent = new HashMap<>();
         this.visited = new HashMap<>();
@@ -52,10 +49,7 @@ public class AStarAlgorithm implements IObservable{
         this.importantVertex = null;
 
     }
-/*    public void clearField(){
-        this.graph
-    }
-*/
+
     public void setVisualizer(AStarVisualizer visualizer){
         aStarVisualizer = visualizer;
     }
@@ -173,15 +167,11 @@ public class AStarAlgorithm implements IObservable{
         public void execute() {
 
             if (source == null) {
-                System.out.println("сорс хуйня");
                 throw new NullPointerException("Add source vertex");
-                // бросить исключение
             }
 
             if (sink == null) {
-                System.out.println("синк хуйня");
                 throw new NullPointerException("Add finish vertex");
-                // бросить исключение
             }
 
             System.out.println("Source: " + ((mxCell)source).getValue());
@@ -192,9 +182,8 @@ public class AStarAlgorithm implements IObservable{
                 importantVertex = source;
                 distances.put(importantVertex, 0.0);
                 priorityQueue.add(new MyPair(importantVertex, heuristic.getValue(new Point(((mxCell)importantVertex).getGeometry()), new Point(((mxCell)sink).getGeometry()))));
-//                aStarVisualizer.paintComponent(importantVertex, "black");
-                aStarVisualizer.paintNow(importantVertex);
-               return;
+                aStarVisualizer.paintFuture(importantVertex);
+                return;
             }
 
             // если путь уже найден
@@ -212,35 +201,37 @@ public class AStarAlgorithm implements IObservable{
             // ранее посещённую вершину красим в серый
 //            aStarVisualizer.paintComponent(importantVertex, "gray");
             aStarVisualizer.paintPast(importantVertex);
+
             // сохраняем прошлую вершину
             oldVertex = importantVertex;
 
             // извлекаем из очереди новую вершину
             System.out.println(priorityQueue.size());
             importantVertex = priorityQueue.poll().getVertex();
-            if(importantVertex == null)
+
+            if (importantVertex == null) {
                 throw new NullPointerException("impotent vertex - null");
+            }
 
             System.out.println(((mxCell)importantVertex).getValue());
 
             // извлечённую вершину красим в чёрный цвет
-//            aStarVisualizer.paintComponent(importantVertex, "black");
+            // aStarVisualizer.paintPast(importantVertex);
+
             aStarVisualizer.paintNow(importantVertex);
             visited.put(importantVertex, true);
 
             // обходим инцидентные рёбра
             for (Object edge : graph.getOutgoingEdges(importantVertex) /*incidentEdges.get(importantVertex)*/) {
                 mxCell edgeCell = (mxCell)edge;
-/*                if(edgeCell.getValue() == null){
-                    graph.getModel().beginUpdate();
-                    graph.getModel().setValue(edgeCell, new String("12"));
-                    graph.getModel().endUpdate();
-                }
-*/                double tentative = distances.get(importantVertex) + Double.valueOf((String)edgeCell.getValue());
+
+                double tentative = distances.get(importantVertex) + Double.valueOf((String)edgeCell.getValue());
                 Object targetVertex = edgeCell.getTarget();
 
                 if (!distances.containsKey(targetVertex) || tentative < distances.get(targetVertex)) {
+                    aStarVisualizer.paintFuture(targetVertex);
 
+                    parent.put(targetVertex, importantVertex);
                     distances.put(targetVertex, tentative);
 
                     Point targetPoint = new Point(((mxCell)targetVertex).getGeometry());
