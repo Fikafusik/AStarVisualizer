@@ -151,11 +151,11 @@ public class AStarVisualizer implements IObservable{
             paintComponent(sink, "pink");
     }
 
-    private void paintPath(Object object) {
+    public void paintPath(Object object) {
         notifyObserver(new PaintComponent(object, "cornsilk"));
     }
 
-    public void paintComponent(Object component, String color){
+    private void paintComponent(Object component, String color){
         notifyObserver(new PaintComponent(component,color));
     }
 
