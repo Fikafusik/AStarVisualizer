@@ -62,6 +62,7 @@ public class AStarInterface extends JFrame implements IObservable{
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 aStarVisualizer.clearGraph();
+                ((OperationHistory)observer).reset();
                 aStarAlgorithm.update(aStarVisualizer.getGraphComponent().getGraph());
             }
         });

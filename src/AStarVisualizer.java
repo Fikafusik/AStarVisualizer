@@ -168,30 +168,15 @@ public class AStarVisualizer implements IObservable{
     }
 
     public void paintPast(Object component) {
-        if(component == null)
-            return;
-        if(jgxAdapter.getModel().getGeometry(component).getWidth() != 0)
-            jgxAdapter.getModel().setStyle(component, "fillColor=navy;shape=ellipse");
-        else
-            jgxAdapter.getModel().setStyle(component,"strokeColor=darkgreen");
+        paintComponent(component, "navy");
     }
 
     public void paintNow(Object component) {
-        if(component == null)
-            return;
-        if(jgxAdapter.getModel().getGeometry(component).getWidth() != 0)
-            jgxAdapter.getModel().setStyle(component, "fillColor=blue;shape=ellipse");
-        else
-            jgxAdapter.getModel().setStyle(component, "strokeColor=green");
+        paintComponent(component, "blue");
     }
 
     public void paintFuture(Object component) {
-        if(component == null)
-            return;
-        if(jgxAdapter.getModel().getGeometry(component).getWidth() != 0)
-            jgxAdapter.getModel().setStyle(component, "fillColor=aqua;shape=ellipse");
-        else
-            jgxAdapter.getModel().setStyle(component, "strokeColor=lightgreen");
+        paintComponent(component, "aqua");
     }
 
     public void paintDefaultComponent(Object component){

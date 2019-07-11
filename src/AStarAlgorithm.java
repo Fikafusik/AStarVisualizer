@@ -34,6 +34,7 @@ public class AStarAlgorithm implements IObservable{
         this.visited = new HashMap<>();
         this.heuristic = new ManhattanHeuristic();
         this.priorityQueue = new PriorityQueue<>();
+        this.importantVertex = null;
         this.observer = null;
     }
 
@@ -48,7 +49,7 @@ public class AStarAlgorithm implements IObservable{
         this.visited = new HashMap<>();
         this.heuristic = new ManhattanHeuristic();
         this.priorityQueue = new PriorityQueue<>();
-        this.observer = null;
+        this.importantVertex = null;
 
     }
 /*    public void clearField(){
