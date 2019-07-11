@@ -282,7 +282,6 @@ public class AStarInterface extends JFrame implements IObservable{
         @Override
         public void undo() {
             heuristicSelection = previousSelection;
-           // aStarAlgorithm.setHeuristic(heuristicFactory.getHeuristic(heuristicSelection));
             switch (heuristicSelection) {
                 case "Chebyshev" :
                     chebyshevDistanceRadioButton.setSelected(true);
