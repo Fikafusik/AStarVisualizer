@@ -3,7 +3,6 @@ import javax.swing.filechooser.FileFilter;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.io.IOException;
 
 public class AStarInterface extends JFrame implements IObservable{
     private JRadioButton manhattanDistanceRadioButton;
@@ -80,7 +79,6 @@ public class AStarInterface extends JFrame implements IObservable{
 
         heuristicFactory = new HeuristicFactory();
 
-        this.aStarAlgorithm.setHeuristic(heuristicFactory.getHeuristic("Manhattan"));
         heuristicSelection = "Manhattan";
         ActionListener listener1 = actionEvent -> notifyObserver(new HeuristicChange(actionEvent));
         manhattanDistanceRadioButton.addActionListener(listener1);
@@ -166,11 +164,13 @@ public class AStarInterface extends JFrame implements IObservable{
                 ((OperationHistory)observer).reset();
                 try {
                     aStarVisualizer.openGraph(fileChooser.getSelectedFile().getAbsolutePath());
-                } catch (IOException e) {
-                    e.printStackTrace();
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(AStarInterface.this, "Failed opening graph\n" + e.getMessage()+ "\n");
+                    //e.printStackTrace();
+                    return;
                 }
                 aStarAlgorithm.update(aStarVisualizer.getGraphComponent().getGraph());
-                System.out.println("Hel");
+                //System.out.println("Hel");
             }
         }
     }

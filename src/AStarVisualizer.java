@@ -14,7 +14,6 @@ import org.w3c.dom.Document;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.IOException;
 
 import static java.lang.Math.max;
 
@@ -71,9 +70,8 @@ public class AStarVisualizer implements IObservable{
         jgxAdapter.getModel().setValue(cell, Integer.toString((int)Math.hypot(x1-x2,y1-y2)));
     }
 
-    public void openGraph(String filePath) throws IOException {
-        try
-        {
+    public void openGraph(String filePath) throws Exception {
+
             jgxAdapter.getModel().beginUpdate();
             Document document = mxXmlUtils.parseXml(mxUtils.readFile(filePath));
             mxCodec codec = new mxCodec(document);
@@ -110,11 +108,6 @@ public class AStarVisualizer implements IObservable{
                 }
             }
             inc++;
-        }
-        catch (IOException ex)
-        {
-            ex.printStackTrace();
-        }
     }
 
     public void saveGraph(String path) {
@@ -261,9 +254,9 @@ public class AStarVisualizer implements IObservable{
                             }
                             if (source != null)
                                 jgxAdapter.getModel().setStyle(source, styleDefault);
-
                             notifyObserver(new SetSourceV(cell));
-                            //source = cell;
+                            source = cell;
+
                             aStarAlgorithm.setSource(source);
 //                            paintStartComponent();
                         }
@@ -275,7 +268,8 @@ public class AStarVisualizer implements IObservable{
                             if (sink != null)
                                 jgxAdapter.getModel().setStyle(sink, styleDefault);
                             notifyObserver(new SetSinkV(cell));
-                            //sink = cell;
+                            sink = cell;
+
                             aStarAlgorithm.setSink(sink);
 
 //                            paintFinishComponent();
