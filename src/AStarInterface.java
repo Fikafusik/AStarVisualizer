@@ -105,6 +105,9 @@ public class AStarInterface extends JFrame implements IObservable{
 //                   for(StackTraceElement el : e1.getStackTrace())
 //                        ex += el.getMethodName() + "\n";
                 JOptionPane.showMessageDialog(AStarInterface.this, e1.getMessage()+ "\n" /*+ ex*/);
+            } catch(AStarError aStarError){
+                JOptionPane.showMessageDialog(AStarInterface.this, aStarError.getMessage()+ "\n");
+                ((OperationHistory)observer).reset();
             } catch (NumberFormatException e2) {
                 JOptionPane.showMessageDialog(AStarInterface.this, e2.getMessage());
             }
