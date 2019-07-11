@@ -45,6 +45,7 @@ public class AStarVisualizer implements IObservable{
         g = new DefaultListenableGraph<>(new DefaultDirectedGraph<>(DefaultEdge.class));
         jgxAdapter = new JGraphXAdapter<>(g);
 
+        jgxAdapter.setCellsResizable(false);
         this.graphComponent = new mxGraphComponent(jgxAdapter);
         parent = jgxAdapter.getDefaultParent();
 
@@ -60,14 +61,26 @@ public class AStarVisualizer implements IObservable{
         this.graphComponent.getConnectionHandler().addListener(mxEvent.CONNECT, (sender, evt) -> {
 
             Object cell = evt.getProperty("cell");
-            Double x1 = ((mxCell)jgxAdapter.getModel().getTerminal(cell, true)).getGeometry().getCenterX();
-            Double y1 = ((mxCell)jgxAdapter.getModel().getTerminal(cell, true)).getGeometry().getCenterY();
-            Double x2 = ((mxCell)jgxAdapter.getModel().getTerminal(cell, false)).getGeometry().getCenterX();
-            Double y2 = ((mxCell)jgxAdapter.getModel().getTerminal(cell, false)).getGeometry().getCenterY();
-
-            jgxAdapter.getModel().setValue(cell, Integer.toString((int)Math.hypot(x1-x2,y1-y2)));
-
+            setDefaultWeight(cell);
         });
+/*        this.graphComponent.getConnectionHandler().addListener(mxEvent.LABEL_CHANGED, new mxEventSource.mxIEventListener() {
+            @Override
+            public void invoke(Object o, mxEventObject mxEventObject) {
+                System.out.println("HEL");
+                Object cell = mxEventObject.getProperty("cell");
+                if(jgxAdapter.getModel().getValue(cell).equals(""))
+                    setDefaultWeight(cell);
+            }
+        });
+*/    }
+
+    private void setDefaultWeight(Object cell){
+        Double x1 = ((mxCell)jgxAdapter.getModel().getTerminal(cell, true)).getGeometry().getCenterX();
+        Double y1 = ((mxCell)jgxAdapter.getModel().getTerminal(cell, true)).getGeometry().getCenterY();
+        Double x2 = ((mxCell)jgxAdapter.getModel().getTerminal(cell, false)).getGeometry().getCenterX();
+        Double y2 = ((mxCell)jgxAdapter.getModel().getTerminal(cell, false)).getGeometry().getCenterY();
+
+        jgxAdapter.getModel().setValue(cell, Integer.toString((int)Math.hypot(x1-x2,y1-y2)));
     }
 //        this.graphComponent.addListener(mxEvent.ADD_CELLS, (o, mxEventObject) -> System.out.println("cell - " + mxEventObject.getName() + " with properties: " + mxEventObject.getProperties()));
 
