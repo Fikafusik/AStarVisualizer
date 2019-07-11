@@ -216,13 +216,8 @@ public class AStarAlgorithm implements IObservable{
 
                     distances.put(targetVertex, tentative);
 
-                    double targetX = ((mxCell)targetVertex).getGeometry().getCenterX();
-                    double targetY = ((mxCell)targetVertex).getGeometry().getCenterY();
-                    Point targetPoint = new Point(targetX, targetY);
-
-                    double sinkX = ((mxCell)sink).getGeometry().getCenterX();
-                    double sinkY = ((mxCell)sink).getGeometry().getCenterY();
-                    Point sinkPoint = new Point(sinkX, sinkY);
+                    Point targetPoint = new Point(((mxCell)targetVertex).getGeometry());
+                    Point sinkPoint = new Point(((mxCell)sink).getGeometry());
 
                     priorityQueue.add(new MyPair(targetVertex, tentative + heuristic.getValue(targetPoint, sinkPoint)));
                 }
