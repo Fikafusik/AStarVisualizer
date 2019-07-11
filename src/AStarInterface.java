@@ -5,6 +5,7 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.text.JTextComponent;
 import java.awt.event.*;
 import java.io.File;
+import java.io.IOException;
 
 public class AStarInterface extends JFrame implements IObservable{
     private JRadioButton manhattanDistanceRadioButton;
@@ -22,6 +23,7 @@ public class AStarInterface extends JFrame implements IObservable{
     private JRadioButton editingAddVertexGraph;
     private JRadioButton editingStartFinishVertex;
     private JButton cleanButton;
+    private JTextPane textLogs;
     private ButtonGroup buttonGroupDistances;
     private JMenu menu;
     private JMenuBar menuBar;
@@ -61,8 +63,8 @@ public class AStarInterface extends JFrame implements IObservable{
         cleanButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                aStarVisualizer.clearGraph();
                 ((OperationHistory)observer).reset();
+                aStarVisualizer.clearGraph();
                 aStarAlgorithm.update(aStarVisualizer.getGraphComponent().getGraph());
             }
         });
@@ -92,15 +94,16 @@ public class AStarInterface extends JFrame implements IObservable{
                 };
                 fileChooser.setFileFilter(fileFilter);
                 fileChooser.setCurrentDirectory(new File(".\\MyGraphs"));
-                int oprion = fileChooser.showOpenDialog(AStarInterface.this);
-                if (oprion == JFileChooser.APPROVE_OPTION) {
-                    aStarVisualizer.openGraph(fileChooser.getSelectedFile().getAbsolutePath());
+                int option = fileChooser.showOpenDialog(AStarInterface.this);
+                if (option == JFileChooser.APPROVE_OPTION) {
+                    ((OperationHistory)observer).reset();
+                    try {
+                        aStarVisualizer.openGraph(fileChooser.getSelectedFile().getAbsolutePath());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     aStarAlgorithm.update(aStarVisualizer.getGraphComponent().getGraph());
-                    File file = fileChooser.getSelectedFile();
-                    System.out.println("Folder Selected: " + file.getName());
-                }
-                else {
-                    System.out.println("Open command canceled");
+                    System.out.println("Hel");
                 }
             }
         });
@@ -112,14 +115,11 @@ public class AStarInterface extends JFrame implements IObservable{
             public void actionPerformed(ActionEvent actionEvent) {
                 JFileChooser fileChooser = new JFileChooser();
                 fileChooser.setCurrentDirectory(new File(".\\MyGraphs"));
-                int oprion = fileChooser.showSaveDialog(AStarInterface.this);
-                if (oprion == JFileChooser.APPROVE_OPTION) {
+                int option = fileChooser.showSaveDialog(AStarInterface.this);
+                if (option == JFileChooser.APPROVE_OPTION) {
                     aStarVisualizer.saveGraph(fileChooser.getSelectedFile().getAbsolutePath());
                     File file = fileChooser.getSelectedFile();
                     System.out.println("File Selected: " + file.getAbsolutePath());
-                }
-                else {
-                    System.out.println("Open command canceled");
                 }
             }
         });
@@ -198,16 +198,16 @@ public class AStarInterface extends JFrame implements IObservable{
         nextButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try {
+//                try {
                     aStarAlgorithm.stepNext();
-                } catch (NullPointerException e1){
-                    String ex = new String();
-                    for(StackTraceElement el : e1.getStackTrace())
-                        ex += el.getMethodName() + "\n";
-                    JOptionPane.showMessageDialog(component, e1.getMessage()+ "\n" + ex);
-                } catch (NumberFormatException e2) {
-                    JOptionPane.showMessageDialog(component, e2.getMessage());
-                }
+//                } catch (NullPointerException e1){
+//                    String ex = new String();
+//                    for(StackTraceElement el : e1.getStackTrace())
+//                        ex += el.getMethodName() + "\n";
+//                    JOptionPane.showMessageDialog(component, e1.getMessage()+ "\n" + ex);
+//                } catch (NumberFormatException e2) {
+//                    JOptionPane.showMessageDialog(component, e2.getMessage());
+//                }
             }
         });
     }

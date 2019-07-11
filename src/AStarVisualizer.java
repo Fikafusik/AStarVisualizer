@@ -16,6 +16,7 @@ import org.w3c.dom.Document;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 
 import static java.lang.Math.max;
 
@@ -55,9 +56,11 @@ public class AStarVisualizer implements IObservable{
         jgxAdapter.setAllowDanglingEdges(false);
 //        jgxAdapter.setCellsEditable(false);
         graphComponent.getViewport().setOpaque(true);
+//        graphComponent.getViewport().set
 //        jgxAdapter.setDefaultLoopStyle();
 //        jgxAdapter.cellLabelChanged();
         this.graphComponent.getViewport().setBackground(new Color(155, 208, 249));
+
         this.graphComponent.getConnectionHandler().addListener(mxEvent.CONNECT, (sender, evt) -> {
 
             Object cell = evt.getProperty("cell");
@@ -85,9 +88,9 @@ public class AStarVisualizer implements IObservable{
 //        this.graphComponent.addListener(mxEvent.ADD_CELLS, (o, mxEventObject) -> System.out.println("cell - " + mxEventObject.getName() + " with properties: " + mxEventObject.getProperties()));
 
 
-    public void openGraph(String filePath) {
-        try
-        {
+    public void openGraph(String filePath) throws IOException {
+//        try
+//        {
             jgxAdapter.getModel().beginUpdate();
             Document document = mxXmlUtils.parseXml(mxUtils.readFile(filePath));
             mxCodec codec = new mxCodec(document);
@@ -97,6 +100,8 @@ public class AStarVisualizer implements IObservable{
             this.graphComponent.setEventsEnabled(true);
             this.graphComponent.getViewport().setOpaque(true);
             jgxAdapter.setAllowDanglingEdges(false);
+
+            jgxAdapter.setCellsResizable(false);
 //            jgxAdapter.setCellsEditable(false);
             graphComponent.getViewport().setOpaque(true);
             jgxAdapter.getModel().endUpdate();
@@ -106,7 +111,7 @@ public class AStarVisualizer implements IObservable{
             aStarAlgorithm.setSink(sink);
             inc = 1;
             for(Object vertex : graphComponent.getGraph().getChildVertices(jgxAdapter.getDefaultParent())) {
-                inc = max(Integer.parseInt(jgxAdapter.getLabel(vertex).substring(1)), inc);
+                inc = max(Integer.parseInt(jgxAdapter.getLabel(vertex)), inc);
                 if (jgxAdapter.getModel().getStyle(vertex).equals(styleSource)) {
                     source = vertex;
                     aStarAlgorithm.setSource(source);
@@ -118,12 +123,12 @@ public class AStarVisualizer implements IObservable{
                 }
             }
             inc++;
-        }
+/*        }
         catch (Exception ex)
         {
             ex.printStackTrace();
         }
-    }
+*/    }
 
     public void saveGraph(String path) {
         try {
@@ -279,11 +284,11 @@ public class AStarVisualizer implements IObservable{
         jgxAdapter.removeCells(graphComponent.getGraph().getChildVertices(jgxAdapter.getDefaultParent()));
         graphComponent.getGraphControl().removeAll();
         jgxAdapter.getModel().endUpdate();
-        source = null;
+/*        source = null;
         aStarAlgorithm.setSource(source);
         sink = null;
         aStarAlgorithm.setSink(sink);
-    }
+*/    }
 
 
     void setSink(Object vertex) {

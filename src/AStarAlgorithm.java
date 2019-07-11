@@ -42,8 +42,8 @@ public class AStarAlgorithm implements IObservable{
 //        for(int i = 0 ; i < countNext; i++)
 //            stepPrev();
         this.graph = graph;
-        this.source = null;
-        this.sink = null;
+//        this.source = null;
+//        this.sink = null;
         this.distances = new HashMap<>();
         this.parent = new HashMap<>();
         this.visited = new HashMap<>();
