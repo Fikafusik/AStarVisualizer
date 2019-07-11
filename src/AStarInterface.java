@@ -62,6 +62,7 @@ public class AStarInterface extends JFrame implements IObservable{
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 aStarVisualizer.clearGraph();
+                aStarAlgorithm.update(aStarVisualizer.getGraphComponent().getGraph());
             }
         });
 
@@ -93,6 +94,7 @@ public class AStarInterface extends JFrame implements IObservable{
                 int oprion = fileChooser.showOpenDialog(AStarInterface.this);
                 if (oprion == JFileChooser.APPROVE_OPTION) {
                     aStarVisualizer.openGraph(fileChooser.getSelectedFile().getAbsolutePath());
+                    aStarAlgorithm.update(aStarVisualizer.getGraphComponent().getGraph());
                     File file = fileChooser.getSelectedFile();
                     System.out.println("Folder Selected: " + file.getName());
                 }
@@ -198,7 +200,10 @@ public class AStarInterface extends JFrame implements IObservable{
                 try {
                     aStarAlgorithm.stepNext();
                 } catch (NullPointerException e1){
-                    JOptionPane.showMessageDialog(component, e1.getMessage());
+                    String ex = new String();
+                    for(StackTraceElement el : e1.getStackTrace())
+                        ex += el.getMethodName() + "\n";
+                    JOptionPane.showMessageDialog(component, e1.getMessage()+ "\n" + ex);
                 } catch (NumberFormatException e2) {
                     JOptionPane.showMessageDialog(component, e2.getMessage());
                 }

@@ -23,6 +23,7 @@ public class AStarAlgorithm implements IObservable{
     private IObserver observer;
 
     private AStarVisualizer aStarVisualizer;
+    private int countNext = 0;
 
     public AStarAlgorithm(mxGraph graph) {
         this.graph = graph;
@@ -36,6 +37,24 @@ public class AStarAlgorithm implements IObservable{
         this.observer = null;
     }
 
+    public void update(mxGraph graph) {
+//        for(int i = 0 ; i < countNext; i++)
+//            stepPrev();
+        this.graph = graph;
+        this.source = null;
+        this.sink = null;
+        this.distances = new HashMap<>();
+        this.parent = new HashMap<>();
+        this.visited = new HashMap<>();
+        this.heuristic = new ManhattanHeuristic();
+        this.priorityQueue = new PriorityQueue<>();
+        this.observer = null;
+
+    }
+/*    public void clearField(){
+        this.graph
+    }
+*/
     public void setVisualizer(AStarVisualizer visualizer){
         aStarVisualizer = visualizer;
     }
@@ -172,7 +191,8 @@ public class AStarAlgorithm implements IObservable{
                 importantVertex = source;
                 distances.put(importantVertex, 0.0);
                 priorityQueue.add(new MyPair(importantVertex, heuristic.getValue(new Point(((mxCell)importantVertex).getGeometry()), new Point(((mxCell)sink).getGeometry()))));
-                aStarVisualizer.paintComponent(importantVertex, "black");
+//                aStarVisualizer.paintComponent(importantVertex, "black");
+                aStarVisualizer.paintNow(importantVertex);
                 return;
             }
 
@@ -189,19 +209,22 @@ public class AStarAlgorithm implements IObservable{
             }
 
             // ранее посещённую вершину красим в серый
-            aStarVisualizer.paintComponent(importantVertex, "gray");
-
+//            aStarVisualizer.paintComponent(importantVertex, "gray");
+            aStarVisualizer.paintPast(importantVertex);
             // сохраняем прошлую вершину
             oldVertex = importantVertex;
 
             // извлекаем из очереди новую вершину
             System.out.println(priorityQueue.size());
             importantVertex = priorityQueue.poll().getVertex();
+            if(importantVertex == null)
+                throw new NullPointerException("impotent vertex - null");
 
             System.out.println(((mxCell)importantVertex).getValue());
 
             // извлечённую вершину красим в чёрный цвет
-            aStarVisualizer.paintComponent(importantVertex, "black");
+//            aStarVisualizer.paintComponent(importantVertex, "black");
+            aStarVisualizer.paintNow(importantVertex);
             visited.put(importantVertex, true);
 
             // обходим инцидентные рёбра

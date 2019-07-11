@@ -1,13 +1,16 @@
 import com.mxgraph.io.mxCodec;
+import com.mxgraph.model.mxCell;
+import com.mxgraph.swing.handler.mxConnectionHandler;
 import com.mxgraph.swing.mxGraphComponent;
-import com.mxgraph.util.mxEvent;
-import com.mxgraph.util.mxUtils;
-import com.mxgraph.util.mxXmlUtils;
+import com.mxgraph.util.*;
+import com.sun.jdi.DoubleValue;
+import javafx.scene.effect.Light;
 import org.jgrapht.ListenableGraph;
 import org.jgrapht.ext.JGraphXAdapter;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DefaultListenableGraph;
+import org.jgrapht.graph.DefaultWeightedEdge;
 import org.w3c.dom.Document;
 
 import java.awt.*;
@@ -24,6 +27,8 @@ public class AStarVisualizer implements IObservable{
     private static int inc = 1;
     private static int widthDefault = 40;
     private static String styleDefault = "shape=ellipse";
+    private static String styleSource = "fillColor=lightgreen;shape=ellipse";
+    private static String styleSink = "fillColor=pink;shape=ellipse";
     private Object parent;
     private Object source;
     private Object sink;
@@ -49,13 +54,23 @@ public class AStarVisualizer implements IObservable{
         jgxAdapter.setAllowDanglingEdges(false);
 //        jgxAdapter.setCellsEditable(false);
         graphComponent.getViewport().setOpaque(true);
-
+//        jgxAdapter.setDefaultLoopStyle();
+//        jgxAdapter.cellLabelChanged();
         this.graphComponent.getViewport().setBackground(new Color(155, 208, 249));
+        this.graphComponent.getConnectionHandler().addListener(mxEvent.CONNECT, (sender, evt) -> {
 
-//        this.graphComponent.getConnectionHandler().addListener(mxEvent.CONNECT, (sender, evt) -> System.out.println("edge=" + evt.getProperties().toString()));
+            Object cell = evt.getProperty("cell");
+            Double x1 = ((mxCell)jgxAdapter.getModel().getTerminal(cell, true)).getGeometry().getCenterX();
+            Double y1 = ((mxCell)jgxAdapter.getModel().getTerminal(cell, true)).getGeometry().getCenterY();
+            Double x2 = ((mxCell)jgxAdapter.getModel().getTerminal(cell, false)).getGeometry().getCenterX();
+            Double y2 = ((mxCell)jgxAdapter.getModel().getTerminal(cell, false)).getGeometry().getCenterY();
 
-//        this.graphComponent.addListener(mxEvent.ADD_CELLS, (o, mxEventObject) -> System.out.println("cell - " + mxEventObject.getName() + " with properties: " + mxEventObject.getProperties()));
+            jgxAdapter.getModel().setValue(cell, Integer.toString((int)Math.hypot(x1-x2,y1-y2)));
+
+        });
     }
+//        this.graphComponent.addListener(mxEvent.ADD_CELLS, (o, mxEventObject) -> System.out.println("cell - " + mxEventObject.getName() + " with properties: " + mxEventObject.getProperties()));
+
 
     public void openGraph(String filePath) {
         try
@@ -79,12 +94,12 @@ public class AStarVisualizer implements IObservable{
             inc = 1;
             for(Object vertex : graphComponent.getGraph().getChildVertices(jgxAdapter.getDefaultParent())) {
                 inc = max(Integer.parseInt(jgxAdapter.getLabel(vertex).substring(1)), inc);
-                if (jgxAdapter.getModel().getStyle(vertex).equals("fillColor=lightgreen;shape=ellipse")) {
+                if (jgxAdapter.getModel().getStyle(vertex).equals(styleSource)) {
                     source = vertex;
                     aStarAlgorithm.setSource(source);
                 }
                 jgxAdapter.getModel().getGeometry(vertex).getCenterX();
-                if (jgxAdapter.getModel().getStyle(vertex).equals("fillColor=pink;shape=ellipse")) {
+                if (jgxAdapter.getModel().getStyle(vertex).equals(styleSink)) {
                     sink = vertex;
                     aStarAlgorithm.setSink(sink);
                 }
@@ -120,14 +135,14 @@ public class AStarVisualizer implements IObservable{
         if(source == null)
             return;
         if(jgxAdapter.getModel().getGeometry(source).getWidth() != 0)
-            jgxAdapter.getModel().setStyle(source, "fillColor=lightgreen;shape=ellipse");
+            jgxAdapter.getModel().setStyle(source, styleSource);
     }
 
     private void paintFinishComponent() {
         if(sink == null)
             return;
         if(jgxAdapter.getModel().getGeometry(sink).getWidth() != 0)
-            jgxAdapter.getModel().setStyle(sink, "fillColor=pink;shape=ellipse");
+            jgxAdapter.getModel().setStyle(sink, styleSink);
     }
 
     public void paintComponent(Object component, String color){
@@ -137,6 +152,33 @@ public class AStarVisualizer implements IObservable{
             jgxAdapter.getModel().setStyle(component, "fillColor="+ color +";shape=ellipse");
         else
             jgxAdapter.getModel().setStyle(component,"strokeColor=" + color);
+    }
+
+    public void paintPast(Object component) {
+        if(component == null)
+            return;
+        if(jgxAdapter.getModel().getGeometry(component).getWidth() != 0)
+            jgxAdapter.getModel().setStyle(component, "fillColor=navy;shape=ellipse");
+        else
+            jgxAdapter.getModel().setStyle(component,"strokeColor=darkgreen");
+    }
+
+    public void paintNow(Object component) {
+        if(component == null)
+            return;
+        if(jgxAdapter.getModel().getGeometry(component).getWidth() != 0)
+            jgxAdapter.getModel().setStyle(component, "fillColor=blue;shape=ellipse");
+        else
+            jgxAdapter.getModel().setStyle(component, "strokeColor=green");
+    }
+
+    public void paintFuture(Object component) {
+        if(component == null)
+            return;
+        if(jgxAdapter.getModel().getGeometry(component).getWidth() != 0)
+            jgxAdapter.getModel().setStyle(component, "fillColor=aqua;shape=ellipse");
+        else
+            jgxAdapter.getModel().setStyle(component, "strokeColor=lightgreen");
     }
 
     public void paintDefaultComponent(Object component){
