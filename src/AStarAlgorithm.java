@@ -194,7 +194,7 @@ public class AStarAlgorithm implements IObservable{
                 priorityQueue.add(new MyPair(importantVertex, heuristic.getValue(new Point(((mxCell)importantVertex).getGeometry()), new Point(((mxCell)sink).getGeometry()))));
 //                aStarVisualizer.paintComponent(importantVertex, "black");
                 aStarVisualizer.paintNow(importantVertex);
-                return;
+               return;
             }
 
             // если путь уже найден

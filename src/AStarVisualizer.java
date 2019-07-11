@@ -54,11 +54,7 @@ public class AStarVisualizer implements IObservable{
         this.graphComponent.setEventsEnabled(true);
         this.graphComponent.getViewport().setOpaque(true);
         jgxAdapter.setAllowDanglingEdges(false);
-//        jgxAdapter.setCellsEditable(false);
         graphComponent.getViewport().setOpaque(true);
-//        graphComponent.getViewport().set
-//        jgxAdapter.setDefaultLoopStyle();
-//        jgxAdapter.cellLabelChanged();
         this.graphComponent.getViewport().setBackground(new Color(155, 208, 249));
 
         this.graphComponent.getConnectionHandler().addListener(mxEvent.CONNECT, (sender, evt) -> {
@@ -66,16 +62,7 @@ public class AStarVisualizer implements IObservable{
             Object cell = evt.getProperty("cell");
             setDefaultWeight(cell);
         });
-/*        this.graphComponent.getConnectionHandler().addListener(mxEvent.LABEL_CHANGED, new mxEventSource.mxIEventListener() {
-            @Override
-            public void invoke(Object o, mxEventObject mxEventObject) {
-                System.out.println("HEL");
-                Object cell = mxEventObject.getProperty("cell");
-                if(jgxAdapter.getModel().getValue(cell).equals(""))
-                    setDefaultWeight(cell);
-            }
-        });
-*/    }
+    }
 
     private void setDefaultWeight(Object cell){
         Double x1 = ((mxCell)jgxAdapter.getModel().getTerminal(cell, true)).getGeometry().getCenterX();
@@ -164,12 +151,34 @@ public class AStarVisualizer implements IObservable{
     }
 
     public void paintComponent(Object component, String color){
-        if(component == null)
-            return;
-        if(jgxAdapter.getModel().getGeometry(component).getWidth() != 0)
-            jgxAdapter.getModel().setStyle(component, "fillColor="+ color +";shape=ellipse");
-        else
-            jgxAdapter.getModel().setStyle(component,"strokeColor=" + color);
+        notifyObserver(new PaintComponent(component,color));
+    }
+
+    public class PaintComponent extends UndoableOperation{
+        private String prevStyle;
+        private String newColor;
+        private Object component;
+
+        public PaintComponent(Object component, String color) {
+            this.component = component;
+            prevStyle = jgxAdapter.getModel().getStyle(component);
+            newColor = color;
+        }
+
+        @Override
+        public void execute() {
+            if(component == null)
+                return;
+            if(jgxAdapter.getModel().getGeometry(component).getWidth() != 0)
+                jgxAdapter.getModel().setStyle(component, "fillColor="+ newColor +";shape=ellipse");
+            else
+                jgxAdapter.getModel().setStyle(component,"strokeColor=" + newColor);
+        }
+
+        @Override
+        public void undo() {
+            jgxAdapter.getModel().setStyle(component, prevStyle);
+        }
     }
 
     public void paintPast(Object component) {
