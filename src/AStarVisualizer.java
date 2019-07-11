@@ -141,14 +141,18 @@ public class AStarVisualizer implements IObservable{
         if(source == null)
             return;
         if(jgxAdapter.getModel().getGeometry(source).getWidth() != 0)
-            notifyObserver(new PaintComponent(source, "lightgreen"));
+            paintComponent(source, "lightgreen");
     }
 
     private void paintFinishComponent() {
         if(sink == null)
             return;
         if(jgxAdapter.getModel().getGeometry(sink).getWidth() != 0)
-            notifyObserver(new PaintComponent(sink, "pink"));
+            paintComponent(sink, "pink");
+    }
+
+    private void paintPath(Object object) {
+        notifyObserver(new PaintComponent(object, "cornsilk"));
     }
 
     public void paintComponent(Object component, String color){
@@ -316,14 +320,14 @@ public class AStarVisualizer implements IObservable{
         public void execute() {
             paintDefaultComponent(oldSink);
             sink = this.newSink;
-            paintFinishComponent();
+            jgxAdapter.getModel().setStyle(sink, styleSink);
         }
 
         @Override
         public void undo() {
             paintDefaultComponent(newSink);
             sink = this.oldSink;
-            paintFinishComponent();
+            jgxAdapter.getModel().setStyle(sink, styleSink);
         }
     }
 
@@ -342,14 +346,14 @@ public class AStarVisualizer implements IObservable{
         public void execute(){
             paintDefaultComponent(oldSource);
             source = this.newSource;
-            paintStartComponent();
+            jgxAdapter.getModel().setStyle(source, styleSource);
         }
 
         @Override
         public void undo(){
             paintDefaultComponent(newSource);
             source = this.oldSource;
-            paintStartComponent();
+            jgxAdapter.getModel().setStyle(source, styleSource);
         }
     }
 
