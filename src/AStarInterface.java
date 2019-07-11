@@ -169,6 +169,7 @@ public class AStarInterface extends JFrame implements IObservable{
                     aStarVisualizer.openGraph(fileChooser.getSelectedFile().getAbsolutePath());
                 } catch (Exception e) {
                     JOptionPane.showMessageDialog(AStarInterface.this, "Failed opening graph\n" + e.getMessage()+ "\n");
+                    aStarVisualizer.clearGraph();
                     //e.printStackTrace();
                     return;
                 }
