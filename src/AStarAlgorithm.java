@@ -40,6 +40,14 @@ public class AStarAlgorithm implements IObservable{
         this.observer = null;
     }
 
+    public boolean isFinished(){
+        return (alreadyFound || alreadyNotFound);
+    }
+
+    public boolean isValid() {
+        return (source != null) && (sink != null);
+    }
+
     public void update(mxGraph graph) {
         this.graph = graph;
 //      this.source = null;

@@ -87,17 +87,30 @@ public class AStarInterface extends JFrame implements IObservable{
 
         this.timerAnimation = new Timer(sliderAnimationDelay.getValue(), new NextButtonActionListener());
         sliderAnimationDelay.addChangeListener(e -> timerAnimation.setDelay(sliderAnimationDelay.getValue()));
-        startButton.addActionListener(actionEvent -> timerAnimation.start());
+        startButton.addActionListener(actionEvent -> {
+            aStarVisualizer.setStartFinishUneditable();
+            timerAnimation.start();
+        });
         stopButton.addActionListener(e -> timerAnimation.stop());
 
         previousButton.addActionListener(e->((OperationHistory)observer).stepBack());
 
         nextButton.addActionListener(new NextButtonActionListener());
+        resetButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ((OperationHistory)observer).reset();
+            }
+        });
     }
 
     public class NextButtonActionListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
+            if(aStarAlgorithm.isFinished() || !aStarAlgorithm.isValid()){
+                timerAnimation.stop();
+            }
+            aStarVisualizer.setStartFinishUneditable();
             try {
                 aStarAlgorithm.stepNext();
             } catch (AStarException e1){

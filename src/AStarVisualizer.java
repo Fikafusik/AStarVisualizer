@@ -33,13 +33,14 @@ public class AStarVisualizer implements IObservable{
     private MouseAdapter listenerEditVertex;
     private MouseAdapter listenerAddStartFinishVertex;
     private AStarAlgorithm aStarAlgorithm;
+    private boolean editableStartFinish;
 
     public void setAlgorithm(AStarAlgorithm aStarAlgorithm){
         this.aStarAlgorithm = aStarAlgorithm;
     }
 
     public AStarVisualizer() {
-
+        editableStartFinish = true;
         g = new DefaultListenableGraph<>(new DefaultDirectedGraph<>(DefaultEdge.class));
         jgxAdapter = new JGraphXAdapter<>(g);
 
@@ -244,6 +245,10 @@ public class AStarVisualizer implements IObservable{
 
     public void setListenerAddStartFinish() {
         this.jgxAdapter.setCellsMovable(false);
+        if(!editableStartFinish){
+            //Exception?
+            return;
+        }
         listenerAddStartFinishVertex = new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent mouseEvent) {
@@ -296,9 +301,30 @@ public class AStarVisualizer implements IObservable{
         jgxAdapter.getModel().endUpdate();
     }
 
-
-    void setSink(Object vertex) {
+    public void setSink(Object vertex) {
         notifyObserver(new SetSinkV(vertex));
+    }
+
+    public void setStartFinishUneditable(){
+        if(editableStartFinish && source != null && sink != null)
+            notifyObserver(new SetStartFinishUneditable());
+    }
+
+    public boolean isStartFinishEditable(){
+        return editableStartFinish;
+    }
+
+    private class SetStartFinishUneditable extends UndoableOperation{
+
+        @Override
+        public void execute() {
+            editableStartFinish = false;
+        }
+
+        @Override
+        public void undo() {
+            editableStartFinish = true;
+        }
     }
 
     public class SetSinkV extends UndoableOperation {
@@ -326,7 +352,6 @@ public class AStarVisualizer implements IObservable{
             jgxAdapter.getModel().setStyle(sink, styleSink);
         }
     }
-
 
     public class SetSourceV extends UndoableOperation {
 
