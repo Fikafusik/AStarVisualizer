@@ -221,9 +221,9 @@ public class AStarAlgorithm implements IObservable{
 
                 Object vertex = sink;
                 while (vertex != null) {
-                    aStarVisualizer.paintFuture(vertex);
+                    aStarVisualizer.paintPath(vertex);
                     if (parent.containsKey(vertex)) {
-                        aStarVisualizer.paintFuture(graph.getEdgesBetween(parent.get(vertex), vertex)[0]);
+                        aStarVisualizer.paintPath(graph.getEdgesBetween(parent.get(vertex), vertex)[0]);
                     }
                     vertex = parent.get(vertex);
                 }
