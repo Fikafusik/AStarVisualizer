@@ -43,6 +43,9 @@ public class AStarVisualizer implements IObservable{
         g = new DefaultListenableGraph<>(new DefaultDirectedGraph<>(DefaultEdge.class));
         jgxAdapter = new JGraphXAdapter<>(g);
 
+        source = null;
+        sink = null;
+
         jgxAdapter.setCellsResizable(false);
         this.graphComponent = new mxGraphComponent(jgxAdapter);
         parent = jgxAdapter.getDefaultParent();
@@ -94,16 +97,16 @@ public class AStarVisualizer implements IObservable{
             for(Object vertex : graphComponent.getGraph().getChildVertices(jgxAdapter.getDefaultParent())) {
                 inc = max(Integer.parseInt(jgxAdapter.getLabel(vertex)), inc);
                 if (jgxAdapter.getModel().getStyle(vertex).equals(styleSource)) {
+                    paintDefaultComponent(vertex);
                     source = vertex;
                     aStarAlgorithm.setSource(source);
-                    paintDefaultComponent(source);
                     paintStartComponent();
                 }
                 jgxAdapter.getModel().getGeometry(vertex).getCenterX();
                 if (jgxAdapter.getModel().getStyle(vertex).equals(styleSink)) {
+                    paintDefaultComponent(vertex);
                     sink = vertex;
                     aStarAlgorithm.setSink(sink);
-                    paintDefaultComponent(sink);
                     paintFinishComponent();
                 }
             }
@@ -254,9 +257,8 @@ public class AStarVisualizer implements IObservable{
                             }
                             if (source != null)
                                 jgxAdapter.getModel().setStyle(source, styleDefault);
+                            source = null;
                             notifyObserver(new SetSourceV(cell));
-                            source = cell;
-
                             aStarAlgorithm.setSource(source);
 //                            paintStartComponent();
                         }
@@ -267,9 +269,8 @@ public class AStarVisualizer implements IObservable{
                             }
                             if (sink != null)
                                 jgxAdapter.getModel().setStyle(sink, styleDefault);
+                            sink = null;
                             notifyObserver(new SetSinkV(cell));
-                            sink = cell;
-
                             aStarAlgorithm.setSink(sink);
 
 //                            paintFinishComponent();
