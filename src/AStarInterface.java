@@ -16,8 +16,6 @@ public class AStarInterface extends JFrame implements IObservable{
     private JButton startButton;
     private JButton nextButton;
     private JButton previousButton;
-    private JRadioButton editingRadioButton;
-    private JRadioButton animationRadioButton;
     private JSplitPane splitPaneForeground;
     private JRadioButton editingAddVertexGraph;
     private JRadioButton editingStartFinishVertex;
