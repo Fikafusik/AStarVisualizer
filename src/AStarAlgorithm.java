@@ -14,7 +14,6 @@ public class AStarAlgorithm implements IObservable{
 
     private Object importantVertex;
     private Double importantTotal;
-
     private HashMap<Object, Double> distances;
 
     private PriorityQueue<MyPair> priorityQueue;
