@@ -1,6 +1,8 @@
 
 import com.mxgraph.model.mxCell;
 import com.mxgraph.view.mxGraph;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.PriorityQueue;
 
@@ -11,13 +13,13 @@ public class AStarAlgorithm implements IObservable{
     private Object sink;
 
     private Object importantVertex;
+    private Double importantTotal;
 
     private HashMap<Object, Double> distances;
 
     private PriorityQueue<MyPair> priorityQueue;
 
     private HashMap<Object, Object> parent;
-    private HashMap<Object, Boolean> visited;
 
     private IHeuristic heuristic;
     private IObserver observer;
@@ -30,7 +32,6 @@ public class AStarAlgorithm implements IObservable{
         this.sink = null;
         this.distances = new HashMap<>();
         this.parent = new HashMap<>();
-        this.visited = new HashMap<>();
         this.heuristic = new ManhattanHeuristic();
         this.priorityQueue = new PriorityQueue<>();
         this.importantVertex = null;
@@ -43,7 +44,6 @@ public class AStarAlgorithm implements IObservable{
 //      this.sink = null;
         this.distances = new HashMap<>();
         this.parent = new HashMap<>();
-        this.visited = new HashMap<>();
         this.heuristic = new ManhattanHeuristic();
         this.priorityQueue = new PriorityQueue<>();
         this.importantVertex = null;
@@ -160,8 +160,22 @@ public class AStarAlgorithm implements IObservable{
     public class NextStep extends UndoableOperation{
 
         Object oldVertex;
-        double oldDistance;
-        String oldColor;
+        Double oldTotal;
+        HashMap<Object, Double> oldDistances;
+        HashMap<Object, Object> oldParent;
+        ArrayList<MyPair> addedPairs;
+        PriorityQueue<MyPair> oldQueue;
+
+        public NextStep(){
+            oldVertex = importantVertex;
+            oldTotal = importantTotal;
+            oldDistances = new HashMap<>();
+            oldDistances.putAll(distances);
+            oldParent = new HashMap<>();
+            addedPairs = new ArrayList<>();
+            oldQueue = new PriorityQueue<MyPair>();
+            oldQueue.addAll(priorityQueue);
+        }
 
         @Override
         public void execute() {
@@ -173,9 +187,6 @@ public class AStarAlgorithm implements IObservable{
             if (sink == null) {
                 throw new NullPointerException("Add finish vertex");
             }
-
-            System.out.println("Source: " + ((mxCell)source).getValue());
-            System.out.println("Sink: " + ((mxCell)sink).getValue());
 
             // если алгоритм только запустили
             if (importantVertex == null) {
@@ -199,30 +210,20 @@ public class AStarAlgorithm implements IObservable{
             }
 
             // ранее посещённую вершину красим в серый
-//            aStarVisualizer.paintComponent(importantVertex, "gray");
             aStarVisualizer.paintPast(importantVertex);
 
-            // сохраняем прошлую вершину
-            oldVertex = importantVertex;
-
             // извлекаем из очереди новую вершину
-            System.out.println(priorityQueue.size());
-            importantVertex = priorityQueue.poll().getVertex();
+            importantVertex = priorityQueue.peek().getVertex();
+            importantTotal = priorityQueue.poll().getTotal();
 
             if (importantVertex == null) {
                 throw new NullPointerException("impotent vertex - null");
             }
 
-            System.out.println(((mxCell)importantVertex).getValue());
-
-            // извлечённую вершину красим в чёрный цвет
-            // aStarVisualizer.paintPast(importantVertex);
-
             aStarVisualizer.paintNow(importantVertex);
-            visited.put(importantVertex, true);
 
             // обходим инцидентные рёбра
-            for (Object edge : graph.getOutgoingEdges(importantVertex) /*incidentEdges.get(importantVertex)*/) {
+            for (Object edge : graph.getOutgoingEdges(importantVertex)) {
                 mxCell edgeCell = (mxCell)edge;
 
                 double tentative = distances.get(importantVertex) + Double.valueOf((String)edgeCell.getValue());
@@ -231,13 +232,22 @@ public class AStarAlgorithm implements IObservable{
                 if (!distances.containsKey(targetVertex) || tentative < distances.get(targetVertex)) {
                     aStarVisualizer.paintFuture(targetVertex);
 
-                    parent.put(targetVertex, importantVertex);
+                    if (distances.containsKey(targetVertex)) {
+                        oldDistances.put(targetVertex, distances.get(targetVertex));
+                    }
                     distances.put(targetVertex, tentative);
+
+                    if (parent.containsKey(targetVertex)) {
+                        oldParent.put(targetVertex, parent.get(targetVertex));
+                    }
+                    parent.put(targetVertex, importantVertex);
 
                     Point targetPoint = new Point(((mxCell)targetVertex).getGeometry());
                     Point sinkPoint = new Point(((mxCell)sink).getGeometry());
 
-                    priorityQueue.add(new MyPair(targetVertex, tentative + heuristic.getValue(targetPoint, sinkPoint)));
+                    MyPair newPair = new MyPair(targetVertex, tentative + heuristic.getValue(targetPoint, sinkPoint));
+                    addedPairs.add(newPair);
+                    priorityQueue.add(newPair);
                 }
             }
 
@@ -245,7 +255,35 @@ public class AStarAlgorithm implements IObservable{
 
         @Override
         public void undo() {
+            importantVertex = oldVertex;
+            importantTotal = oldTotal;
+            priorityQueue = oldQueue;
+            distances = oldDistances;
+/*
+            priorityQueue.add(new MyPair(oldVertex, oldTotal));
 
+            // обходим инцидентные рёбра
+            for (Object edge : graph.getOutgoingEdges(oldVertex)) {
+                mxCell edgeCell = (mxCell)edge;
+
+                Object targetVertex = edgeCell.getTarget();
+
+                if (oldDistances.containsKey(targetVertex)) {
+                    distances.put(targetVertex, oldDistances.get(targetVertex));
+                } else {
+                    distances.remove(targetVertex);
+                }
+
+                if (oldParent.containsKey(targetVertex)) {
+                    parent.put(targetVertex, oldParent.get(targetVertex));
+                } else {
+                    parent.remove(targetVertex);
+                }
+            }
+
+            for (MyPair pair: addedPairs) {
+                priorityQueue.remove(pair);
+            }*/
         }
     }
 

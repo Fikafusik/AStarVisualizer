@@ -191,7 +191,7 @@ public class AStarInterface extends JFrame implements IObservable{
         previousButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                ((OperationHistory)observer).undo();
+                ((OperationHistory)observer).stepBack();
             }
         });
 
