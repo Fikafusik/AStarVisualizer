@@ -132,6 +132,7 @@ public class AStarVisualizer implements IObservable{
             System.out.println("ERROR : "+ex.getMessage());
         }
     }
+
     public mxGraphComponent getGraphComponent() {
         return graphComponent;
     }
@@ -287,17 +288,14 @@ public class AStarVisualizer implements IObservable{
         this.jgxAdapter.setCellsMovable(true);
         this.graphComponent.getGraphControl().removeMouseListener(listenerAddStartFinishVertex);
     }
+
     public void clearGraph() {
         jgxAdapter.getModel().beginUpdate();
         System.out.println(inc);
         jgxAdapter.removeCells(graphComponent.getGraph().getChildVertices(jgxAdapter.getDefaultParent()));
         graphComponent.getGraphControl().removeAll();
         jgxAdapter.getModel().endUpdate();
-/*        source = null;
-        aStarAlgorithm.setSource(source);
-        sink = null;
-        aStarAlgorithm.setSink(sink);
-*/    }
+    }
 
 
     void setSink(Object vertex) {

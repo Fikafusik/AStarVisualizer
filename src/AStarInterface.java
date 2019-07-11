@@ -124,9 +124,14 @@ public class AStarInterface extends JFrame implements IObservable{
                     "   Click right button - delete vertex\n" +
                     "If you are in mode of edit start-finish:\n" +
                     "   Click left button - add source\n" +
-                    "   Click right button - add sink\n");
+                    "   Click right button - add sink\n" +
+                    "During algorithm visualization:\n" +
+                    "   Blue color node - currently processing node\n" +
+                    "   Cyan color node - nodes, that are currently in queue\n" +
+                    "   Black color node - nodes, that are already have been processed\n");
         }
     }
+
     public class ClearActionListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
@@ -172,6 +177,7 @@ public class AStarInterface extends JFrame implements IObservable{
             }
         }
     }
+
     public class MenuItemSaveActionListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
@@ -244,6 +250,7 @@ public class AStarInterface extends JFrame implements IObservable{
 
         }
     }
+
     public String heuristicSelection;
     public class HeuristicChange extends UndoableOperation{
 
