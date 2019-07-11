@@ -4,7 +4,7 @@ import com.mxgraph.swing.handler.mxConnectionHandler;
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.util.*;
 import com.sun.jdi.DoubleValue;
-import javafx.scene.effect.Light;
+
 import org.jgrapht.ListenableGraph;
 import org.jgrapht.ext.JGraphXAdapter;
 import org.jgrapht.graph.DefaultDirectedGraph;
@@ -89,8 +89,8 @@ public class AStarVisualizer implements IObservable{
 
 
     public void openGraph(String filePath) throws IOException {
-//        try
-//        {
+        try
+        {
             jgxAdapter.getModel().beginUpdate();
             Document document = mxXmlUtils.parseXml(mxUtils.readFile(filePath));
             mxCodec codec = new mxCodec(document);
@@ -123,12 +123,12 @@ public class AStarVisualizer implements IObservable{
                 }
             }
             inc++;
-/*        }
-        catch (Exception ex)
+        }
+        catch (IOException ex)
         {
             ex.printStackTrace();
         }
-*/    }
+    }
 
     public void saveGraph(String path) {
         try {
