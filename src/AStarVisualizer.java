@@ -140,14 +140,14 @@ public class AStarVisualizer implements IObservable{
         if(source == null)
             return;
         if(jgxAdapter.getModel().getGeometry(source).getWidth() != 0)
-            jgxAdapter.getModel().setStyle(source, styleSource);
+            notifyObserver(new PaintComponent(source, styleSource));
     }
 
     private void paintFinishComponent() {
         if(sink == null)
             return;
         if(jgxAdapter.getModel().getGeometry(sink).getWidth() != 0)
-            jgxAdapter.getModel().setStyle(sink, styleSink);
+            notifyObserver(new PaintComponent(sink, styleSink));
     }
 
     public void paintComponent(Object component, String color){
