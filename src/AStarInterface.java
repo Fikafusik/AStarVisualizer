@@ -50,79 +50,20 @@ public class AStarInterface extends JFrame implements IObservable{
         this.splitPaneForeground.setBottomComponent(aStarVisualizer.getGraphComponent());
         aStarVisualizer.setListenerEditVertex();
 
-        ActionListener listener = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent){
-                notifyObserver(new EditVertexMode(actionEvent));
-            }
-        };
+        ActionListener listener = actionEvent -> notifyObserver(new EditVertexMode(actionEvent));
 
         editingAddVertexGraph.addActionListener(listener);
         editingStartFinishVertex.addActionListener(listener);
 
-        cleanButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                ((OperationHistory)observer).reset();
-                aStarVisualizer.clearGraph();
-                aStarAlgorithm.update(aStarVisualizer.getGraphComponent().getGraph());
-            }
-        });
+        cleanButton.addActionListener(new ClearActionListener());
 
         this.menuItemLoad = new JMenuItem();
         this.menuItemLoad.setText("Load");
-        this.menuItemLoad.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                JFileChooser fileChooser = new JFileChooser();
-                fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-                FileFilter fileFilter = new FileFilter() {
-                    @Override
-                    public boolean accept(File file) {
-                        if(file.isDirectory()) {
-                            return true;
-                        }
-                        else {
-                            return file.getName().toLowerCase().endsWith(".xml");
-                        }
-                    }
-
-                    @Override
-                    public String getDescription() {
-                        return "XML Documents (*.xml)";
-                    }
-                };
-                fileChooser.setFileFilter(fileFilter);
-                fileChooser.setCurrentDirectory(new File(".\\MyGraphs"));
-                int option = fileChooser.showOpenDialog(AStarInterface.this);
-                if (option == JFileChooser.APPROVE_OPTION) {
-                    ((OperationHistory)observer).reset();
-                    try {
-                        aStarVisualizer.openGraph(fileChooser.getSelectedFile().getAbsolutePath());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    aStarAlgorithm.update(aStarVisualizer.getGraphComponent().getGraph());
-                    System.out.println("Hel");
-                }
-            }
-        });
+        this.menuItemLoad.addActionListener(new MenuItemLoadActionListener());
 
         this.menuItemSave = new JMenuItem();
         this.menuItemSave.setText("Save as...");
-        this.menuItemSave.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                JFileChooser fileChooser = new JFileChooser();
-                fileChooser.setCurrentDirectory(new File(".\\MyGraphs"));
-                int option = fileChooser.showSaveDialog(AStarInterface.this);
-                if (option == JFileChooser.APPROVE_OPTION) {
-                    aStarVisualizer.saveGraph(fileChooser.getSelectedFile().getAbsolutePath());
-                    File file = fileChooser.getSelectedFile();
-                    System.out.println("File Selected: " + file.getAbsolutePath());
-                }
-            }
-        });
+        this.menuItemSave.addActionListener(new MenuItemSaveActionListener());
 
         this.menuBar = new JMenuBar();
 
@@ -139,32 +80,13 @@ public class AStarInterface extends JFrame implements IObservable{
         this.menuBar.add(this.menuHelp);
         this.setJMenuBar(this.menuBar);
 
-        AStarInterface component = this;
-
-
-
-        this.menuItemReference.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                JOptionPane.showMessageDialog(component, "If you are in mode of edit vertex:\n" +
-                        "   2x click left button - add vertex\n" +
-                        "   Click right button - delete vertex\n" +
-                        "If you are in mode of edit start-finish:\n" +
-                        "   Click left button - add source\n" +
-                        "   Click right button - add sink\n");
-            }
-        });
+        this.menuItemReference.addActionListener(new MenuItemReference());
 
         heuristicFactory = new HeuristicFactory();
 
         this.aStarAlgorithm.setHeuristic(heuristicFactory.getHeuristic("Manhattan"));
         heuristicSelection = "Manhattan";
-        ActionListener listener1 = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                notifyObserver(new HeuristicChange(actionEvent));
-            }
-        };
+        ActionListener listener1 = actionEvent -> notifyObserver(new HeuristicChange(actionEvent));
         manhattanDistanceRadioButton.addActionListener(listener1);
         chebyshevDistanceRadioButton.addActionListener(listener1);
         euclidianDistanceRadioButton.addActionListener(listener1);
@@ -188,30 +110,96 @@ public class AStarInterface extends JFrame implements IObservable{
         });
 
 
-        previousButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                ((OperationHistory)observer).undo();
-            }
-        });
+        previousButton.addActionListener(actionEvent -> ((OperationHistory)observer).undo());
 
-        nextButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-//                try {
-                    aStarAlgorithm.stepNext();
-//                } catch (NullPointerException e1){
-//                    String ex = new String();
-//                    for(StackTraceElement el : e1.getStackTrace())
-//                        ex += el.getMethodName() + "\n";
-//                    JOptionPane.showMessageDialog(component, e1.getMessage()+ "\n" + ex);
-//                } catch (NumberFormatException e2) {
-//                    JOptionPane.showMessageDialog(component, e2.getMessage());
-//                }
-            }
-        });
+        nextButton.addActionListener(new NextButtonActionListener());
     }
 
+    public class NextButtonActionListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            try {
+                aStarAlgorithm.stepNext();
+            } catch (NullPointerException e1){
+//                    String ex = new String();
+//                   for(StackTraceElement el : e1.getStackTrace())
+//                        ex += el.getMethodName() + "\n";
+                JOptionPane.showMessageDialog(AStarInterface.this, e1.getMessage()+ "\n" /*+ ex*/);
+            } catch (NumberFormatException e2) {
+                JOptionPane.showMessageDialog(AStarInterface.this, e2.getMessage());
+            }
+        }
+    }
+
+    public class MenuItemReference implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent actionEvent) {
+            JOptionPane.showMessageDialog(AStarInterface.this, "If you are in mode of edit vertex:\n" +
+                    "   2x click left button - add vertex\n" +
+                    "   Click right button - delete vertex\n" +
+                    "If you are in mode of edit start-finish:\n" +
+                    "   Click left button - add source\n" +
+                    "   Click right button - add sink\n");
+        }
+    }
+    public class ClearActionListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent actionEvent) {
+            ((OperationHistory)observer).reset();
+            aStarVisualizer.clearGraph();
+            aStarAlgorithm.update(aStarVisualizer.getGraphComponent().getGraph());
+        }
+    }
+
+    public class MenuItemLoadActionListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent actionEvent) {
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            FileFilter fileFilter = new FileFilter() {
+                @Override
+                public boolean accept(File file) {
+                    if(file.isDirectory()) {
+                        return true;
+                    }
+                    else {
+                        return file.getName().toLowerCase().endsWith(".xml");
+                    }
+                }
+
+                @Override
+                public String getDescription() {
+                    return "XML Documents (*.xml)";
+                }
+            };
+            fileChooser.setFileFilter(fileFilter);
+            fileChooser.setCurrentDirectory(new File(".\\MyGraphs"));
+            int option = fileChooser.showOpenDialog(AStarInterface.this);
+            if (option == JFileChooser.APPROVE_OPTION) {
+                ((OperationHistory)observer).reset();
+                try {
+                    aStarVisualizer.openGraph(fileChooser.getSelectedFile().getAbsolutePath());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                aStarAlgorithm.update(aStarVisualizer.getGraphComponent().getGraph());
+                System.out.println("Hel");
+            }
+        }
+    }
+    public class MenuItemSaveActionListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent actionEvent) {
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setCurrentDirectory(new File(".\\MyGraphs"));
+            int option = fileChooser.showSaveDialog(AStarInterface.this);
+            if (option == JFileChooser.APPROVE_OPTION) {
+                aStarVisualizer.saveGraph(fileChooser.getSelectedFile().getAbsolutePath());
+                File file = fileChooser.getSelectedFile();
+                System.out.println("File Selected: " + file.getAbsolutePath());
+            }
+        }
+    }
 
     @Override
     public void addObserver(IObserver observer){
