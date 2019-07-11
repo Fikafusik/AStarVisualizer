@@ -152,10 +152,12 @@ public class AStarAlgorithm implements IObservable{
         @Override
         public void execute() {
             if (source == null) {
+                // бросить исключение
                 System.out.println("сорс хуйня");
             }
 
             if (sink == null) {
+                // бросить исключение
                 System.out.println("синк хуйня");
             }
 
