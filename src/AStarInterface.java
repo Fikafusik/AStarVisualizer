@@ -100,6 +100,7 @@ public class AStarInterface extends JFrame implements IObservable{
                 System.out.println(valueSlider);
             }
         });
+
         startButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
@@ -109,8 +110,7 @@ public class AStarInterface extends JFrame implements IObservable{
             }
         });
 
-
-        previousButton.addActionListener(actionEvent -> ((OperationHistory)observer).undo());
+        previousButton.addActionListener(actionEvent -> ((OperationHistory)observer).stepBack());
 
         nextButton.addActionListener(new NextButtonActionListener());
     }
@@ -146,6 +146,7 @@ public class AStarInterface extends JFrame implements IObservable{
                     "   Black color node - nodes, that are already have been processed\n");
         }
     }
+
     public class ClearActionListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
@@ -191,6 +192,7 @@ public class AStarInterface extends JFrame implements IObservable{
             }
         }
     }
+
     public class MenuItemSaveActionListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
@@ -263,6 +265,7 @@ public class AStarInterface extends JFrame implements IObservable{
 
         }
     }
+
     public String heuristicSelection;
     public class HeuristicChange extends UndoableOperation{
 
