@@ -195,7 +195,13 @@ public class AStarInterface extends JFrame implements IObservable{
         nextButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                aStarAlgorithm.stepNext();
+                try {
+                    aStarAlgorithm.stepNext();
+                } catch (NullPointerException e1){
+                    JOptionPane.showMessageDialog(component, e1.getMessage());
+                } catch (NumberFormatException e2) {
+                    JOptionPane.showMessageDialog(component, e2.getMessage());
+                }
             }
         });
     }

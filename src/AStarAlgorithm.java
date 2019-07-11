@@ -151,14 +151,17 @@ public class AStarAlgorithm implements IObservable{
 
         @Override
         public void execute() {
+
             if (source == null) {
-                // бросить исключение
                 System.out.println("сорс хуйня");
+                throw new NullPointerException("Add source vertex");
+                // бросить исключение
             }
 
             if (sink == null) {
-                // бросить исключение
                 System.out.println("синк хуйня");
+                throw new NullPointerException("Add finish vertex");
+                // бросить исключение
             }
 
             System.out.println("Source: " + ((mxCell)source).getValue());
