@@ -48,7 +48,6 @@ public class AStarInterface extends JFrame implements IObservable{
         this.splitPaneForeground.setBottomComponent(aStarVisualizer.getGraphComponent());
         aStarVisualizer.setListenerEditVertex();
 
-
         ActionListener listener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent){
@@ -156,20 +155,11 @@ public class AStarInterface extends JFrame implements IObservable{
         heuristicFactory = new HeuristicFactory();
 
         this.aStarAlgorithm.setHeuristic(heuristicFactory.getHeuristic("Manhattan"));
-
+        heuristicSelection = "Manhattan";
         ActionListener listener1 = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-
-                if (buttonGroupDistances.getSelection() == manhattanDistanceRadioButton.getModel()) {
-                    component.aStarAlgorithm.setHeuristic(heuristicFactory.getHeuristic("Manhattan"));
-                }
-                if(buttonGroupDistances.getSelection() == chebyshevDistanceRadioButton.getModel()) {
-                    component.aStarAlgorithm.setHeuristic(heuristicFactory.getHeuristic("Chebyshev"));
-                }
-                if(buttonGroupDistances.getSelection() == euclidianDistanceRadioButton.getModel()) {
-                    component.aStarAlgorithm.setHeuristic(heuristicFactory.getHeuristic("Euclidean"));
-                }
+                notifyObserver(new HeuristicChange(actionEvent));
             }
         };
         manhattanDistanceRadioButton.addActionListener(listener1);
@@ -267,6 +257,60 @@ public class AStarInterface extends JFrame implements IObservable{
 
             }
 
+        }
+    }
+    public String heuristicSelection;
+    public class HeuristicChange extends UndoableOperation{
+
+        private ActionEvent actionEvent;
+        private String previousSelection;
+        private String nextSelection;
+
+        public HeuristicChange(ActionEvent actionEvent){
+            this.actionEvent = actionEvent;
+            //previousSelection = "Manhattan";
+        }
+        @Override
+        public void execute() {
+            previousSelection = heuristicSelection;
+            if (buttonGroupDistances.getSelection() == manhattanDistanceRadioButton.getModel()) {
+                aStarAlgorithm.setHeuristic(heuristicFactory.getHeuristic("Manhattan"));
+                heuristicSelection = "Manhattan";
+            }
+            if(buttonGroupDistances.getSelection() == chebyshevDistanceRadioButton.getModel()) {
+                aStarAlgorithm.setHeuristic(heuristicFactory.getHeuristic("Chebyshev"));
+                heuristicSelection = "Chebyshev";
+            }
+            if(buttonGroupDistances.getSelection() == euclidianDistanceRadioButton.getModel()) {
+                aStarAlgorithm.setHeuristic(heuristicFactory.getHeuristic("Euclidean"));
+                heuristicSelection = "Euclidean";
+            }
+        }
+
+        @Override
+        public void undo() {
+            heuristicSelection = previousSelection;
+           // aStarAlgorithm.setHeuristic(heuristicFactory.getHeuristic(heuristicSelection));
+            switch (heuristicSelection) {
+                case "Chebyshev" :
+                    chebyshevDistanceRadioButton.setSelected(true);
+                    euclidianDistanceRadioButton.setSelected(false);
+                    manhattanDistanceRadioButton.setSelected(false);
+                    break;
+                case "Manhattan" :
+                    chebyshevDistanceRadioButton.setSelected(false);
+                    euclidianDistanceRadioButton.setSelected(false);
+                    manhattanDistanceRadioButton.setSelected(true);
+                    break;
+                case "Euclidean" :
+                    chebyshevDistanceRadioButton.setSelected(false);
+                    euclidianDistanceRadioButton.setSelected(true);
+                    manhattanDistanceRadioButton.setSelected(false);
+                    break;
+            }
+            chebyshevDistanceRadioButton.updateUI();
+            euclidianDistanceRadioButton.updateUI();
+            manhattanDistanceRadioButton.updateUI();
         }
     }
 }

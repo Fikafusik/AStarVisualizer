@@ -204,7 +204,12 @@ public class AStarAlgorithm implements IObservable{
             // обходим инцидентные рёбра
             for (Object edge : graph.getOutgoingEdges(importantVertex) /*incidentEdges.get(importantVertex)*/) {
                 mxCell edgeCell = (mxCell)edge;
-                double tentative = distances.get(importantVertex) + Double.valueOf((String)edgeCell.getValue());
+/*                if(edgeCell.getValue() == null){
+                    graph.getModel().beginUpdate();
+                    graph.getModel().setValue(edgeCell, new String("12"));
+                    graph.getModel().endUpdate();
+                }
+*/                double tentative = distances.get(importantVertex) + Double.valueOf((String)edgeCell.getValue());
                 Object targetVertex = edgeCell.getTarget();
 
                 if (!distances.containsKey(targetVertex) || tentative < distances.get(targetVertex)) {
