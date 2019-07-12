@@ -228,8 +228,9 @@ public class AStarVisualizer implements IObservable{
                                 sink = null;
                                 aStarAlgorithm.setSink(sink);
                             }
+                            if(Integer.parseInt(((mxCell)cell).getValue().toString()) == (inc - 1)) inc--;
                             jgxAdapter.getModel().remove(cell);
-                            System.out.println("cell delete =" + jgxAdapter.getLabel(cell));
+                            //System.out.println("cell delete =" + jgxAdapter.getLabel(cell));
                         }
                     }
                 }
@@ -295,7 +296,8 @@ public class AStarVisualizer implements IObservable{
 
     public void clearGraph() {
         jgxAdapter.getModel().beginUpdate();
-        System.out.println(inc);
+        //System.out.println(inc);
+        inc = 1;
         jgxAdapter.removeCells(graphComponent.getGraph().getChildVertices(jgxAdapter.getDefaultParent()));
         graphComponent.getGraphControl().removeAll();
         jgxAdapter.getModel().endUpdate();
