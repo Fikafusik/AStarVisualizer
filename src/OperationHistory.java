@@ -19,7 +19,7 @@ public class OperationHistory implements IObserver, IUndoable {
      * @param operation любая отменяемая операции
      */
     private void push(UndoableOperation operation){
-        System.out.println("Pushing operation " + operation.toString());
+        //System.out.println("Pushing operation " + operation.toString());
         history.push(operation);
     }
 
@@ -28,7 +28,7 @@ public class OperationHistory implements IObserver, IUndoable {
      * @return
      */
     private UndoableOperation pop(){
-        System.out.println("Popping operation " + history.peek().toString());
+        //System.out.println("Popping operation " + history.peek().toString());
         return history.pop();
     }
 
