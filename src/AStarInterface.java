@@ -27,6 +27,8 @@ public class AStarInterface extends JFrame implements IObservable{
     private JMenu menuHelp;
     private JMenuItem menuItemReference;
     private Timer timerAnimation;
+    public String heuristicSelection;
+
 
     private IObserver observer;
 
@@ -42,6 +44,8 @@ public class AStarInterface extends JFrame implements IObservable{
         this.pack();
         this.setSize(width, height);
 
+        TextPaneLogger logger = new TextPaneLogger(textLogs);
+        aStarAlgorithm.setLogger(logger);
         this.splitPaneForeground.setBottomComponent(aStarVisualizer.getGraphComponent());
         aStarVisualizer.setListenerEditVertex();
 
@@ -265,7 +269,6 @@ public class AStarInterface extends JFrame implements IObservable{
         }
     }
 
-    public String heuristicSelection;
     public class HeuristicChange extends UndoableOperation{
 
         private ActionEvent actionEvent;

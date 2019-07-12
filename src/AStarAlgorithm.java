@@ -12,6 +12,8 @@ public class AStarAlgorithm implements IObservable{
     private boolean alreadyFound;
     private boolean alreadyNotFound;
 
+    private TextPaneLogger logger;
+
     private Object source;
     private Object sink;
 
@@ -38,6 +40,10 @@ public class AStarAlgorithm implements IObservable{
         this.priorityQueue = new PriorityQueue<>();
         this.importantVertex = null;
         this.observer = null;
+    }
+
+    public void setLogger(TextPaneLogger logger){
+        this.logger = logger;
     }
 
     public boolean isFinished(){
@@ -197,6 +203,8 @@ public class AStarAlgorithm implements IObservable{
 
         @Override
         public void execute(){
+
+            logger.log("New step exec!");
 
             if (source == null) {
                 throw new AStarException("Add source vertex");
