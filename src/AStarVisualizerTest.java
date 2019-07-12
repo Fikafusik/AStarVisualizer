@@ -3,9 +3,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
-import java.io.IOException;
-
-import static org.junit.Assert.*;
 
 public class AStarVisualizerTest {
     AStarVisualizer aStarVisualizer;
@@ -24,7 +21,7 @@ public class AStarVisualizerTest {
     }
 
     @Test
-    public void openGraph(String absolutePath) throws IOException {
+    public void openGraph(String absolutePath) throws Exception {
         File file = new File(".\\Tests\\Test1.xml");
         if(file.isFile()) {
             aStarVisualizer.openGraph(file.getAbsolutePath());
