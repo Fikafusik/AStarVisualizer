@@ -297,7 +297,7 @@ public class AStarAlgorithm implements IObservable{
                 mxCell edgeCell = (mxCell)edge;
                 double tentative;
                 try {
-                    tentative = distances.get(importantVertex) + Double.valueOf((String) edgeCell.getValue());
+                    tentative = distances.get(importantVertex) + Double.valueOf(edgeCell.getValue().toString());
                 }
                 catch (Exception e) {
                     throw new AStarError("Invalid name for edge between vertices " + ((mxICell)importantVertex).getValue() + " and " + edgeCell.getTarget().getValue());

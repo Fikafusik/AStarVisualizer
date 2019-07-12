@@ -12,42 +12,61 @@ public class AStarAlgorithmTest {
 
     AStarAlgorithm alg;
     OperationHistory history;
+    mxGraph graph;
     Object source;
     Object sink;
+    Object danglingVertex;
 
     @Before
     public void init(){
         history = new OperationHistory();
-        mxGraph graph = new mxGraph();
+        graph = new mxGraph();
         alg = new AStarAlgorithm(graph);
         alg.addObserver(history);
         mxCell o1 = new mxCell();
         source = o1;
         mxCell o2 = new mxCell();
         mxCell o3 = new mxCell();
+        mxCell o4 = new mxCell();
+        danglingVertex = o4;
         sink = o3;
         mxCell e1 = new mxCell();
         mxCell e2 = new mxCell();
-        o1.setValue(1);
-        o2.setValue(2);
-        o3.setValue(3);
-        e1.setValue(12);
-        e2.setValue(10);
+
         //mxGeometry geom = new mxGeometry();
         o1.setGeometry(new mxGeometry());
         o2.setGeometry(new mxGeometry());
         o3.setGeometry(new mxGeometry());
+        o4.setGeometry(new mxGeometry());
         e1.setGeometry(new mxGeometry());
         e2.setGeometry(new mxGeometry());
+
+        e1.getGeometry().setWidth(0);
+        e2.getGeometry().setWidth(0);
+        o1.getGeometry().setWidth(2);
+        o2.getGeometry().setWidth(2);
+        o3.getGeometry().setWidth(2);
+        o4.getGeometry().setWidth(2);
+
         graph.addCell(o1);
         graph.addCell(o2);
         graph.addCell(o3);
+        graph.addCell(o4);
         graph.addCell(e1);
         graph.addCell(e2);
+
+        e1.setEdge(true);
+        e2.setEdge(true);
+
         graph.addEdge(e1, graph.getDefaultParent(), o1, o2,1);
         graph.addEdge(e2, graph.getDefaultParent(), o2, o3, 2);
-        Object[] edges = {e1, e2};
-        graph.addAllEdges(edges);
+
+        o1.setValue(1);
+        o2.setValue(2);
+        o3.setValue(3);
+        o4.setValue(4);
+        e1.setValue(new Double(12));
+        e2.setValue(new Double(23));
 
         alg.setSource(o1);
         alg.setSink(o3);
@@ -121,5 +140,30 @@ public class AStarAlgorithmTest {
     public void addObserver() {
         OperationHistory history = new OperationHistory();
         Assert.assertEquals(history, alg.addObserver(history));
+    }
+
+    @Test(expected = AStarException.class)
+    public void NoPathExist(){
+        alg.setSink(danglingVertex);
+        alg.getResult();
+    }
+
+    @Test(expected = AStarException.class)
+    public void NoSource(){
+        alg.setSource(null);
+        alg.getResult();
+    }
+
+    @Test(expected = AStarException.class)
+    public void NoSink(){
+        alg.setSink(null);
+        alg.getResult();
+    }
+
+    @Test(expected = AStarException.class)
+    public void tryingToSearchWhenFoundPath(){
+        alg.getResult();
+        alg.stepNext();
+        alg.stepNext();
     }
 }
