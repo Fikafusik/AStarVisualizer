@@ -30,9 +30,10 @@ public class AStarVisualizer implements IObservable{
     private static final String styleDefault = "shape=ellipse";
     private static final String styleSource = "fillColor=lightgreen;shape=ellipse";
     private static final String styleSink = "fillColor=pink;shape=ellipse";
-    private Object parent;
+
     private Object source;
     private Object sink;
+
     private MouseAdapter listenerEditVertex;
     private MouseAdapter listenerAddStartFinishVertex;
     private AStarAlgorithm aStarAlgorithm;
@@ -48,7 +49,6 @@ public class AStarVisualizer implements IObservable{
 
         jgxAdapter.setCellsResizable(false);
         this.graphComponent = new mxGraphComponent(jgxAdapter);
-        parent = jgxAdapter.getDefaultParent();
 
         this.graphComponent.setConnectable(true);
         this.graphComponent.setEventsEnabled(true);
@@ -303,11 +303,6 @@ public class AStarVisualizer implements IObservable{
         jgxAdapter.removeCells(graphComponent.getGraph().getChildVertices(jgxAdapter.getDefaultParent()));
         graphComponent.getGraphControl().removeAll();
         jgxAdapter.getModel().endUpdate();
-    }
-
-
-    void setSink(Object vertex) {
-        notifyObserver(new SetSinkV(vertex));
     }
 
     public class SetSinkV extends UndoableOperation {
