@@ -18,11 +18,12 @@ public class AStarAlgorithmTest {
     Object danglingVertex;
 
     @Before
-    public void init(){
+    public void setUp() throws Exception{
         history = new OperationHistory();
         graph = new mxGraph();
         alg = new AStarAlgorithm(graph);
         alg.addObserver(history);
+
         mxCell o1 = new mxCell();
         source = o1;
         mxCell o2 = new mxCell();
@@ -76,7 +77,8 @@ public class AStarAlgorithmTest {
     }
 
     @After
-    public void tearDown(){
+    public void tearDown() throws Exception{
+        history.reset();
         alg = null;
     }
 
