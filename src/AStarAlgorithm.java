@@ -31,19 +31,14 @@ public class AStarAlgorithm implements IObservable{
     private AStarVisualizer aStarVisualizer;
 
     public AStarAlgorithm(mxGraph graph) {
-        this.graph = graph;
         this.source = null;
         this.sink = null;
-        this.distances = new HashMap<>();
-        this.parent = new HashMap<>();
-        this.heuristic = new ManhattanHeuristic();
-        this.priorityQueue = new PriorityQueue<>();
-        this.importantVertex = null;
-        this.observer = null;
+        update(graph);
     }
 
-    public void setLogger(TextPaneLogger logger){
+    public TextPaneLogger setLogger(TextPaneLogger logger){
         this.logger = logger;
+        return this.logger;
     }
 
     public boolean isFinished(){
@@ -54,36 +49,64 @@ public class AStarAlgorithm implements IObservable{
         return (source != null) && (sink != null);
     }
 
-    public void update(mxGraph graph) {
+    public mxGraph update(mxGraph graph) {
         this.graph = graph;
-//      this.source = null;
-//      this.sink = null;
         this.distances = new HashMap<>();
         this.parent = new HashMap<>();
         this.heuristic = new ManhattanHeuristic();
         this.priorityQueue = new PriorityQueue<>();
         this.importantVertex = null;
-
+        this.alreadyNotFound = false;
+        this.alreadyFound = false;
+        return this.graph;
     }
 
-    public void setVisualizer(AStarVisualizer visualizer){
-        aStarVisualizer = visualizer;
+    public AStarVisualizer setVisualizer(AStarVisualizer visualizer){
+        this.aStarVisualizer = visualizer;
+        return this.aStarVisualizer;
     }
 
-    void setSource(Object vertex) {
+    public Object setSource(Object vertex) {
         notifyObserver(new SetSource(vertex));
+        return this.source;
     }
 
-    void setSink(Object vertex) {
+    public Object setSink(Object vertex) {
         notifyObserver(new SetSink(vertex));
+        return this.sink;
     }
 
-    void setHeuristic(IHeuristic newHeuristic) {
+    public IHeuristic setHeuristic(IHeuristic newHeuristic) {
         notifyObserver(new SetHeuristic(newHeuristic));
+        return this.heuristic;
     }
 
-    public void stepNext() {
+    public Object stepNext() {
         notifyObserver(new NextStep());
+        return this.importantVertex;
+    }
+
+    public String getResult(){
+        while(alreadyFound || alreadyNotFound){
+            stepNext();
+        }
+        return pathRecovery();
+    }
+
+    private String pathRecovery() {
+        Stack<Object> pathStack = new Stack<>();
+        Object vertex = sink;
+        while (vertex != null) {
+            pathStack.push(vertex);
+            vertex = parent.get(vertex);
+        }
+        StringBuilder pathBuilder = new StringBuilder();
+        while (!pathStack.isEmpty()) {
+            pathBuilder.append(((mxCell) pathStack.pop()).getValue().toString());
+            if (!pathStack.isEmpty())
+                pathBuilder.append(" -> ");
+        }
+        return (pathBuilder.toString());
     }
 
     public class MyPair implements Comparable<MyPair> {
@@ -345,25 +368,10 @@ public class AStarAlgorithm implements IObservable{
         }
     }
 
-    private String pathRecovery() {
-        Stack<Object> pathStack = new Stack<>();
-        Object vertex = sink;
-        while (vertex != null) {
-            pathStack.push(vertex);
-            vertex = parent.get(vertex);
-        }
-        StringBuilder pathBuilder = new StringBuilder();
-        while (!pathStack.isEmpty()) {
-            pathBuilder.append(((mxCell) pathStack.pop()).getValue().toString());
-            if (!pathStack.isEmpty())
-                pathBuilder.append(" -> ");
-        }
-        return (pathBuilder.toString());
-    }
-
     @Override
-    public void addObserver(IObserver observer){
+    public IObserver addObserver(IObserver observer){
         this.observer = observer;
+        return this.observer;
     }
 
     @Override

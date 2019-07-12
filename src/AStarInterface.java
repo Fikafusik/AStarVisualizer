@@ -211,8 +211,9 @@ public class AStarInterface extends JFrame implements IObservable{
     }
 
     @Override
-    public void addObserver(IObserver observer){
+    public IObserver addObserver(IObserver observer){
         this.observer = observer;
+        return this.observer;
     }
 
     @Override
