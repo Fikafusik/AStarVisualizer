@@ -29,6 +29,7 @@ public class TextPaneLogger {
      * @param msg сообщение для вывода
      */
     public void log(String msg){
+        //System.out.println(msg + '\n');
         Document doc = textPane.getDocument();
         try {
             doc.insertString(doc.getLength(), msg + "\n", null);

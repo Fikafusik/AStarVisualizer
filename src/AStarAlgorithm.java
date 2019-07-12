@@ -87,9 +87,8 @@ public class AStarAlgorithm implements IObservable{
     }
 
     public String getResult(){
-        while(alreadyFound || alreadyNotFound){
-            stepNext();
-        }
+        while(stepNext() != sink);
+
         return pathRecovery();
     }
 
@@ -252,8 +251,8 @@ public class AStarAlgorithm implements IObservable{
                 }
                 alreadyFound = true;
 
-                System.out.println("path found...");
-                System.out.println(pathRecovery());
+                logger.log("path found...");
+                logger.log(pathRecovery());
 
                 Object vertex = sink;
                 while (vertex != null) {

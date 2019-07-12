@@ -1,6 +1,5 @@
 import com.mxgraph.model.mxCell;
 import com.mxgraph.model.mxGeometry;
-import com.mxgraph.model.mxICell;
 import com.mxgraph.view.mxGraph;
 import org.junit.After;
 import org.junit.Assert;
@@ -22,22 +21,36 @@ public class AStarAlgorithmTest {
         mxGraph graph = new mxGraph();
         alg = new AStarAlgorithm(graph);
         alg.addObserver(history);
-        mxICell o1 = new mxCell();
+        mxCell o1 = new mxCell();
         source = o1;
-        mxICell o2 = new mxCell();
-        sink = o2;
-        mxICell e1 = new mxCell();
+        mxCell o2 = new mxCell();
+        mxCell o3 = new mxCell();
+        sink = o3;
+        mxCell e1 = new mxCell();
+        mxCell e2 = new mxCell();
         o1.setValue(1);
         o2.setValue(2);
+        o3.setValue(3);
         e1.setValue(12);
+        e2.setValue(10);
+        //mxGeometry geom = new mxGeometry();
         o1.setGeometry(new mxGeometry());
         o2.setGeometry(new mxGeometry());
+        o3.setGeometry(new mxGeometry());
         e1.setGeometry(new mxGeometry());
+        e2.setGeometry(new mxGeometry());
         graph.addCell(o1);
         graph.addCell(o2);
-        graph.addEdge(e1,graph.getDefaultParent(),o1,o2,1);
+        graph.addCell(o3);
+        graph.addCell(e1);
+        graph.addCell(e2);
+        graph.addEdge(e1, graph.getDefaultParent(), o1, o2,1);
+        graph.addEdge(e2, graph.getDefaultParent(), o2, o3, 2);
+        Object[] edges = {e1, e2};
+        graph.addAllEdges(edges);
+
         alg.setSource(o1);
-        alg.setSink(o2);
+        alg.setSink(o3);
         setLogger();
         AStarVisualizer vis = new AStarVisualizer();
         alg.setVisualizer(vis).addObserver(history);
@@ -51,62 +64,62 @@ public class AStarAlgorithmTest {
     @Test
     public void setLogger() {
         TextPaneLogger logger = new TextPaneLogger(new JTextPane());
-        Assert.assertEquals(alg.setLogger(logger), logger);
+        Assert.assertEquals(logger, alg.setLogger(logger));
     }
 
     @Test
     public void isFinished() {
-        Assert.assertEquals(alg.isFinished(), false);
+        Assert.assertEquals(false, alg.isFinished());
     }
 
     @Test
     public void isValid() {
-        Assert.assertEquals(alg.isValid(), true);
+        Assert.assertEquals(true, alg.isValid());
     }
 
     @Test
     public void update() {
         mxGraph graph = new mxGraph();
-        Assert.assertEquals(alg.update(graph), graph);
+        Assert.assertEquals(graph, alg.update(graph));
     }
 
     @Test
     public void setVisualizer() {
         AStarVisualizer vis = new AStarVisualizer();
-        Assert.assertEquals(alg.setVisualizer(vis), vis);
+        Assert.assertEquals(vis, alg.setVisualizer(vis));
     }
 
     @Test
     public void setSource() {
         Object vertex = new Object();
-        Assert.assertEquals(alg.setSource(vertex), vertex);
+        Assert.assertEquals(vertex, alg.setSource(vertex));
     }
 
     @Test
     public void setSink() {
         Object vertex = new Object();
-        Assert.assertEquals(alg.setSink(vertex), vertex);
+        Assert.assertEquals(vertex, alg.setSink(vertex));
     }
 
     @Test
     public void setHeuristic() {
         IHeuristic heuristic = new ChebyshevHeuristic();
-        Assert.assertEquals(alg.setHeuristic(heuristic), heuristic);
+        Assert.assertEquals(heuristic, alg.setHeuristic(heuristic));
     }
 
     @Test
     public void stepNext() {
-        Assert.assertEquals(alg.stepNext(), source);
+        Assert.assertEquals(source, alg.stepNext());
     }
 
     @Test
     public void getResult() {
-        Assert.assertEquals(alg.getResult(), "o1->o2");
+        Assert.assertEquals("1 -> 2 -> 3", alg.getResult());
     }
 
     @Test
     public void addObserver() {
         OperationHistory history = new OperationHistory();
-        Assert.assertEquals(alg.addObserver(history), history);
+        Assert.assertEquals(history, alg.addObserver(history));
     }
 }
