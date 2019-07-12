@@ -2,6 +2,7 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileFilter;
+import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
 import java.io.IOException;
@@ -10,49 +11,59 @@ public class AStarInterface extends JFrame implements IObservable{
     private JRadioButton manhattanDistanceRadioButton;
     private JRadioButton chebyshevDistanceRadioButton;
     private JRadioButton euclidianDistanceRadioButton;
+
     private JSlider sliderAnimationDelay;
+
     private JButton resetButton;
     private JButton stopButton;
     private JButton startButton;
+
     private JButton nextButton;
     private JButton previousButton;
+
     private JSplitPane splitPaneForeground;
     private JRadioButton editingAddVertexGraph;
     private JRadioButton editingStartFinishVertex;
     private JButton cleanButton;
     private JTextPane textLogs;
     private ButtonGroup buttonGroupDistances;
-    private JMenu menu;
-    private JMenuBar menuBar;
+
     private JMenuItem menuItemLoad;
     private JMenuItem menuItemSave;
-    private JMenu menuHelp;
     private JMenuItem menuItemReference;
+
+    private JMenu menu;
+    private JMenu menuHelp;
+
+    private JMenuBar menuBar;
     private Timer timerAnimation;
 
     private IObserver observer;
 
-    private HeuristicFactory heuristicFactory;
+    private final HeuristicFactory heuristicFactory;
+    public String heuristicSelection;
+
     private AStarAlgorithm aStarAlgorithm;
     private AStarVisualizer aStarVisualizer;
 
     public AStarInterface(int width, int height, AStarVisualizer aStarVisualizer, AStarAlgorithm aStarAlgorithm) {
-        this.aStarAlgorithm = aStarAlgorithm;
-        this.aStarVisualizer = aStarVisualizer;
-        this.setContentPane(this.splitPaneForeground);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.pack();
+        this.setContentPane(this.splitPaneForeground);
+        this.setTitle("AStarVisualizer");
         this.setSize(width, height);
 
         this.splitPaneForeground.setBottomComponent(aStarVisualizer.getGraphComponent());
-        aStarVisualizer.setListenerEditVertex();
 
         ActionListener listener = actionEvent -> notifyObserver(new EditVertexMode(actionEvent));
 
-        editingAddVertexGraph.addActionListener(listener);
-        editingStartFinishVertex.addActionListener(listener);
+        this.aStarAlgorithm = aStarAlgorithm;
+        this.aStarVisualizer = aStarVisualizer;
+        this.aStarVisualizer.setListenerEditVertex();
 
-        cleanButton.addActionListener(new ClearActionListener());
+        this.editingAddVertexGraph.addActionListener(listener);
+        this.editingStartFinishVertex.addActionListener(listener);
+
+        this.cleanButton.addActionListener(new ClearActionListener());
 
         this.menuItemLoad = new JMenuItem();
         this.menuItemLoad.setText("Load");
@@ -62,40 +73,40 @@ public class AStarInterface extends JFrame implements IObservable{
         this.menuItemSave.setText("Save as...");
         this.menuItemSave.addActionListener(new MenuItemSaveActionListener());
 
-        this.menuBar = new JMenuBar();
-
         this.menu = new JMenu("Graph");
         this.menu.add(this.menuItemLoad);
         this.menu.add(this.menuItemSave);
-        this.menuBar.add(this.menu);
 
-        this.menuHelp = new JMenu("Help");
         this.menuItemReference = new JMenuItem();
         this.menuItemReference.setText("Reference");
-        this.menuHelp.add(this.menuItemReference);
-
-        this.menuBar.add(this.menuHelp);
-        this.setJMenuBar(this.menuBar);
-
         this.menuItemReference.addActionListener(new MenuItemReference());
 
-        heuristicFactory = new HeuristicFactory();
+        this.menuHelp = new JMenu("Help");
+        this.menuHelp.add(this.menuItemReference);
 
-        this.aStarAlgorithm.setHeuristic(heuristicFactory.getHeuristic("Manhattan"));
-        heuristicSelection = "Manhattan";
-        ActionListener listener1 = actionEvent -> notifyObserver(new HeuristicChange(actionEvent));
-        manhattanDistanceRadioButton.addActionListener(listener1);
-        chebyshevDistanceRadioButton.addActionListener(listener1);
-        euclidianDistanceRadioButton.addActionListener(listener1);
+        this.menuBar = new JMenuBar();
+        this.menuBar.add(this.menu);
+        this.menuBar.add(this.menuHelp);
+
+        this.setJMenuBar(this.menuBar);
+
+        this.heuristicFactory = new HeuristicFactory();
+        this.heuristicSelection = "Manhattan";
+        this.aStarAlgorithm.setHeuristic(this.heuristicFactory.getHeuristic(this.heuristicSelection));
+
+        ActionListener heuristicChangeListener = actionEvent -> notifyObserver(new HeuristicChange(actionEvent));
+        this.manhattanDistanceRadioButton.addActionListener(heuristicChangeListener);
+        this.chebyshevDistanceRadioButton.addActionListener(heuristicChangeListener);
+        this.euclidianDistanceRadioButton.addActionListener(heuristicChangeListener);
 
         this.timerAnimation = new Timer(sliderAnimationDelay.getValue(), new NextButtonActionListener());
-        sliderAnimationDelay.addChangeListener(e -> timerAnimation.setDelay(sliderAnimationDelay.getValue()));
-        startButton.addActionListener(actionEvent -> timerAnimation.start());
-        stopButton.addActionListener(e -> timerAnimation.stop());
+        this.sliderAnimationDelay.addChangeListener(e -> timerAnimation.setDelay(sliderAnimationDelay.getValue()));
+        this.startButton.addActionListener(actionEvent -> timerAnimation.start());
+        this.stopButton.addActionListener(e -> timerAnimation.stop());
 
-        previousButton.addActionListener(e->((OperationHistory)observer).stepBack());
+        this.previousButton.addActionListener(e->((OperationHistory)observer).stepBack());
 
-        nextButton.addActionListener(new NextButtonActionListener());
+        this.nextButton.addActionListener(new NextButtonActionListener());
     }
 
     public class NextButtonActionListener implements ActionListener {
@@ -205,7 +216,7 @@ public class AStarInterface extends JFrame implements IObservable{
         this.observer.handleEvent(operation);
     }
 
-    public class EditVertexMode extends UndoableOperation{
+    public class EditVertexMode extends UndoableOperation {
         private ActionEvent actionEvent;
 
         public EditVertexMode(ActionEvent actionEvent){
@@ -249,7 +260,6 @@ public class AStarInterface extends JFrame implements IObservable{
         }
     }
 
-    public String heuristicSelection;
     public class HeuristicChange extends UndoableOperation{
 
         private ActionEvent actionEvent;
