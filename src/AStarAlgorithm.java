@@ -204,20 +204,17 @@ public class AStarAlgorithm implements IObservable{
         @Override
         public void execute(){
 
-            logger.log("New step exec!");
-
             if (source == null) {
                 throw new AStarException("Add source vertex");
-                //throw new NullPointerException("Add source vertex");
             }
 
             if (sink == null) {
                 throw new AStarException("Add finish vertex");
-                //throw new NullPointerException("Add finish vertex");
             }
 
             // если алгоритм только запустили
             if (importantVertex == null) {
+                logger.log("first step of algorithm!");
                 importantVertex = source;
                 distances.put(importantVertex, 0.0);
                 priorityQueue.add(new MyPair(importantVertex, heuristic.getValue(new Point(((mxCell)importantVertex).getGeometry()), new Point(((mxCell)sink).getGeometry()))));
@@ -228,7 +225,6 @@ public class AStarAlgorithm implements IObservable{
             // если путь уже найден
             if (importantVertex == sink) {
                 if (alreadyFound) {
-                    // throw exception
                     throw new AStarException("Path was already found");
                 }
                 alreadyFound = true;
@@ -251,7 +247,6 @@ public class AStarAlgorithm implements IObservable{
             // если пути не существует
             if (priorityQueue.isEmpty()) {
                 if (alreadyNotFound) {
-                    // throw exception
                     throw new AStarException("No path exist");
                 }
                 alreadyNotFound = true;
@@ -273,6 +268,8 @@ public class AStarAlgorithm implements IObservable{
 
             aStarVisualizer.paintNow(importantVertex);
 
+            logger.log("current vertex: " + ((mxCell)importantVertex).getValue());
+            logger.log("> known distance: " + distances.get(importantVertex));
             // обходим инцидентные рёбра
             for (Object edge : graph.getOutgoingEdges(importantVertex)) {
                 mxCell edgeCell = (mxCell)edge;
@@ -280,10 +277,17 @@ public class AStarAlgorithm implements IObservable{
                 try {
                     tentative = distances.get(importantVertex) + Double.valueOf((String) edgeCell.getValue());
                 }
-                catch(Exception e){
+                catch (Exception e) {
                     throw new AStarError("Invalid name for edge between vertices " + ((mxICell)importantVertex).getValue() + " and " + edgeCell.getTarget().getValue());
                 }
                 Object targetVertex = edgeCell.getTarget();
+                logger.log("neighbor vertex: " + ((mxCell)targetVertex).getValue());
+                if (!distances.containsKey(targetVertex)) {
+                    logger.log("> distance: unknown");
+                } else {
+                    logger.log("> known distance: " + distances.get(targetVertex));
+                }
+                logger.log("> tentative value: " + tentative);
 
                 if (!distances.containsKey(targetVertex) || tentative < distances.get(targetVertex)) {
                     aStarVisualizer.paintFuture(targetVertex);
@@ -304,7 +308,7 @@ public class AStarAlgorithm implements IObservable{
                     priorityQueue.add(new MyPair(targetVertex, tentative + heuristic.getValue(targetPoint, sinkPoint)));
                 }
             }
-
+            logger.log("----------------------------------------");
         }
 
         @Override
