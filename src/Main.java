@@ -1,6 +1,13 @@
-
+/**
+ * Создано студентами Лукашевым Романом, Лящевской Анастасией и Минуллиным Михаилом.
+ * AStarVisualizer - программа для визуализации алгоритма A*.
+ */
 public class Main {
 
+    /**
+     * Точка входа в приложение
+     * @param args - аргументы командной строки (не используются)
+     */
     public static void main(String[] args) {
         OperationHistory history = new OperationHistory();
         AStarVisualizer aStarVisualizer = new AStarVisualizer();

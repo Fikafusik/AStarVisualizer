@@ -1,3 +1,4 @@
+
 interface IObservable {
     IObserver addObserver(IObserver observer);
     void removeObserver(IObserver observer);
